@@ -1,0 +1,1 @@
+let START_SCREEN = document.getElementById('start-screen');

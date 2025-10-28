@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Pollo Loco - Jump & Run Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Main Game Container -->
+    <div id="game-container">
+        <!-- The Canvas where our game will be drawn -->
+        <canvas id="canvas" width="720" height="480"></canvas>
+
+        <!-- Start Screen Overlay -->
+        <div id="start-screen" class="overlay">
+            <div class="overlay-content">
+                <h1>EL POLLO LOCO</h1>
+                <p class="subtitle">Help Pepe defeat the crazy chickens!</p>
+                <button id="start-btn" class="game-btn" onclick="init()">START GAME</button>
+
+                <div class="controls-info">
+                    <h3>Controls:</h3>
+                    <p>← → Arrow Keys: Move</p>
+                    <p>↑ Space: Jump</p>
+                    <p>D: Throw Bottle</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pause Screen Overlay -->
+        <div id="pause-screen" class="overlay hidden">
+            <div class="overlay-content">
+                <h2>PAUSED</h2>
+                <p>Press ESC to resume</p>
+                <button id="resume-btn" class="game-btn">RESUME</button>
+            </div>
+        </div>
+
+        <!-- Game Over Screen Overlay -->
+        <div id="gameover-screen" class="overlay hidden">
+            <div class="overlay-content">
+                <h2>GAME OVER</h2>
+                <p>Pepe has been defeated!</p>
+                <button id="restart-btn" class="game-btn">RESTART</button>
+            </div>
+        </div>
+
+        <!-- Victory Screen Overlay -->
+        <div id="win-screen" class="overlay hidden">
+            <div class="overlay-content">
+                <h2>VICTORY!</h2>
+                <p>You defeated the Endboss!</p>
+                <button id="win-restart-btn" class="game-btn">PLAY AGAIN</button>
+            </div>
+        </div>
+
+        <!-- Mobile Touch Controls (hidden on desktop) -->
+        <div id="mobile-controls" class="hidden">
+            <button class="touch-btn left-btn">←</button>
+            <button class="touch-btn right-btn">→</button>
+            <button class="touch-btn jump-btn">JUMP</button>
+            <button class="touch-btn throw-btn">THROW</button>
+        </div>
+
+        <!-- Portrait Warning (only shown when device is in portrait mode) -->
+        <div id="portrait-warning" class="hidden">
+            <div class="warning-content">
+                <h2>📱</h2>
+                <p>Please rotate your device</p>
+                <p class="small">This game is best played in landscape mode</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Scripts - Order matters! -->
+    <!-- Constants FIRST, then base classes, then specific classes, then game logic -->
+    <script src="constants.js"></script>
+    <script src="classes/DrawableObject.js"></script>
+    <script src="classes/MovableObject.js"></script>
+    <script src="classes/Character.js"></script>
+    <script src="classes/Chicken.js"></script>
+    <script src="classes/Endboss.js"></script>
+    <script src="classes/Cloud.js"></script>
+    <script src="classes/BackgroundObject.js"></script>
+    <script src="classes/Coin.js"></script>
+    <script src="classes/Bottle.js"></script>
+    <script src="classes/ThrowableObject.js"></script>
+    <script src="classes/StatusBar.js"></script>
+    <script src="classes/Keyboard.js"></script>
+    <script src="classes/Level.js"></script>
+    <script src="classes/World.js"></script>
+    <script src="levels/level1.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
