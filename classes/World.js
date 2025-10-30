@@ -100,6 +100,11 @@ class World {
             enemy.draw(this.ctx);
         });
 
+        // Draw coins (collectibles at various heights)
+        this.level.coins.forEach(coin => {
+            coin.draw(this.ctx);
+        });
+
         // Draw character
         this.character.draw(this.ctx);
 

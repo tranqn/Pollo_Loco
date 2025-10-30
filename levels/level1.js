@@ -48,8 +48,17 @@ const level1 = {
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719 * 2)
     ],
 
-    // Coins (will be added in Phase 5)
-    coins: [],
+    // Coins - collectibles scattered throughout the level
+    coins: [
+        new Coin(400, 200),  // Floating in air
+        new Coin(600, 150),  // Higher in air
+        new Coin(800, 200),  // Floating
+        new Coin(1000, GROUND_LEVEL), // On ground
+        new Coin(1200, 180), // Mid-height
+        new Coin(1400, 150), // Higher
+        new Coin(1600, GROUND_LEVEL), // On ground
+        new Coin(1800, 200)  // Floating
+    ],
 
     // Bottles (will be added in Phase 5)
     bottles: []
