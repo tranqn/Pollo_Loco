@@ -33,6 +33,9 @@ class Endboss extends MovableObject {
         // Set initial image
         this.img = this.IMAGES_CACHE[IMAGES_ENDBOSS_WALKING[0]];
 
+        // Starts moving right, so mirror image (images face left by default)
+        this.otherDirection = true;
+
         // Position at end of level
         this.xCoordinate = this.patrolStartX;
 
@@ -49,16 +52,17 @@ class Endboss extends MovableObject {
     update() {
         if (this.currentState === 'walking') {
             // Patrol back and forth
+            // Endboss images face LEFT by default
             if (this.movingRight) {
                 this.moveRight();
-                this.otherDirection = false; // Face right (default direction)
+                this.otherDirection = true; // Face right (mirror image since default is left)
                 // Turn around at patrol end
                 if (this.xCoordinate >= this.patrolEndX) {
                     this.movingRight = false;
                 }
             } else {
                 this.moveLeft();
-                this.otherDirection = true; // Face left (mirror image)
+                this.otherDirection = false; // Face left (default direction, no mirror)
                 // Turn around at patrol start
                 if (this.xCoordinate <= this.patrolStartX) {
                     this.movingRight = true;

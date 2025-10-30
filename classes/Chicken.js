@@ -20,8 +20,8 @@ class Chicken extends MovableObject {
         // Set initial image
         this.img = this.IMAGES_CACHE[IMAGES_CHICKEN_WALKING[0]];
 
-        // Chickens walk left, so mirror the image
-        this.otherDirection = true;
+        // Chickens walk left - images face left by default, so no mirroring needed
+        // otherDirection stays false (default)
 
         // Random starting position
         // X: Start somewhere in the level (beyond the visible area)
