@@ -6,6 +6,7 @@ class World {
     keyboard;
     character;
     level; // Current level data (backgrounds, enemies, coins, etc.)
+    cameraX = 0; // Camera X position (follows character)
     debugMode = true; // Enable debug helpers
 
     // FPS tracking
@@ -40,6 +41,24 @@ class World {
     update() {
         // Update character (movement, animations, physics)
         this.character.update();
+
+        // Update camera to follow character
+        this.updateCamera();
+    }
+
+    /**
+     * Update camera position to follow character
+     * Keeps character centered on screen (with small offset to show more ahead)
+     */
+    updateCamera() {
+        // Camera follows character, keeping them at x=100 on screen
+        // This means cameraX = character's world position - 100
+        this.cameraX = this.character.xCoordinate - 100;
+
+        // Don't let camera go below 0 (at start of level)
+        if (this.cameraX < 0) {
+            this.cameraX = 0;
+        }
     }
 
     /**
@@ -50,6 +69,12 @@ class World {
         // Clear the entire canvas (remove previous frame)
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+        // Save context state before camera translation
+        this.ctx.save();
+
+        // Apply camera translation (moves everything left/right to follow character)
+        this.ctx.translate(-this.cameraX, 0);
+
         // Draw background layers (furthest to closest)
         this.level.backgroundObjects.forEach(bg => {
             bg.draw(this.ctx);
@@ -58,9 +83,16 @@ class World {
         // Draw character
         this.character.draw(this.ctx);
 
-        // Draw debug helpers if enabled
+        // Draw hitboxes if debug mode
         if (this.debugMode) {
             this.character.drawFrame(this.ctx);
+        }
+
+        // Restore context (remove camera translation)
+        this.ctx.restore();
+
+        // Draw UI elements (fixed to screen, not affected by camera)
+        if (this.debugMode) {
             this.updateFPS();
             this.drawDebugInfo();
         }
