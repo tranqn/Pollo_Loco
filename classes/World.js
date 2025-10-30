@@ -5,6 +5,7 @@ class World {
     ctx;
     keyboard;
     character;
+    level; // Current level data (backgrounds, enemies, coins, etc.)
     debugMode = true; // Enable debug helpers
 
     // FPS tracking
@@ -23,6 +24,10 @@ class World {
      * Initialize game objects
      */
     initializeGame() {
+        // Load level data (backgrounds, enemies, coins, etc.)
+        this.level = level1;
+        console.log('Level loaded with', this.level.backgroundObjects.length, 'background objects');
+
         // Create player character and pass keyboard
         this.character = new Character(this.keyboard);
         console.log('Character created at:', this.character.xCoordinate, this.character.yCoordinate);
@@ -44,6 +49,11 @@ class World {
     draw() {
         // Clear the entire canvas (remove previous frame)
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw background layers (furthest to closest)
+        this.level.backgroundObjects.forEach(bg => {
+            bg.draw(this.ctx);
+        });
 
         // Draw character
         this.character.draw(this.ctx);
