@@ -57,13 +57,13 @@ class Character extends MovableObject {
      * Handle keyboard input for movement
      */
     handleMovement() {
-        // Move right
-        if (this.keyboard.RIGHT && this.xCoordinate < CANVAS_WIDTH - this.width) {
+        // Move right (can move to end of level)
+        if (this.keyboard.RIGHT && this.xCoordinate < LEVEL_END_X - this.width) {
             this.moveRight();
             this.lastActionTime = Date.now();
         }
 
-        // Move left
+        // Move left (can move to start of level)
         if (this.keyboard.LEFT && this.xCoordinate > 0) {
             this.moveLeft();
             this.lastActionTime = Date.now();
@@ -104,8 +104,39 @@ class Character extends MovableObject {
     /**
      * Start animation loop (separate from game loop)
      * Switches animation frames at set interval
+     * Uses different speeds for different animations
      */
     startAnimation() {
+        let lastState = '';
+
+        this.animationInterval = setInterval(() => {
+            // If state changed to jumping, switch to fast animation
+            if (lastState !== this.currentState && this.currentState === 'jumping') {
+                clearInterval(this.animationInterval);
+                this.startFastJumpAnimation();
+                return;
+            }
+            lastState = this.currentState;
+
+            // Play animation based on current state
+            if (this.currentState === 'walking') {
+                this.playAnimation(IMAGES_CHARACTER_WALKING);
+            } else if (this.currentState === 'jumping') {
+                this.playAnimation(IMAGES_CHARACTER_JUMPING);
+            } else if (this.currentState === 'longIdle') {
+                this.playAnimation(IMAGES_CHARACTER_LONG_IDLE);
+            } else {
+                // Default idle
+                this.playAnimation(IMAGES_CHARACTER_IDLE);
+            }
+        }, ANIMATION_SPEED_NORMAL);
+    }
+
+    /**
+     * Fast animation specifically for jumping
+     * Runs at 45ms to sync all 9 frames with jump duration
+     */
+    startFastJumpAnimation() {
         this.animationInterval = setInterval(() => {
             // Play animation based on current state
             if (this.currentState === 'walking') {
@@ -118,7 +149,13 @@ class Character extends MovableObject {
                 // Default idle
                 this.playAnimation(IMAGES_CHARACTER_IDLE);
             }
-        }, ANIMATION_SPEED_NORMAL); // 100ms between frames
+
+            // Switch back to normal speed when no longer jumping
+            if (this.currentState !== 'jumping') {
+                clearInterval(this.animationInterval);
+                this.startAnimation();
+            }
+        }, ANIMATION_SPEED_JUMP);
     }
 
     /**

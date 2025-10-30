@@ -22,6 +22,7 @@ const CANVAS_ASPECT_RATIO = CANVAS_WIDTH / CANVAS_HEIGHT;
 // ============================================
 const FPS = 60;
 const FRAME_INTERVAL = 1000 / FPS;
+const LEVEL_END_X = 2600; // End of the level (character stops here)
 
 // ============================================
 // PHYSICS CONSTANTS
@@ -59,8 +60,8 @@ const ENDBOSS_ALERT_DISTANCE = 500;
 // ============================================
 // COLLECTIBLE CONSTANTS
 // ============================================
-const COIN_WIDTH = 40;
-const COIN_HEIGHT = 40;
+const COIN_WIDTH = 60;  // Increased from 40 for better visibility
+const COIN_HEIGHT = 60; // Increased from 40 for better visibility
 const COIN_VALUE = 10;
 
 const BOTTLE_WIDTH = 60;
@@ -79,6 +80,11 @@ const THROWABLE_DAMAGE = 20;
 const ANIMATION_SPEED_FAST = 50;
 const ANIMATION_SPEED_NORMAL = 100;
 const ANIMATION_SPEED_SLOW = 200;
+
+// Jump animation timing - calculated to sync with jump physics
+// Jump duration = 2 * JUMP_FORCE / GRAVITY = 2 * 30 / 2.5 = 24 frames = 400ms at 60 FPS
+// Jump animation has 9 frames, so: 400ms / 9 ≈ 44ms per frame
+const ANIMATION_SPEED_JUMP = 45;
 
 // ============================================
 // STATUS BAR CONSTANTS
