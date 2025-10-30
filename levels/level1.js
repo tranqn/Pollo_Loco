@@ -1,8 +1,15 @@
 // Level 1 data
 
 const level1 = {
-    // Enemies (will be added in Phase 5)
-    enemies: [],
+    // Enemies - chickens that walk across the level
+    enemies: [
+        new Chicken(),
+        new Chicken(),
+        new Chicken(),
+        new Chicken(),
+        new Chicken(),
+        new Chicken()
+    ],
 
     // Clouds - floating decorative elements
     clouds: [

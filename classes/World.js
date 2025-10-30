@@ -47,6 +47,11 @@ class World {
             cloud.update();
         });
 
+        // Update enemies (movement and animations)
+        this.level.enemies.forEach(enemy => {
+            enemy.update();
+        });
+
         // Update camera to follow character
         this.updateCamera();
     }
@@ -90,11 +95,21 @@ class World {
             cloud.draw(this.ctx);
         });
 
+        // Draw enemies (on ground level, before character)
+        this.level.enemies.forEach(enemy => {
+            enemy.draw(this.ctx);
+        });
+
         // Draw character
         this.character.draw(this.ctx);
 
         // Draw hitboxes if debug mode
         if (this.debugMode) {
+            // Draw enemy hitboxes
+            this.level.enemies.forEach(enemy => {
+                enemy.drawFrame(this.ctx);
+            });
+            // Draw character hitbox
             this.character.drawFrame(this.ctx);
         }
 
