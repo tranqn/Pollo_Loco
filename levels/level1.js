@@ -1,14 +1,15 @@
 // Level 1 data
 
 const level1 = {
-    // Enemies - chickens that walk across the level
+    // Enemies - chickens and endboss
     enemies: [
         new Chicken(),
         new Chicken(),
         new Chicken(),
         new Chicken(),
         new Chicken(),
-        new Chicken()
+        new Chicken(),
+        new Endboss()  // Final boss at end of level
     ],
 
     // Clouds - floating decorative elements
