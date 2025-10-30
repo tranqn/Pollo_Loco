@@ -105,6 +105,11 @@ class World {
             coin.draw(this.ctx);
         });
 
+        // Draw bottles (collectibles on ground)
+        this.level.bottles.forEach(bottle => {
+            bottle.draw(this.ctx);
+        });
+
         // Draw character
         this.character.draw(this.ctx);
 

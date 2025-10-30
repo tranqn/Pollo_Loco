@@ -60,7 +60,14 @@ const level1 = {
         new Coin(1800, 200)  // Floating
     ],
 
-    // Bottles (will be added in Phase 5)
-    bottles: []
+    // Bottles - collectibles on the ground (can be thrown later)
+    bottles: [
+        new Bottle(500),
+        new Bottle(700),
+        new Bottle(900),
+        new Bottle(1300),
+        new Bottle(1700),
+        new Bottle(1900)
+    ]
 };
 
