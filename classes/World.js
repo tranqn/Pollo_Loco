@@ -3,6 +3,7 @@
 class World {
     canvas;
     ctx;
+    keyboard;
     character;
     debugMode = true; // Enable debug helpers
 
@@ -11,9 +12,10 @@ class World {
     frameCount = 0;
     lastFpsUpdate = Date.now();
 
-    constructor(canvas) {
+    constructor(canvas, keyboard) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d'); // Get 2D drawing context
+        this.keyboard = keyboard;
         this.initializeGame();
     }
 
@@ -21,9 +23,18 @@ class World {
      * Initialize game objects
      */
     initializeGame() {
-        // Create player character
-        this.character = new Character();
+        // Create player character and pass keyboard
+        this.character = new Character(this.keyboard);
         console.log('Character created at:', this.character.xCoordinate, this.character.yCoordinate);
+    }
+
+    /**
+     * Update game state - called every frame
+     * Updates positions, physics, animations
+     */
+    update() {
+        // Update character (movement, animations, physics)
+        this.character.update();
     }
 
     /**

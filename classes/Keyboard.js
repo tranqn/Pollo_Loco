@@ -2,7 +2,7 @@
 
 class Keyboard {
     LEFT = false;
-    RIGHT = false
+    RIGHT = false;
     SPACE = false;
-    V = false;
+    D = false;
 }

@@ -4,6 +4,7 @@
 let canvas;
 let world;
 let gameInterval;
+let keyboard;
 
 /**
  * Initialize the game
@@ -27,11 +28,52 @@ function init() {
 
     console.log('Canvas size:', canvas.width, 'x', canvas.height);
 
+    // Initialize keyboard
+    keyboard = new Keyboard();
+    initKeyboardListeners();
+
     // Create world (this creates the character and all game objects)
-    world = new World(canvas);
+    world = new World(canvas, keyboard);
 
     // Start game loop
     startGameLoop();
+}
+
+/**
+ * Initialize keyboard event listeners
+ */
+function initKeyboardListeners() {
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            keyboard.LEFT = true;
+        }
+        if (e.key === 'ArrowRight') {
+            keyboard.RIGHT = true;
+        }
+        if (e.key === ' ') {
+            keyboard.SPACE = true;
+        }
+        if (e.key === 'd' || e.key === 'D') {
+            keyboard.D = true;
+        }
+    });
+
+    window.addEventListener('keyup', (e) => {
+        if (e.key === 'ArrowLeft') {
+            keyboard.LEFT = false;
+        }
+        if (e.key === 'ArrowRight') {
+            keyboard.RIGHT = false;
+        }
+        if (e.key === ' ') {
+            keyboard.SPACE = false;
+        }
+        if (e.key === 'd' || e.key === 'D') {
+            keyboard.D = false;
+        }
+    });
+
+    console.log('Keyboard listeners initialized');
 }
 
 /**
@@ -42,6 +84,9 @@ function startGameLoop() {
     console.log('Starting game loop...');
 
     gameInterval = setInterval(() => {
+        // Update game state (movement, physics, collisions)
+        world.update();
+
         // Draw everything on the canvas
         world.draw();
     }, FRAME_INTERVAL); // From constants.js: 1000/60 ≈ 16.67ms
