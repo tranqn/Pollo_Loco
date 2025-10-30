@@ -60,12 +60,14 @@ class Character extends MovableObject {
         // Move right (can move to end of level)
         if (this.keyboard.RIGHT && this.xCoordinate < LEVEL_END_X - this.width) {
             this.moveRight();
+            this.otherDirection = false; // Face right (default direction)
             this.lastActionTime = Date.now();
         }
 
         // Move left (can move to start of level)
         if (this.keyboard.LEFT && this.xCoordinate > 0) {
             this.moveLeft();
+            this.otherDirection = true; // Face left (mirror image)
             this.lastActionTime = Date.now();
         }
 

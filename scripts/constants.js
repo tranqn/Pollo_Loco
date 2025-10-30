@@ -25,6 +25,7 @@ const FRAME_INTERVAL = 1000 / FPS;
 // Level boundaries based on background tiles
 // Last background starts at 719*2=1438, width is 720, so ends at 1438+720=2158
 const LEVEL_END_X = 2158; // End of the level (where last background ends)
+const CAMERA_MAX_X = LEVEL_END_X - CANVAS_WIDTH; // 2158 - 720 = 1438 (max camera position)
 
 // ============================================
 // PHYSICS CONSTANTS

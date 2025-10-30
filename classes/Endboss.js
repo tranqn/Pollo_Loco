@@ -51,12 +51,14 @@ class Endboss extends MovableObject {
             // Patrol back and forth
             if (this.movingRight) {
                 this.moveRight();
+                this.otherDirection = false; // Face right (default direction)
                 // Turn around at patrol end
                 if (this.xCoordinate >= this.patrolEndX) {
                     this.movingRight = false;
                 }
             } else {
                 this.moveLeft();
+                this.otherDirection = true; // Face left (mirror image)
                 // Turn around at patrol start
                 if (this.xCoordinate <= this.patrolStartX) {
                     this.movingRight = true;

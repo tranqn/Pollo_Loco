@@ -59,15 +59,23 @@ class World {
     /**
      * Update camera position to follow character
      * Keeps character centered on screen (with small offset to show more ahead)
+     * Camera is constrained to not show areas outside the visible backgrounds
      */
     updateCamera() {
         // Camera follows character, keeping them at x=100 on screen
         // This means cameraX = character's world position - 100
         this.cameraX = this.character.xCoordinate - 100;
 
-        // Don't let camera go below 0 (at start of level)
+        // Constrain camera to level boundaries (don't show outside backgrounds)
+        // Min: 0 (at start of level)
         if (this.cameraX < 0) {
             this.cameraX = 0;
+        }
+
+        // Max: CAMERA_MAX_X (at end of level)
+        // When camera is at max, right edge of screen aligns with level end
+        if (this.cameraX > CAMERA_MAX_X) {
+            this.cameraX = CAMERA_MAX_X;
         }
     }
 

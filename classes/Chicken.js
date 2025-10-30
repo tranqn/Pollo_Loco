@@ -20,6 +20,9 @@ class Chicken extends MovableObject {
         // Set initial image
         this.img = this.IMAGES_CACHE[IMAGES_CHICKEN_WALKING[0]];
 
+        // Chickens walk left, so mirror the image
+        this.otherDirection = true;
+
         // Random starting position
         // X: Start somewhere in the level (beyond the visible area)
         this.xCoordinate = 400 + Math.random() * 1500; // Spread across level

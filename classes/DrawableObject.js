@@ -8,7 +8,8 @@ class DrawableObject {
     IMAGES_CACHE = {};
     currentImageIndex = 0;
     intervals = []; // To track setInterval IDs for cleanup
-    
+    otherDirection = false; // When true, mirror the image horizontally
+
     constructor(xCoordinate, yCoordinate, width, height) {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
@@ -18,6 +19,7 @@ class DrawableObject {
 
     /**
      * Draws the object on the canvas
+     * Supports horizontal mirroring when otherDirection is true
      * @param {CanvasRenderingContext2D} ctx - The canvas 2D rendering context
      */
     draw(ctx)
@@ -28,14 +30,29 @@ class DrawableObject {
             return;
         }
 
-        // Draw the image at the object's position
-        ctx.drawImage(
-            this.img,           // The image to draw
-            this.xCoordinate,   // X position on canvas
-            this.yCoordinate,   // Y position on canvas
-            this.width,         // Width to draw
-            this.height         // Height to draw
-        );
+        // If otherDirection, mirror the image horizontally
+        if (this.otherDirection) {
+            ctx.save(); // Save current state
+            ctx.translate(this.width, 0); // Move origin to right edge
+            ctx.scale(-1, 1); // Flip horizontally
+            ctx.drawImage(
+                this.img,
+                -this.xCoordinate,  // Negative because of flip
+                this.yCoordinate,
+                this.width,
+                this.height
+            );
+            ctx.restore(); // Restore original state
+        } else {
+            // Draw normally
+            ctx.drawImage(
+                this.img,           // The image to draw
+                this.xCoordinate,   // X position on canvas
+                this.yCoordinate,   // Y position on canvas
+                this.width,         // Width to draw
+                this.height         // Height to draw
+            );
+        }
     }
 
     /**
