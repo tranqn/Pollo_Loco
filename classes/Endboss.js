@@ -11,9 +11,9 @@ class Endboss extends MovableObject {
     currentState = 'walking'; // walking, alert, attack, hurt, dead
     animationInterval;
 
-    // Patrol behavior
-    patrolStartX = 2200;  // Start of patrol area
-    patrolEndX = 2500;    // End of patrol area
+    // Patrol behavior - stays within last background section (1438 to 2158)
+    patrolStartX = 1600;  // Start of patrol area (within last background)
+    patrolEndX = 1850;    // End of patrol area (within last background)
     movingRight = true;   // Current direction
 
     /**
