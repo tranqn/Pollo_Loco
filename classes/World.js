@@ -42,6 +42,11 @@ class World {
         // Update character (movement, animations, physics)
         this.character.update();
 
+        // Update clouds (floating animation)
+        this.level.clouds.forEach(cloud => {
+            cloud.update();
+        });
+
         // Update camera to follow character
         this.updateCamera();
     }
@@ -78,6 +83,11 @@ class World {
         // Draw background layers (furthest to closest)
         this.level.backgroundObjects.forEach(bg => {
             bg.draw(this.ctx);
+        });
+
+        // Draw clouds (in the sky, behind character)
+        this.level.clouds.forEach(cloud => {
+            cloud.draw(this.ctx);
         });
 
         // Draw character

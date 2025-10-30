@@ -274,6 +274,9 @@ const IMAGES_BACKGROUND_CLOUDS = [
 
 const IMAGE_BACKGROUND_AIR = 'img/5_background/layers/air.png';
 
+// Moving cloud object (not background layer)
+const IMAGE_CLOUD = 'img/5_background/layers/4_clouds/1.png';
+
 // ============================================
 // IMAGE PATHS - STATUS BARS (GREEN THEME)
 // ============================================

@@ -4,8 +4,14 @@ const level1 = {
     // Enemies (will be added in Phase 5)
     enemies: [],
 
-    // Clouds (will be added in Phase 5)
-    clouds: [],
+    // Clouds - floating decorative elements
+    clouds: [
+        new Cloud(),
+        new Cloud(),
+        new Cloud(),
+        new Cloud(),
+        new Cloud()
+    ],
 
     // Background layers - tiled across the level
     // Each position (x-coordinate) has all 4 layers stacked for depth
