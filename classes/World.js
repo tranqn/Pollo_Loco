@@ -9,6 +9,15 @@ class World {
     cameraX = 0; // Camera X position (follows character)
     debugMode = true; // Enable debug helpers
 
+    // Status bars (fixed to screen, not affected by camera)
+    healthBar;
+    coinBar;
+    bottleBar;
+
+    // Collectible counters
+    coinsCollected = 0;
+    bottlesCollected = 0;
+
     // FPS tracking
     fps = 0;
     frameCount = 0;
@@ -32,6 +41,15 @@ class World {
         // Create player character and pass keyboard
         this.character = new Character(this.keyboard);
         console.log('Character created at:', this.character.xCoordinate, this.character.yCoordinate);
+
+        // Create status bars (positioned at top of screen)
+        this.healthBar = new StatusBar(STATUSBAR_PADDING, STATUSBAR_PADDING, IMAGES_STATUSBAR_HEALTH);
+        this.coinBar = new StatusBar(STATUSBAR_PADDING, STATUSBAR_PADDING + STATUSBAR_HEIGHT + 10, IMAGES_STATUSBAR_COIN);
+        this.bottleBar = new StatusBar(STATUSBAR_PADDING, STATUSBAR_PADDING + (STATUSBAR_HEIGHT + 10) * 2, IMAGES_STATUSBAR_BOTTLE);
+
+        // Set coin and bottle bars to 0% (player starts with none)
+        this.coinBar.setPercentage(0);
+        this.bottleBar.setPercentage(0);
     }
 
     /**
@@ -91,6 +109,8 @@ class World {
                 } else {
                     // Hit from side or below - take damage
                     this.character.hit(20);
+                    // Update health bar
+                    this.healthBar.setPercentage(this.character.health);
                 }
             }
         });
@@ -104,7 +124,13 @@ class World {
             if (this.character.isColliding(coin)) {
                 // Remove coin from array
                 this.level.coins.splice(index, 1);
-                console.log('Coin collected! Coins remaining:', this.level.coins.length);
+
+                // Increment counter and update status bar
+                this.coinsCollected++;
+                const coinPercentage = Math.min(100, (this.coinsCollected / 10) * 100); // 10 coins = 100%
+                this.coinBar.setPercentage(coinPercentage);
+
+                console.log('Coin collected! Total:', this.coinsCollected);
             }
         });
     }
@@ -117,7 +143,13 @@ class World {
             if (this.character.isColliding(bottle)) {
                 // Remove bottle from array
                 this.level.bottles.splice(index, 1);
-                console.log('Bottle collected! Bottles remaining:', this.level.bottles.length);
+
+                // Increment counter and update status bar
+                this.bottlesCollected++;
+                const bottlePercentage = Math.min(100, (this.bottlesCollected / 5) * 100); // 5 bottles = 100%
+                this.bottleBar.setPercentage(bottlePercentage);
+
+                console.log('Bottle collected! Total:', this.bottlesCollected);
             }
         });
     }
@@ -199,6 +231,11 @@ class World {
 
         // Restore context (remove camera translation)
         this.ctx.restore();
+
+        // Draw status bars (fixed to screen, not affected by camera)
+        this.healthBar.draw(this.ctx);
+        this.coinBar.draw(this.ctx);
+        this.bottleBar.draw(this.ctx);
 
         // Draw UI elements (fixed to screen, not affected by camera)
         if (this.debugMode) {
