@@ -18,6 +18,10 @@ class World {
     coinsCollected = 0;
     bottlesCollected = 0;
 
+    // Throwable objects
+    thrownBottles = [];
+    lastThrowTime = 0; // Track last throw time (cooldown)
+
     // FPS tracking
     fps = 0;
     frameCount = 0;
@@ -60,6 +64,9 @@ class World {
         // Update character (movement, animations, physics)
         this.character.update();
 
+        // Handle bottle throwing
+        this.handleThrow();
+
         // Update clouds (floating animation)
         this.level.clouds.forEach(cloud => {
             cloud.update();
@@ -70,11 +77,54 @@ class World {
             enemy.update();
         });
 
+        // Update thrown bottles
+        this.updateThrownBottles();
+
         // Check all collisions
         this.checkCollisions();
 
         // Update camera to follow character
         this.updateCamera();
+    }
+
+    /**
+     * Handle bottle throwing when 'D' key is pressed
+     */
+    handleThrow() {
+        const now = Date.now();
+        const throwCooldown = 500; // 500ms between throws
+
+        // Check if player pressed 'D', has bottles, and cooldown expired
+        if (this.keyboard.D && this.bottlesCollected > 0 && now - this.lastThrowTime > throwCooldown) {
+            // Create throwable bottle at character position
+            const throwX = this.character.xCoordinate + (this.character.otherDirection ? 0 : this.character.width);
+            const throwY = this.character.yCoordinate + 50; // Throw from chest height
+            const direction = this.character.otherDirection ? -1 : 1; // Throw in facing direction
+
+            const bottle = new ThrowableObject(throwX, throwY, direction);
+            this.thrownBottles.push(bottle);
+
+            // Decrease bottle count and update status bar
+            this.bottlesCollected--;
+            const bottlePercentage = Math.min(100, (this.bottlesCollected / 5) * 100);
+            this.bottleBar.setPercentage(bottlePercentage);
+
+            this.lastThrowTime = now;
+            console.log('Bottle thrown! Bottles remaining:', this.bottlesCollected);
+        }
+    }
+
+    /**
+     * Update all thrown bottles (physics and animations)
+     */
+    updateThrownBottles() {
+        // Update each bottle
+        this.thrownBottles.forEach(bottle => {
+            bottle.update();
+        });
+
+        // Remove bottles marked for removal (after splash animation)
+        this.thrownBottles = this.thrownBottles.filter(bottle => !bottle.markForRemoval);
     }
 
     /**
@@ -84,6 +134,7 @@ class World {
         this.checkCoinCollisions();
         this.checkBottleCollisions();
         this.checkEnemyCollisions();
+        this.checkBottleEnemyCollisions();
     }
 
     /**
@@ -113,6 +164,26 @@ class World {
                     this.healthBar.setPercentage(this.character.health);
                 }
             }
+        });
+    }
+
+    /**
+     * Check and handle bottle-enemy collisions
+     * Thrown bottles damage and kill enemies
+     */
+    checkBottleEnemyCollisions() {
+        this.thrownBottles.forEach(bottle => {
+            // Skip if bottle is already splashing
+            if (bottle.isSplashing) return;
+
+            this.level.enemies.forEach((enemy, enemyIndex) => {
+                if (bottle.isColliding(enemy)) {
+                    // Bottle hit enemy - splash and remove enemy
+                    bottle.splash();
+                    this.level.enemies.splice(enemyIndex, 1);
+                    console.log('Enemy hit by bottle! Enemies remaining:', this.level.enemies.length);
+                }
+            });
         });
     }
 
@@ -213,6 +284,11 @@ class World {
 
         // Draw bottles (collectibles on ground)
         this.level.bottles.forEach(bottle => {
+            bottle.draw(this.ctx);
+        });
+
+        // Draw thrown bottles (flying projectiles)
+        this.thrownBottles.forEach(bottle => {
             bottle.draw(this.ctx);
         });
 
