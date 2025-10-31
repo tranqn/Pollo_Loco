@@ -77,6 +77,32 @@ function initKeyboardListeners() {
 }
 
 /**
+ * Restart the game
+ * Reloads the page to reset all game state
+ */
+function restartGame() {
+    console.log('Restarting game...');
+    location.reload(); // Simple restart - reload the page
+}
+
+// Initialize restart buttons when page loads
+window.addEventListener('DOMContentLoaded', () => {
+    // Game over restart button
+    const restartBtn = document.getElementById('restart-btn');
+    if (restartBtn) {
+        restartBtn.addEventListener('click', restartGame);
+    }
+
+    // Win screen restart button
+    const winRestartBtn = document.getElementById('win-restart-btn');
+    if (winRestartBtn) {
+        winRestartBtn.addEventListener('click', restartGame);
+    }
+
+    console.log('Restart buttons initialized');
+});
+
+/**
  * Start the game loop - runs 60 times per second
  * For now, we only draw (no movement)
  */

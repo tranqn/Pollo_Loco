@@ -22,6 +22,9 @@ class World {
     thrownBottles = [];
     lastThrowTime = 0; // Track last throw time (cooldown)
 
+    // Game state
+    isGameOver = false;
+
     // FPS tracking
     fps = 0;
     frameCount = 0;
@@ -61,6 +64,12 @@ class World {
      * Updates positions, physics, animations
      */
     update() {
+        // Check if character died
+        if (this.character.isDead) {
+            this.gameOver();
+            return; // Stop updating
+        }
+
         // Update character (movement, animations, physics)
         this.character.update();
 
@@ -85,6 +94,30 @@ class World {
 
         // Update camera to follow character
         this.updateCamera();
+    }
+
+    /**
+     * Handle game over - stop game and show game over screen
+     */
+    gameOver() {
+        // Prevent multiple game over triggers
+        if (this.isGameOver) return;
+        this.isGameOver = true;
+
+        console.log('Game Over!');
+
+        // Stop the game loop (defined in script.js)
+        if (typeof stopGameLoop === 'function') {
+            stopGameLoop();
+        }
+
+        // Show game over screen after a short delay (let death animation play)
+        setTimeout(() => {
+            const gameOverScreen = document.getElementById('gameover-screen');
+            if (gameOverScreen) {
+                gameOverScreen.classList.remove('hidden');
+            }
+        }, 1000); // 1 second delay
     }
 
     /**
