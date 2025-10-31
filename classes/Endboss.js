@@ -8,6 +8,8 @@ class Endboss extends MovableObject {
     IMAGES_DEAD = [];
 
     health = ENDBOSS_MAX_HEALTH;
+    lastHitTime = 0; // Track last time hit
+    isDead = false;
     currentState = 'walking'; // walking, alert, attack, hurt, dead
     animationInterval;
 
@@ -50,6 +52,10 @@ class Endboss extends MovableObject {
      * Update endboss state (called every frame)
      */
     update() {
+        // Update state based on health
+        this.updateState();
+
+        // Only move if alive and walking
         if (this.currentState === 'walking') {
             // Patrol back and forth
             // Endboss images face LEFT by default
@@ -72,14 +78,67 @@ class Endboss extends MovableObject {
     }
 
     /**
-     * Start walking animation
+     * Update endboss state based on health
+     */
+    updateState() {
+        // Dead state has highest priority
+        if (this.isDead) {
+            this.currentState = 'dead';
+        }
+        // Hurt state (recently damaged)
+        else if (this.isHurt()) {
+            this.currentState = 'hurt';
+        } else {
+            this.currentState = 'walking';
+        }
+    }
+
+    /**
+     * Check if endboss is currently hurt (within damage cooldown)
+     * @returns {boolean}
+     */
+    isHurt() {
+        const timeSinceHit = Date.now() - this.lastHitTime;
+        return timeSinceHit < 1000; // Hurt animation lasts 1 second
+    }
+
+    /**
+     * Endboss takes damage from bottle
+     * @param {number} damage - Amount of damage to take
+     */
+    hit(damage = THROWABLE_DAMAGE) {
+        if (this.isDead) return; // Can't damage dead boss
+
+        // Only take damage if not recently hit (invincibility frames)
+        if (!this.isHurt()) {
+            this.health -= damage;
+            this.lastHitTime = Date.now();
+
+            console.log(`Endboss hit! Health: ${this.health}`);
+
+            // Check if endboss died
+            if (this.health <= 0) {
+                this.health = 0;
+                this.isDead = true;
+                console.log('Endboss defeated!');
+            }
+        }
+    }
+
+    /**
+     * Start animation loop
      */
     startAnimation() {
         this.animationInterval = setInterval(() => {
-            if (this.currentState === 'walking') {
+            // Play animation based on current state
+            if (this.currentState === 'dead') {
+                this.playAnimation(IMAGES_ENDBOSS_DEAD);
+            } else if (this.currentState === 'hurt') {
+                this.playAnimation(IMAGES_ENDBOSS_HURT);
+            } else if (this.currentState === 'walking') {
                 this.playAnimation(IMAGES_ENDBOSS_WALKING);
             }
-            // Other states can be added here later (alert, attack, hurt, dead)
+            // Other states (alert, attack) can be added later
         }, ANIMATION_SPEED_NORMAL); // Same speed as other animations
     }
 

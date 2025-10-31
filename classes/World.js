@@ -70,6 +70,13 @@ class World {
             return; // Stop updating
         }
 
+        // Check if player won (defeated endboss)
+        const endboss = this.getEndboss();
+        if (endboss && endboss.isDead) {
+            this.victory();
+            return; // Stop updating
+        }
+
         // Update character (movement, animations, physics)
         this.character.update();
 
@@ -97,6 +104,14 @@ class World {
     }
 
     /**
+     * Get the endboss from the enemies array
+     * @returns {Endboss|null} - The endboss or null if not found
+     */
+    getEndboss() {
+        return this.level.enemies.find(enemy => enemy instanceof Endboss);
+    }
+
+    /**
      * Handle game over - stop game and show game over screen
      */
     gameOver() {
@@ -118,6 +133,30 @@ class World {
                 gameOverScreen.classList.remove('hidden');
             }
         }, 1000); // 1 second delay
+    }
+
+    /**
+     * Handle victory - stop game and show victory screen
+     */
+    victory() {
+        // Prevent multiple victory triggers
+        if (this.isGameOver) return; // Reuse flag to prevent multiple end screens
+        this.isGameOver = true;
+
+        console.log('Victory! You defeated the Endboss!');
+
+        // Stop the game loop (defined in script.js)
+        if (typeof stopGameLoop === 'function') {
+            stopGameLoop();
+        }
+
+        // Show victory screen after a short delay (let death animation play)
+        setTimeout(() => {
+            const winScreen = document.getElementById('win-screen');
+            if (winScreen) {
+                winScreen.classList.remove('hidden');
+            }
+        }, 1500); // 1.5 second delay
     }
 
     /**
@@ -211,10 +250,18 @@ class World {
 
             this.level.enemies.forEach((enemy, enemyIndex) => {
                 if (bottle.isColliding(enemy)) {
-                    // Bottle hit enemy - splash and remove enemy
+                    // Bottle hit enemy - splash
                     bottle.splash();
-                    this.level.enemies.splice(enemyIndex, 1);
-                    console.log('Enemy hit by bottle! Enemies remaining:', this.level.enemies.length);
+
+                    // Check if enemy is Endboss (has hit method)
+                    if (enemy instanceof Endboss) {
+                        // Damage the boss (doesn't die instantly)
+                        enemy.hit(THROWABLE_DAMAGE);
+                    } else {
+                        // Regular enemy (Chicken) - dies instantly
+                        this.level.enemies.splice(enemyIndex, 1);
+                        console.log('Enemy defeated! Enemies remaining:', this.level.enemies.length);
+                    }
                 }
             });
         });
