@@ -170,7 +170,7 @@ class World {
         if (this.keyboard.D && this.bottlesCollected > 0 && now - this.lastThrowTime > throwCooldown) {
             // Create throwable bottle at character position
             const throwX = this.character.xCoordinate + (this.character.otherDirection ? 0 : this.character.width);
-            const throwY = this.character.yCoordinate + 50; // Throw from chest height
+            const throwY = this.character.yCoordinate - 100; // Throw from chest height (above ground)
             const direction = this.character.otherDirection ? -1 : 1; // Throw in facing direction
 
             const bottle = new ThrowableObject(throwX, throwY, direction);
