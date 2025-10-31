@@ -70,11 +70,28 @@ class World {
 
     /**
      * Check and handle enemy collisions
+     * Player can defeat enemies by jumping on them from above
+     * Or take damage when hitting them from the side
      */
     checkEnemyCollisions() {
-        this.level.enemies.forEach(enemy => {
+        this.level.enemies.forEach((enemy, index) => {
             if (this.character.isColliding(enemy)) {
-                this.character.hit(20); // Take 20 damage
+                // Check if character is falling onto enemy from above
+                // Character must be: falling (positive yVelocity) AND above enemy center
+                const isFalling = this.character.yVelocity > 0;
+                const isAboveEnemy = this.character.yCoordinate < enemy.yCoordinate + enemy.height / 2;
+
+                if (isFalling && isAboveEnemy) {
+                    // Success! Defeat the enemy
+                    this.level.enemies.splice(index, 1);
+                    console.log('Enemy defeated! Enemies remaining:', this.level.enemies.length);
+
+                    // Make character bounce slightly
+                    this.character.yVelocity = -ENEMY_BOUNCE_FORCE;
+                } else {
+                    // Hit from side or below - take damage
+                    this.character.hit(20);
+                }
             }
         });
     }

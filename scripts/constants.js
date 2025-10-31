@@ -32,6 +32,7 @@ const CAMERA_MAX_X = LEVEL_END_X - CANVAS_WIDTH; // 2158 - 720 = 1438 (max camer
 // ============================================
 const GRAVITY = 2.5;
 const GROUND_LEVEL = 180; // Y-position where characters stand
+const ENEMY_BOUNCE_FORCE = 15; // Bounce when jumping on enemy (half of jump force)
 
 // ============================================
 // CHARACTER CONSTANTS
