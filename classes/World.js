@@ -52,8 +52,45 @@ class World {
             enemy.update();
         });
 
+        // Check all collisions
+        this.checkCollisions();
+
         // Update camera to follow character
         this.updateCamera();
+    }
+
+    /**
+     * Check all collisions between character and game objects
+     */
+    checkCollisions() {
+        this.checkCoinCollisions();
+        this.checkBottleCollisions();
+    }
+
+    /**
+     * Check and handle coin collisions
+     */
+    checkCoinCollisions() {
+        this.level.coins.forEach((coin, index) => {
+            if (this.character.isColliding(coin)) {
+                // Remove coin from array
+                this.level.coins.splice(index, 1);
+                console.log('Coin collected! Coins remaining:', this.level.coins.length);
+            }
+        });
+    }
+
+    /**
+     * Check and handle bottle collisions
+     */
+    checkBottleCollisions() {
+        this.level.bottles.forEach((bottle, index) => {
+            if (this.character.isColliding(bottle)) {
+                // Remove bottle from array
+                this.level.bottles.splice(index, 1);
+                console.log('Bottle collected! Bottles remaining:', this.level.bottles.length);
+            }
+        });
     }
 
     /**
