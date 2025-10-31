@@ -9,10 +9,15 @@ class Character extends MovableObject {
     IMAGES_DEAD = [];
 
     keyboard;
-    currentState = 'idle'; // idle, walking, jumping
+    currentState = 'idle'; // idle, walking, jumping, hurt, dead
     lastActionTime = Date.now();
     animationInterval;
     spaceWasPressed = false; // Track if space was pressed (for jump release detection)
+
+    // Health system
+    health = CHARACTER_MAX_HEALTH; // 100 HP
+    lastHitTime = 0; // Track last time character was hit
+    isDead = false;
 
     constructor(keyboard) {
         super(CHARACTER_WIDTH, CHARACTER_HEIGHT, CHARACTER_SPEED);
@@ -86,10 +91,19 @@ class Character extends MovableObject {
     }
 
     /**
-     * Update character state based on actions
+     * Update character state based on actions and health
      */
     updateState() {
-        if (this.isJumping) {
+        // Dead state has highest priority
+        if (this.isDead) {
+            this.currentState = 'dead';
+        }
+        // Hurt state (recently damaged)
+        else if (this.isHurt()) {
+            this.currentState = 'hurt';
+        }
+        // Movement states
+        else if (this.isJumping) {
             this.currentState = 'jumping';
         } else if (this.keyboard.LEFT || this.keyboard.RIGHT) {
             this.currentState = 'walking';
@@ -99,6 +113,38 @@ class Character extends MovableObject {
                 this.currentState = 'longIdle';
             } else {
                 this.currentState = 'idle';
+            }
+        }
+    }
+
+    /**
+     * Check if character is currently hurt (within damage cooldown)
+     * @returns {boolean}
+     */
+    isHurt() {
+        const timeSinceHit = Date.now() - this.lastHitTime;
+        return timeSinceHit < 1000; // Hurt animation lasts 1 second
+    }
+
+    /**
+     * Character takes damage from enemy
+     * @param {number} damage - Amount of damage to take
+     */
+    hit(damage = 20) {
+        if (this.isDead) return; // Can't damage dead character
+
+        // Only take damage if not recently hit (invincibility frames)
+        if (!this.isHurt()) {
+            this.health -= damage;
+            this.lastHitTime = Date.now();
+
+            console.log(`Character hit! Health: ${this.health}`);
+
+            // Check if character died
+            if (this.health <= 0) {
+                this.health = 0;
+                this.isDead = true;
+                console.log('Character died!');
             }
         }
     }
@@ -121,7 +167,11 @@ class Character extends MovableObject {
             lastState = this.currentState;
 
             // Play animation based on current state
-            if (this.currentState === 'walking') {
+            if (this.currentState === 'dead') {
+                this.playAnimation(IMAGES_CHARACTER_DEAD);
+            } else if (this.currentState === 'hurt') {
+                this.playAnimation(IMAGES_CHARACTER_HURT);
+            } else if (this.currentState === 'walking') {
                 this.playAnimation(IMAGES_CHARACTER_WALKING);
             } else if (this.currentState === 'jumping') {
                 this.playAnimation(IMAGES_CHARACTER_JUMPING);
@@ -141,7 +191,11 @@ class Character extends MovableObject {
     startFastJumpAnimation() {
         this.animationInterval = setInterval(() => {
             // Play animation based on current state
-            if (this.currentState === 'walking') {
+            if (this.currentState === 'dead') {
+                this.playAnimation(IMAGES_CHARACTER_DEAD);
+            } else if (this.currentState === 'hurt') {
+                this.playAnimation(IMAGES_CHARACTER_HURT);
+            } else if (this.currentState === 'walking') {
                 this.playAnimation(IMAGES_CHARACTER_WALKING);
             } else if (this.currentState === 'jumping') {
                 this.playAnimation(IMAGES_CHARACTER_JUMPING);

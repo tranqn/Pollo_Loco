@@ -65,6 +65,18 @@ class World {
     checkCollisions() {
         this.checkCoinCollisions();
         this.checkBottleCollisions();
+        this.checkEnemyCollisions();
+    }
+
+    /**
+     * Check and handle enemy collisions
+     */
+    checkEnemyCollisions() {
+        this.level.enemies.forEach(enemy => {
+            if (this.character.isColliding(enemy)) {
+                this.character.hit(20); // Take 20 damage
+            }
+        });
     }
 
     /**
@@ -201,7 +213,7 @@ class World {
 
         // Draw semi-transparent background for debug info
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        this.ctx.fillRect(5, 5, 280, 90);
+        this.ctx.fillRect(5, 5, 280, 110);
 
         // Draw FPS
         this.ctx.fillStyle = '#00ff00'; // Green
@@ -217,11 +229,17 @@ class World {
             50
         );
 
+        // Draw health
+        const healthColor = this.character.health > 50 ? '#00ff00' : this.character.health > 20 ? 'orange' : 'red';
+        this.ctx.fillStyle = healthColor;
+        this.ctx.font = 'bold 16px Arial';
+        this.ctx.fillText(`Health: ${this.character.health} HP`, 10, 70);
+
         // Draw instructions
         this.ctx.fillStyle = 'white';
         this.ctx.font = '14px Arial';
-        this.ctx.fillText('Debug Mode: ON', 10, 70);
-        this.ctx.fillText('Red box = hitbox', 10, 88);
+        this.ctx.fillText('Debug Mode: ON', 10, 90);
+        this.ctx.fillText('Red box = hitbox', 10, 105);
 
         this.ctx.restore();
     }
