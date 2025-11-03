@@ -42,7 +42,7 @@ const CHARACTER_HEIGHT = 280;
 const CHARACTER_SPEED = 5;
 const CHARACTER_JUMP_FORCE = 30;
 const CHARACTER_MAX_HEALTH = 100;
-const CHARACTER_IDLE_TIMEOUT = 5000; // Time before long idle animation (5 seconds)
+const CHARACTER_IDLE_TIMEOUT = 15000; // Time before long idle animation (15 seconds)
 
 // ============================================
 // ENEMY CONSTANTS

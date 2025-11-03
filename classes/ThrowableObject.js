@@ -43,7 +43,7 @@ class ThrowableObject extends MovableObject {
      */
     throw() {
         // Initial upward velocity (creates arc)
-        this.yVelocity = -15;
+        this.yVelocity = -25;
 
         // Set horizontal movement based on direction
         // (handled in update method)
@@ -68,21 +68,24 @@ class ThrowableObject extends MovableObject {
         this.yVelocity += THROWABLE_GRAVITY;
         this.yCoordinate += this.yVelocity;
 
-        // Check if bottle hit the ground
-        if (this.yCoordinate >= GROUND_LEVEL) {
+        // Check if bottle hit the ground (bottles rest at same level as collectible bottles)
+        const bottleGroundLevel = GROUND_LEVEL + (CHARACTER_HEIGHT - BOTTLE_HEIGHT);
+        if (this.yCoordinate >= bottleGroundLevel) {
+            // Position at ground level before splashing
+            this.yCoordinate = bottleGroundLevel;
             this.splash();
         }
     }
 
     /**
      * Trigger splash animation (when hitting ground or enemy)
+     * Splashes at current position (don't change coordinates)
      */
     splash() {
         if (!this.isSplashing) {
             this.isSplashing = true;
             this.hasHit = true;
             this.splashStartTime = Date.now();
-            this.yCoordinate = GROUND_LEVEL; // Ensure bottle is on ground
 
             // Stop rotation animation and start splash animation
             clearInterval(this.animationInterval);
