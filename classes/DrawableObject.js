@@ -26,7 +26,6 @@ class DrawableObject {
     {
         // Only draw if we have an image loaded
         if (!this.img) {
-            console.warn(`No image loaded for ${this.constructor.name} at (${this.xCoordinate}, ${this.yCoordinate})`);
             return;
         }
 

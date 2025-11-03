@@ -11,8 +11,6 @@ let keyboard;
  * Called when player clicks "START GAME" button
  */
 function init() {
-    console.log('Initializing game...');
-
     // Hide start screen
     const startScreen = document.getElementById('start-screen');
     if (startScreen) {
@@ -22,11 +20,8 @@ function init() {
     // Get canvas element
     canvas = document.getElementById('canvas');
     if (!canvas) {
-        console.error('Canvas element not found!');
         return;
     }
-
-    console.log('Canvas size:', canvas.width, 'x', canvas.height);
 
     // Initialize keyboard (only once)
     if (!keyboard) {
@@ -74,8 +69,6 @@ function initKeyboardListeners() {
             keyboard.D = false;
         }
     });
-
-    console.log('Keyboard listeners initialized');
 }
 
 /**
@@ -83,8 +76,6 @@ function initKeyboardListeners() {
  * Resets game state without page reload
  */
 function restartGame() {
-    console.log('Restarting game...');
-
     // Stop the game loop
     stopGameLoop();
 
@@ -108,8 +99,6 @@ function restartGame() {
 
     // Clear world (will be recreated on next init())
     world = null;
-
-    console.log('Game reset - ready to start again');
 }
 
 // Initialize restart buttons when page loads
@@ -125,8 +114,6 @@ window.addEventListener('DOMContentLoaded', () => {
     if (winRestartBtn) {
         winRestartBtn.addEventListener('click', restartGame);
     }
-
-    console.log('Restart buttons initialized');
 });
 
 /**
@@ -134,8 +121,6 @@ window.addEventListener('DOMContentLoaded', () => {
  * For now, we only draw (no movement)
  */
 function startGameLoop() {
-    console.log('Starting game loop...');
-
     gameInterval = setInterval(() => {
         // Update game state (movement, physics, collisions)
         world.update();
@@ -143,8 +128,6 @@ function startGameLoop() {
         // Draw everything on the canvas
         world.draw();
     }, FRAME_INTERVAL); // From constants.js: 1000/60 ≈ 16.67ms
-
-    console.log('Game loop started! Character should be visible.');
 }
 
 /**
@@ -155,6 +138,5 @@ function stopGameLoop() {
     if (gameInterval) {
         clearInterval(gameInterval);
         gameInterval = null;
-        console.log('Game loop stopped.');
     }
 }

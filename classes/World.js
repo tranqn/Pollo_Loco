@@ -43,11 +43,9 @@ class World {
     initializeGame() {
         // Load level data (backgrounds, enemies, coins, etc.)
         this.level = level1;
-        console.log('Level loaded with', this.level.backgroundObjects.length, 'background objects');
 
         // Create player character and pass keyboard
         this.character = new Character(this.keyboard);
-        console.log('Character created at:', this.character.xCoordinate, this.character.yCoordinate);
 
         // Create status bars (positioned at top of screen)
         this.healthBar = new StatusBar(STATUSBAR_PADDING, STATUSBAR_PADDING, IMAGES_STATUSBAR_HEALTH);
@@ -119,8 +117,6 @@ class World {
         if (this.isGameOver) return;
         this.isGameOver = true;
 
-        console.log('Game Over!');
-
         // Stop the game loop (defined in script.js)
         if (typeof stopGameLoop === 'function') {
             stopGameLoop();
@@ -142,8 +138,6 @@ class World {
         // Prevent multiple victory triggers
         if (this.isGameOver) return; // Reuse flag to prevent multiple end screens
         this.isGameOver = true;
-
-        console.log('Victory! You defeated the Endboss!');
 
         // Stop the game loop (defined in script.js)
         if (typeof stopGameLoop === 'function') {
@@ -182,7 +176,6 @@ class World {
             this.bottleBar.setPercentage(bottlePercentage);
 
             this.lastThrowTime = now;
-            console.log('Bottle thrown! Bottles remaining:', this.bottlesCollected);
         }
     }
 
@@ -225,7 +218,6 @@ class World {
                 if (isFalling && isAboveEnemy) {
                     // Success! Defeat the enemy
                     this.level.enemies.splice(index, 1);
-                    console.log('Enemy defeated! Enemies remaining:', this.level.enemies.length);
 
                     // Make character bounce slightly
                     this.character.yVelocity = -ENEMY_BOUNCE_FORCE;
@@ -260,7 +252,6 @@ class World {
                     } else {
                         // Regular enemy (Chicken) - dies instantly
                         this.level.enemies.splice(enemyIndex, 1);
-                        console.log('Enemy defeated! Enemies remaining:', this.level.enemies.length);
                     }
                 }
             });
@@ -280,8 +271,6 @@ class World {
                 this.coinsCollected++;
                 const coinPercentage = Math.min(100, (this.coinsCollected / 10) * 100); // 10 coins = 100%
                 this.coinBar.setPercentage(coinPercentage);
-
-                console.log('Coin collected! Total:', this.coinsCollected);
             }
         });
     }
@@ -299,8 +288,6 @@ class World {
                 this.bottlesCollected++;
                 const bottlePercentage = Math.min(100, (this.bottlesCollected / 5) * 100); // 5 bottles = 100%
                 this.bottleBar.setPercentage(bottlePercentage);
-
-                console.log('Bottle collected! Total:', this.bottlesCollected);
             }
         });
     }

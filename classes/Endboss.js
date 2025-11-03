@@ -114,13 +114,10 @@ class Endboss extends MovableObject {
             this.health -= damage;
             this.lastHitTime = Date.now();
 
-            console.log(`Endboss hit! Health: ${this.health}`);
-
             // Check if endboss died
             if (this.health <= 0) {
                 this.health = 0;
                 this.isDead = true;
-                console.log('Endboss defeated!');
             }
         }
     }

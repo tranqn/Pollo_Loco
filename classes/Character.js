@@ -138,13 +138,10 @@ class Character extends MovableObject {
             this.health -= damage;
             this.lastHitTime = Date.now();
 
-            console.log(`Character hit! Health: ${this.health}`);
-
             // Check if character died
             if (this.health <= 0) {
                 this.health = 0;
                 this.isDead = true;
-                console.log('Character died!');
             }
         }
     }
