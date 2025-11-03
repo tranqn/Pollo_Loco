@@ -28,9 +28,11 @@ function init() {
 
     console.log('Canvas size:', canvas.width, 'x', canvas.height);
 
-    // Initialize keyboard
-    keyboard = new Keyboard();
-    initKeyboardListeners();
+    // Initialize keyboard (only once)
+    if (!keyboard) {
+        keyboard = new Keyboard();
+        initKeyboardListeners();
+    }
 
     // Create world (this creates the character and all game objects)
     world = new World(canvas, keyboard);
@@ -78,11 +80,36 @@ function initKeyboardListeners() {
 
 /**
  * Restart the game
- * Reloads the page to reset all game state
+ * Resets game state without page reload
  */
 function restartGame() {
     console.log('Restarting game...');
-    location.reload(); // Simple restart - reload the page
+
+    // Stop the game loop
+    stopGameLoop();
+
+    // Hide end screens
+    const gameOverScreen = document.getElementById('gameover-screen');
+    const winScreen = document.getElementById('win-screen');
+    if (gameOverScreen) gameOverScreen.classList.add('hidden');
+    if (winScreen) winScreen.classList.add('hidden');
+
+    // Show start screen
+    const startScreen = document.getElementById('start-screen');
+    if (startScreen) startScreen.classList.remove('hidden');
+
+    // Reset keyboard state
+    if (keyboard) {
+        keyboard.LEFT = false;
+        keyboard.RIGHT = false;
+        keyboard.SPACE = false;
+        keyboard.D = false;
+    }
+
+    // Clear world (will be recreated on next init())
+    world = null;
+
+    console.log('Game reset - ready to start again');
 }
 
 // Initialize restart buttons when page loads
