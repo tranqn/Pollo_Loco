@@ -1,14 +1,16 @@
 // Level 1 data
 
 const level1 = {
-    // Enemies - chickens and endboss
+    // Enemies - mix of regular chickens, small chickens, and endboss
     enemies: [
         new Chicken(),
+        new SmallChicken(),
         new Chicken(),
+        new SmallChicken(),
         new Chicken(),
+        new SmallChicken(),
         new Chicken(),
-        new Chicken(),
-        new Chicken(),
+        new SmallChicken(),
         new Endboss()  // Final boss at end of level
     ],
 

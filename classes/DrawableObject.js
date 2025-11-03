@@ -62,7 +62,7 @@ class DrawableObject {
     drawFrame(ctx)
     {
         // Only draw frames for game objects (not UI elements)
-        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
+        if (this instanceof Character || this instanceof Chicken || this instanceof SmallChicken || this instanceof Endboss) {
             ctx.beginPath();
             ctx.lineWidth = 2;
             ctx.strokeStyle = 'red';
