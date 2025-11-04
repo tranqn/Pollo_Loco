@@ -15,5 +15,11 @@ class Bottle extends DrawableObject {
         // Load static bottle image (no animation)
         this.img = new Image();
         this.img.src = IMAGES_BOTTLE_GROUND[0]; // Use first frame as static image
+
+        // Set collision box offsets (generous for easier collection)
+        this.collisionOffsetX = BOTTLE_COLLISION_OFFSET_X;
+        this.collisionOffsetY = BOTTLE_COLLISION_OFFSET_Y;
+        this.collisionOffsetWidth = BOTTLE_COLLISION_OFFSET_WIDTH;
+        this.collisionOffsetHeight = BOTTLE_COLLISION_OFFSET_HEIGHT;
     }
 }

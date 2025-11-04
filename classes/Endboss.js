@@ -44,6 +44,12 @@ class Endboss extends MovableObject {
         // Y: On the ground (accounting for endboss height)
         this.yCoordinate = GROUND_LEVEL + (CHARACTER_HEIGHT - ENDBOSS_HEIGHT);
 
+        // Set collision box offsets for more accurate hitbox
+        this.collisionOffsetX = ENDBOSS_COLLISION_OFFSET_X;
+        this.collisionOffsetY = ENDBOSS_COLLISION_OFFSET_Y;
+        this.collisionOffsetWidth = ENDBOSS_COLLISION_OFFSET_WIDTH;
+        this.collisionOffsetHeight = ENDBOSS_COLLISION_OFFSET_HEIGHT;
+
         // Start animation
         this.startAnimation();
     }

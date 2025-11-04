@@ -10,6 +10,12 @@ class DrawableObject {
     intervals = []; // To track setInterval IDs for cleanup
     otherDirection = false; // When true, mirror the image horizontally
 
+    // Collision box offsets (default to 0, each class can override)
+    collisionOffsetX = 0;
+    collisionOffsetY = 0;
+    collisionOffsetWidth = 0;
+    collisionOffsetHeight = 0;
+
     constructor(xCoordinate, yCoordinate, width, height) {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
@@ -57,16 +63,29 @@ class DrawableObject {
     /**
      * Draws a debug frame (hitbox) around the object
      * Useful for visualizing collision boundaries
+     * Shows both the visual box (blue) and the actual collision box (red) with offsets
      * @param {CanvasRenderingContext2D} ctx - The canvas 2D rendering context
      */
     drawFrame(ctx)
     {
         // Only draw frames for game objects (not UI elements)
         if (this instanceof Character || this instanceof Chicken || this instanceof SmallChicken || this instanceof Endboss) {
+            // Draw visual bounding box (blue)
+            ctx.beginPath();
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'blue';
+            ctx.rect(this.xCoordinate, this.yCoordinate, this.width, this.height);
+            ctx.stroke();
+
+            // Draw actual collision box with offsets (red)
             ctx.beginPath();
             ctx.lineWidth = 2;
             ctx.strokeStyle = 'red';
-            ctx.rect(this.xCoordinate, this.yCoordinate, this.width, this.height);
+            const collisionX = this.xCoordinate + this.collisionOffsetX;
+            const collisionY = this.yCoordinate + this.collisionOffsetY;
+            const collisionWidth = this.width - this.collisionOffsetX - this.collisionOffsetWidth;
+            const collisionHeight = this.height - this.collisionOffsetY - this.collisionOffsetHeight;
+            ctx.rect(collisionX, collisionY, collisionWidth, collisionHeight);
             ctx.stroke();
         }
     }
@@ -79,6 +98,31 @@ class DrawableObject {
             STORAGE.push(img);
             this.IMAGES_CACHE[path] = img;
         });
+    }
+
+    /**
+     * Check if this object is colliding with another object
+     * Uses AABB (Axis-Aligned Bounding Box) collision detection with offset support
+     * @param {DrawableObject} obj - The other object to check collision with
+     * @returns {boolean} - True if colliding, false otherwise
+     */
+    isColliding(obj)
+    {
+        // Apply collision offsets to create smaller, more accurate hitboxes
+        const thisLeft = this.xCoordinate + this.collisionOffsetX;
+        const thisRight = this.xCoordinate + this.width - this.collisionOffsetWidth;
+        const thisTop = this.yCoordinate + this.collisionOffsetY;
+        const thisBottom = this.yCoordinate + this.height - this.collisionOffsetHeight;
+
+        const objLeft = obj.xCoordinate + obj.collisionOffsetX;
+        const objRight = obj.xCoordinate + obj.width - obj.collisionOffsetWidth;
+        const objTop = obj.yCoordinate + obj.collisionOffsetY;
+        const objBottom = obj.yCoordinate + obj.height - obj.collisionOffsetHeight;
+
+        return thisRight > objLeft &&
+               thisBottom > objTop &&
+               thisLeft < objRight &&
+               thisTop < objBottom;
     }
 
 }

@@ -39,6 +39,12 @@ class Character extends MovableObject {
         this.xCoordinate = 100;  // Start position X
         this.yCoordinate = GROUND_LEVEL;  // Start on ground (180px)
 
+        // Set collision box offsets for more accurate hitbox
+        this.collisionOffsetX = CHARACTER_COLLISION_OFFSET_X;
+        this.collisionOffsetY = CHARACTER_COLLISION_OFFSET_Y;
+        this.collisionOffsetWidth = CHARACTER_COLLISION_OFFSET_WIDTH;
+        this.collisionOffsetHeight = CHARACTER_COLLISION_OFFSET_HEIGHT;
+
         // Start animation loop
         this.startAnimation();
     }

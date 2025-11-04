@@ -6,12 +6,17 @@ class Chicken extends MovableObject {
     currentState = 'walking'; // walking, dead
     animationInterval;
 
+    // Patrol behavior
+    patrolStartX;
+    patrolEndX;
+    movingRight = Math.random() < 0.5; // Random initial direction
+
     /**
      * Create a chicken enemy
      */
     constructor() {
-        // Initialize with chicken dimensions and speed
-        super(CHICKEN_WIDTH, CHICKEN_HEIGHT, CHICKEN_SPEED);
+        // Initialize with chicken dimensions and slower speed
+        super(CHICKEN_WIDTH, CHICKEN_HEIGHT, CHICKEN_SPEED * 0.5);
 
         // Load animation images
         this.loadImages(this.IMAGES_WALKING, IMAGES_CHICKEN_WALKING);
@@ -20,15 +25,24 @@ class Chicken extends MovableObject {
         // Set initial image
         this.img = this.IMAGES_CACHE[IMAGES_CHICKEN_WALKING[0]];
 
-        // Chickens walk left - images face left by default, so no mirroring needed
-        // otherDirection stays false (default)
+        // Random starting position between character and endboss
+        this.xCoordinate = 300 + Math.random() * 1200;
 
-        // Random starting position
-        // X: Start somewhere in the level (beyond the visible area)
-        this.xCoordinate = 400 + Math.random() * 1500; // Spread across level
+        // Set patrol range (500px wide area)
+        this.patrolStartX = this.xCoordinate;
+        this.patrolEndX = this.xCoordinate + 500;
 
         // Y: On the ground (accounting for chicken height)
         this.yCoordinate = GROUND_LEVEL + (CHARACTER_HEIGHT - CHICKEN_HEIGHT);
+
+        // Set initial direction based on random
+        this.otherDirection = !this.movingRight; // Images face left, so mirror if going right
+
+        // Set collision box offsets for more accurate hitbox
+        this.collisionOffsetX = CHICKEN_COLLISION_OFFSET_X;
+        this.collisionOffsetY = CHICKEN_COLLISION_OFFSET_Y;
+        this.collisionOffsetWidth = CHICKEN_COLLISION_OFFSET_WIDTH;
+        this.collisionOffsetHeight = CHICKEN_COLLISION_OFFSET_HEIGHT;
 
         // Start animation
         this.startAnimation();
@@ -36,11 +50,24 @@ class Chicken extends MovableObject {
 
     /**
      * Update chicken state (called every frame)
+     * Patrols back and forth in a 500px range
      */
     update() {
         if (this.currentState === 'walking') {
-            // Walk left at constant speed
-            this.moveLeft();
+            // Patrol back and forth
+            if (this.movingRight) {
+                this.moveRight();
+                this.otherDirection = true; // Face right (mirror image)
+                if (this.xCoordinate >= this.patrolEndX) {
+                    this.movingRight = false;
+                }
+            } else {
+                this.moveLeft();
+                this.otherDirection = false; // Face left (default)
+                if (this.xCoordinate <= this.patrolStartX) {
+                    this.movingRight = true;
+                }
+            }
         }
     }
 

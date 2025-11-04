@@ -7,12 +7,13 @@ class World {
     character;
     level; // Current level data (backgrounds, enemies, coins, etc.)
     cameraX = 0; // Camera X position (follows character)
-    debugMode = true; // Enable debug helpers
+    debugMode = false; // Enable debug helpers (set to true to see hitboxes and FPS)
 
     // Status bars (fixed to screen, not affected by camera)
     healthBar;
     coinBar;
     bottleBar;
+    endbossBar;
 
     // Collectible counters
     coinsCollected = 0;
@@ -44,6 +45,14 @@ class World {
         // Load level data (backgrounds, enemies, coins, etc.)
         this.level = level1;
 
+        // DEBUG: Log enemy types at initialization
+        console.log('=== LEVEL INITIALIZED ===');
+        this.level.enemies.forEach((enemy, idx) => {
+            const type = enemy instanceof Endboss ? 'Endboss' : (enemy instanceof SmallChicken ? 'SmallChicken' : (enemy instanceof Chicken ? 'Chicken' : 'Unknown'));
+            console.log(`  ${idx}: ${type} at x=${Math.round(enemy.xCoordinate)}`);
+        });
+        console.log('=========================');
+
         // Create player character and pass keyboard
         this.character = new Character(this.keyboard);
 
@@ -51,6 +60,11 @@ class World {
         this.healthBar = new StatusBar(STATUSBAR_PADDING, STATUSBAR_PADDING, IMAGES_STATUSBAR_HEALTH);
         this.coinBar = new StatusBar(STATUSBAR_PADDING, STATUSBAR_PADDING + STATUSBAR_HEIGHT + 10, IMAGES_STATUSBAR_COIN);
         this.bottleBar = new StatusBar(STATUSBAR_PADDING, STATUSBAR_PADDING + (STATUSBAR_HEIGHT + 10) * 2, IMAGES_STATUSBAR_BOTTLE);
+
+        // Create Endboss health bar (centered at top, initially at 100%)
+        const endbossBarX = (CANVAS_WIDTH - STATUSBAR_WIDTH) / 2; // Center horizontally
+        this.endbossBar = new StatusBar(endbossBarX, STATUSBAR_PADDING, IMAGES_STATUSBAR_ENDBOSS);
+        this.endbossBar.setPercentage(100); // Endboss starts at full health
 
         // Set coin and bottle bars to 0% (player starts with none)
         this.coinBar.setPercentage(0);
@@ -107,6 +121,20 @@ class World {
      */
     getEndboss() {
         return this.level.enemies.find(enemy => enemy instanceof Endboss);
+    }
+
+    /**
+     * Check if Endboss is visible on screen
+     * @returns {boolean} - True if Endboss is within camera view
+     */
+    isEndbossVisible() {
+        const endboss = this.getEndboss();
+        if (!endboss) return false;
+
+        // Check if Endboss x position is within camera view (with small buffer)
+        const buffer = 100; // Show bar slightly before Endboss appears
+        return endboss.xCoordinate > this.cameraX - buffer &&
+               endboss.xCoordinate < this.cameraX + CANVAS_WIDTH + buffer;
     }
 
     /**
@@ -172,7 +200,7 @@ class World {
 
             // Decrease bottle count and update status bar
             this.bottlesCollected--;
-            const bottlePercentage = Math.min(100, (this.bottlesCollected / 5) * 100);
+            const bottlePercentage = Math.min(100, (this.bottlesCollected / 10) * 100);
             this.bottleBar.setPercentage(bottlePercentage);
 
             this.lastThrowTime = now;
@@ -208,27 +236,47 @@ class World {
      * Or take damage when hitting them from the side
      */
     checkEnemyCollisions() {
-        this.level.enemies.forEach((enemy, index) => {
-            if (this.character.isColliding(enemy)) {
-                // Check if character is falling onto enemy from above
-                // Character must be: falling (positive yVelocity) AND above enemy center
-                const isFalling = this.character.yVelocity > 0;
-                const isAboveEnemy = this.character.yCoordinate < enemy.yCoordinate + enemy.height / 2;
+        // Iterate backwards to safely remove enemies during iteration
+        // When we splice during forEach, indices shift and enemies get skipped
+        for (let i = this.level.enemies.length - 1; i >= 0; i--) {
+            const enemy = this.level.enemies[i];
 
-                if (isFalling && isAboveEnemy) {
-                    // Success! Defeat the enemy
-                    this.level.enemies.splice(index, 1);
+            if (this.character.isColliding(enemy)) {
+                const enemyType = enemy instanceof Endboss ? 'Endboss' : (enemy instanceof SmallChicken ? 'SmallChicken' : 'Chicken');
+                console.log(`[COLLISION] Type: ${enemyType}, Falling: ${this.character.yVelocity > 0}, yVel: ${this.character.yVelocity.toFixed(2)}`);
+                // Check if character is falling onto enemy from above
+                // Character must be: falling (positive yVelocity) AND character's bottom is above enemy's center
+                const isFalling = this.character.yVelocity > 0;
+
+                // Use collision box positions for accurate detection
+                const characterBottom = this.character.yCoordinate + this.character.height - this.character.collisionOffsetHeight;
+                const enemyCollisionTop = enemy.yCoordinate + enemy.collisionOffsetY;
+                const enemyCollisionHeight = enemy.height - enemy.collisionOffsetY - enemy.collisionOffsetHeight;
+                const enemyCollisionCenter = enemyCollisionTop + enemyCollisionHeight / 2;
+
+                // Use <= to handle edge case where character bottom equals enemy center
+                const isAboveEnemy = characterBottom <= enemyCollisionCenter;
+
+                if (isFalling && isAboveEnemy && !(enemy instanceof Endboss)) {
+                    // Success! Defeat the enemy (but not Endboss)
+                    this.level.enemies.splice(i, 1);
+                    console.log(`[ACTION] Enemy defeated! ${this.level.enemies.length} enemies remaining.`);
 
                     // Make character bounce slightly
                     this.character.yVelocity = -ENEMY_BOUNCE_FORCE;
+                } else if (isFalling && isAboveEnemy && enemy instanceof Endboss) {
+                    // Jumping on Endboss just makes character bounce (no damage to boss)
+                    console.log(`[ACTION] Bounced off Endboss`);
+                    this.character.yVelocity = -ENEMY_BOUNCE_FORCE;
                 } else {
-                    // Hit from side or below - take damage
-                    this.character.hit(20);
+                    // Hit from side or below - take damage (5 damage per hit)
+                    console.log(`[ACTION] Character took ${ENEMY_DAMAGE} damage (Health: ${this.character.health})`);
+                    this.character.hit(ENEMY_DAMAGE);
                     // Update health bar
                     this.healthBar.setPercentage(this.character.health);
                 }
             }
-        });
+        }
     }
 
     /**
@@ -240,7 +288,10 @@ class World {
             // Skip if bottle is already splashing
             if (bottle.isSplashing) return;
 
-            this.level.enemies.forEach((enemy, enemyIndex) => {
+            // Iterate backwards to safely remove enemies during iteration
+            for (let i = this.level.enemies.length - 1; i >= 0; i--) {
+                const enemy = this.level.enemies[i];
+
                 if (bottle.isColliding(enemy)) {
                     // Bottle hit enemy - splash
                     bottle.splash();
@@ -249,12 +300,14 @@ class World {
                     if (enemy instanceof Endboss) {
                         // Damage the boss (doesn't die instantly)
                         enemy.hit(THROWABLE_DAMAGE);
+                        // Update Endboss health bar
+                        this.endbossBar.setPercentage(enemy.health);
                     } else {
                         // Regular enemy (Chicken) - dies instantly
-                        this.level.enemies.splice(enemyIndex, 1);
+                        this.level.enemies.splice(i, 1);
                     }
                 }
-            });
+            }
         });
     }
 
@@ -262,34 +315,40 @@ class World {
      * Check and handle coin collisions
      */
     checkCoinCollisions() {
-        this.level.coins.forEach((coin, index) => {
+        // Iterate backwards to safely remove coins during iteration
+        for (let i = this.level.coins.length - 1; i >= 0; i--) {
+            const coin = this.level.coins[i];
+
             if (this.character.isColliding(coin)) {
                 // Remove coin from array
-                this.level.coins.splice(index, 1);
+                this.level.coins.splice(i, 1);
 
                 // Increment counter and update status bar
                 this.coinsCollected++;
                 const coinPercentage = Math.min(100, (this.coinsCollected / 10) * 100); // 10 coins = 100%
                 this.coinBar.setPercentage(coinPercentage);
             }
-        });
+        }
     }
 
     /**
      * Check and handle bottle collisions
      */
     checkBottleCollisions() {
-        this.level.bottles.forEach((bottle, index) => {
+        // Iterate backwards to safely remove bottles during iteration
+        for (let i = this.level.bottles.length - 1; i >= 0; i--) {
+            const bottle = this.level.bottles[i];
+
             if (this.character.isColliding(bottle)) {
                 // Remove bottle from array
-                this.level.bottles.splice(index, 1);
+                this.level.bottles.splice(i, 1);
 
                 // Increment counter and update status bar
                 this.bottlesCollected++;
-                const bottlePercentage = Math.min(100, (this.bottlesCollected / 5) * 100); // 5 bottles = 100%
+                const bottlePercentage = Math.min(100, (this.bottlesCollected / 10) * 100); // 10 bottles = 100%
                 this.bottleBar.setPercentage(bottlePercentage);
             }
-        });
+        }
     }
 
     /**
@@ -379,6 +438,11 @@ class World {
         this.healthBar.draw(this.ctx);
         this.coinBar.draw(this.ctx);
         this.bottleBar.draw(this.ctx);
+
+        // Draw Endboss health bar only when Endboss is visible
+        if (this.isEndbossVisible()) {
+            this.endbossBar.draw(this.ctx);
+        }
 
         // Draw UI elements (fixed to screen, not affected by camera)
         if (this.debugMode) {

@@ -19,6 +19,12 @@ class Coin extends DrawableObject {
         // Set initial image
         this.img = this.IMAGES_CACHE[IMAGES_COIN[0]];
 
+        // Set collision box offsets (generous for easier collection)
+        this.collisionOffsetX = COIN_COLLISION_OFFSET_X;
+        this.collisionOffsetY = COIN_COLLISION_OFFSET_Y;
+        this.collisionOffsetWidth = COIN_COLLISION_OFFSET_WIDTH;
+        this.collisionOffsetHeight = COIN_COLLISION_OFFSET_HEIGHT;
+
         // Start spinning animation
         this.startAnimation();
     }

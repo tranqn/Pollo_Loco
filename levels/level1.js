@@ -1,6 +1,11 @@
 // Level 1 data
 
-const level1 = {
+/**
+ * Creates a fresh level1 object with all enemies, coins, and bottles
+ * Used for initial load and when restarting the game
+ */
+function createLevel1() {
+    return {
     // Enemies - mix of regular chickens, small chickens, and endboss
     enemies: [
         new Chicken(),
@@ -51,26 +56,34 @@ const level1 = {
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719 * 2)
     ],
 
-    // Coins - collectibles scattered throughout the level
+    // Coins - between character (x=100) and before Endboss (x=1500)
     coins: [
-        new Coin(400, 200),  // Floating in air
-        new Coin(600, 150),  // Higher in air
-        new Coin(800, 200),  // Floating
-        new Coin(1000, GROUND_LEVEL), // On ground
-        new Coin(1200, 180), // Mid-height
-        new Coin(1400, 150), // Higher
-        new Coin(1600, GROUND_LEVEL), // On ground
-        new Coin(1800, 200)  // Floating
+        new Coin(350, 200),  // Floating in air
+        new Coin(500, 150),  // Higher in air
+        new Coin(700, 200),  // Floating
+        new Coin(850, GROUND_LEVEL), // On ground
+        new Coin(1000, 180), // Mid-height
+        new Coin(1150, 150), // Higher
+        new Coin(1300, GROUND_LEVEL), // On ground
+        new Coin(1450, 200)  // Floating
     ],
 
-    // Bottles - collectibles on the ground (can be thrown later)
+    // Bottles - between character and before Endboss
     bottles: [
-        new Bottle(500),
+        new Bottle(400),
+        new Bottle(550),
         new Bottle(700),
-        new Bottle(900),
+        new Bottle(850),
+        new Bottle(1000),
+        new Bottle(1150),
         new Bottle(1300),
-        new Bottle(1700),
-        new Bottle(1900)
+        new Bottle(1400),
+        new Bottle(1500),
+        new Bottle(1600)
     ]
-};
+    };
+}
+
+// Initialize level1 on first load
+let level1 = createLevel1();
 

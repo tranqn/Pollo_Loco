@@ -5,18 +5,142 @@ let canvas;
 let world;
 let gameInterval;
 let keyboard;
+let isMuted = false;
+
+/**
+ * Start the game from landing page
+ * Hides landing page, shows game container and mute button
+ */
+function startGame() {
+    // Hide landing page
+    const landingPage = document.getElementById('landing-page');
+    if (landingPage) {
+        landingPage.classList.add('hidden');
+    }
+
+    // Show mute button
+    const muteBtn = document.getElementById('mute-btn');
+    if (muteBtn) {
+        muteBtn.classList.remove('hidden');
+    }
+
+    // Check if mobile to show controls
+    if (window.innerWidth <= 768) {
+        const mobileControls = document.getElementById('mobile-controls');
+        if (mobileControls) {
+            mobileControls.classList.remove('hidden');
+        }
+    }
+
+    // Initialize the game
+    init();
+}
+
+/**
+ * Show instructions modal dialog
+ */
+function showInstructions() {
+    const instructionsDialog = document.getElementById('instructions-dialog');
+    if (instructionsDialog) {
+        instructionsDialog.classList.remove('hidden');
+    }
+}
+
+/**
+ * Hide instructions modal dialog
+ */
+function hideInstructions() {
+    const instructionsDialog = document.getElementById('instructions-dialog');
+    if (instructionsDialog) {
+        instructionsDialog.classList.add('hidden');
+    }
+}
+
+/**
+ * Toggle mute/unmute sound
+ * Persists setting to localStorage
+ */
+function toggleMute() {
+    isMuted = !isMuted;
+    localStorage.setItem('gameMuted', isMuted);
+
+    const muteBtn = document.getElementById('mute-btn');
+    if (muteBtn) {
+        muteBtn.textContent = isMuted ? '🔇' : '🔊';
+    }
+
+    // Here you would also mute/unmute actual game sounds when implemented
+    // Example: world.toggleSound(isMuted);
+}
+
+/**
+ * Go back to main menu (landing page)
+ * Stops game and resets to landing page
+ */
+function backToMenu() {
+    // Stop the game loop
+    stopGameLoop();
+
+    // Clear all intervals from game objects
+    if (world) {
+        if (world.character && world.character.animationInterval) {
+            clearInterval(world.character.animationInterval);
+        }
+        if (world.character && world.character.jumpAnimationInterval) {
+            clearInterval(world.character.jumpAnimationInterval);
+        }
+
+        if (world.level && world.level.enemies) {
+            world.level.enemies.forEach(enemy => {
+                if (enemy.animationInterval) {
+                    clearInterval(enemy.animationInterval);
+                }
+            });
+        }
+
+        if (world.thrownBottles) {
+            world.thrownBottles.forEach(bottle => {
+                if (bottle.animationInterval) {
+                    clearInterval(bottle.animationInterval);
+                }
+            });
+        }
+    }
+
+    // Hide all game screens
+    const gameOverScreen = document.getElementById('gameover-screen');
+    const winScreen = document.getElementById('win-screen');
+    const muteBtn = document.getElementById('mute-btn');
+    const mobileControls = document.getElementById('mobile-controls');
+
+    if (gameOverScreen) gameOverScreen.classList.add('hidden');
+    if (winScreen) winScreen.classList.add('hidden');
+    if (muteBtn) muteBtn.classList.add('hidden');
+    if (mobileControls) mobileControls.classList.add('hidden');
+
+    // Show landing page
+    const landingPage = document.getElementById('landing-page');
+    if (landingPage) {
+        landingPage.classList.remove('hidden');
+    }
+
+    // Reset keyboard state
+    if (keyboard) {
+        keyboard.LEFT = false;
+        keyboard.RIGHT = false;
+        keyboard.SPACE = false;
+        keyboard.D = false;
+    }
+
+    // Clear world
+    world = null;
+}
 
 /**
  * Initialize the game
  * Called when player clicks "START GAME" button
  */
 function init() {
-    // Hide start screen
-    const startScreen = document.getElementById('start-screen');
-    if (startScreen) {
-        startScreen.classList.add('hidden');
-    }
-
     // Get canvas element
     canvas = document.getElementById('canvas');
     if (!canvas) {
@@ -79,15 +203,40 @@ function restartGame() {
     // Stop the game loop
     stopGameLoop();
 
+    // Clear all intervals from game objects
+    if (world) {
+        // Clear character intervals
+        if (world.character && world.character.animationInterval) {
+            clearInterval(world.character.animationInterval);
+        }
+        if (world.character && world.character.jumpAnimationInterval) {
+            clearInterval(world.character.jumpAnimationInterval);
+        }
+
+        // Clear enemy intervals
+        if (world.level && world.level.enemies) {
+            world.level.enemies.forEach(enemy => {
+                if (enemy.animationInterval) {
+                    clearInterval(enemy.animationInterval);
+                }
+            });
+        }
+
+        // Clear thrown bottle intervals
+        if (world.thrownBottles) {
+            world.thrownBottles.forEach(bottle => {
+                if (bottle.animationInterval) {
+                    clearInterval(bottle.animationInterval);
+                }
+            });
+        }
+    }
+
     // Hide end screens
     const gameOverScreen = document.getElementById('gameover-screen');
     const winScreen = document.getElementById('win-screen');
     if (gameOverScreen) gameOverScreen.classList.add('hidden');
     if (winScreen) winScreen.classList.add('hidden');
-
-    // Show start screen
-    const startScreen = document.getElementById('start-screen');
-    if (startScreen) startScreen.classList.remove('hidden');
 
     // Reset keyboard state
     if (keyboard) {
@@ -99,10 +248,26 @@ function restartGame() {
 
     // Clear world (will be recreated on next init())
     world = null;
+
+    // Recreate level1 with fresh enemies, coins, and bottles
+    level1 = createLevel1();
+
+    // Immediately start a new game (don't show start screen)
+    init();
 }
 
 // Initialize restart buttons and mobile controls when page loads
 window.addEventListener('DOMContentLoaded', () => {
+    // Load mute state from localStorage
+    const savedMuteState = localStorage.getItem('gameMuted');
+    if (savedMuteState === 'true') {
+        isMuted = true;
+        const muteBtn = document.getElementById('mute-btn');
+        if (muteBtn) {
+            muteBtn.textContent = '🔇';
+        }
+    }
+
     // Game over restart button
     const restartBtn = document.getElementById('restart-btn');
     if (restartBtn) {

@@ -2,7 +2,7 @@
 
 class MovableObject extends DrawableObject
 {
-    //inherited xCoordinate , yCoordinate , width , height
+    //inherited xCoordinate , yCoordinate , width , height , collisionOffsets
     OBJECT_SPEED;
     yVelocity = 0;
     isJumping = false;
@@ -49,17 +49,4 @@ class MovableObject extends DrawableObject
         }
     }
 
-    /**
-     * Check if this object is colliding with another object
-     * Uses AABB (Axis-Aligned Bounding Box) collision detection
-     * @param {MovableObject} obj - The other object to check collision with
-     * @returns {boolean} - True if colliding, false otherwise
-     */
-    isColliding(obj)
-    {
-        return this.xCoordinate + this.width > obj.xCoordinate &&
-               this.yCoordinate + this.height > obj.yCoordinate &&
-               this.xCoordinate < obj.xCoordinate + obj.width &&
-               this.yCoordinate < obj.yCoordinate + obj.height;
-    }
 }

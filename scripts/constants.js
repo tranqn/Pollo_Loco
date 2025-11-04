@@ -44,6 +44,13 @@ const CHARACTER_JUMP_FORCE = 30;
 const CHARACTER_MAX_HEALTH = 100;
 const CHARACTER_IDLE_TIMEOUT = 15000; // Time before long idle animation (15 seconds)
 
+// Character collision box offsets (smaller hitbox for fairer gameplay)
+// Character sprite: 120×280 → Effective hitbox: 80×150
+const CHARACTER_COLLISION_OFFSET_X = 20;      // Left side inset (20px from left)
+const CHARACTER_COLLISION_OFFSET_Y = 100;     // Top side inset (100px from top - excludes hat)
+const CHARACTER_COLLISION_OFFSET_WIDTH = 20;  // Right side inset (20px from right)
+const CHARACTER_COLLISION_OFFSET_HEIGHT = 30; // Bottom side inset (30px from bottom)
+
 // ============================================
 // ENEMY CONSTANTS
 // ============================================
@@ -51,15 +58,39 @@ const CHICKEN_WIDTH = 60;
 const CHICKEN_HEIGHT = 70;
 const CHICKEN_SPEED = 3;
 
+// Chicken collision box offsets
+// Chicken sprite: 60×70 → Effective hitbox: 50×60
+const CHICKEN_COLLISION_OFFSET_X = 5;        // Left inset
+const CHICKEN_COLLISION_OFFSET_Y = 5;        // Top inset
+const CHICKEN_COLLISION_OFFSET_WIDTH = 5;    // Right inset
+const CHICKEN_COLLISION_OFFSET_HEIGHT = 5;   // Bottom inset
+
 const SMALL_CHICKEN_WIDTH = 50;
 const SMALL_CHICKEN_HEIGHT = 60;
 const SMALL_CHICKEN_SPEED = 4;
 
+// Small chicken collision box offsets
+// Small chicken sprite: 50×60 → Effective hitbox: 40×50
+const SMALL_CHICKEN_COLLISION_OFFSET_X = 5;        // Left inset
+const SMALL_CHICKEN_COLLISION_OFFSET_Y = 5;        // Top inset
+const SMALL_CHICKEN_COLLISION_OFFSET_WIDTH = 5;    // Right inset
+const SMALL_CHICKEN_COLLISION_OFFSET_HEIGHT = 5;   // Bottom inset
+
 const ENDBOSS_WIDTH = 250;
 const ENDBOSS_HEIGHT = 400;
 const ENDBOSS_SPEED = 2;
-const ENDBOSS_MAX_HEALTH = 100;
+const ENDBOSS_MAX_HEALTH = 80; // Dies in 4 hits (4 x 20 damage = 80)
 const ENDBOSS_ALERT_DISTANCE = 500;
+
+// Enemy damage
+const ENEMY_DAMAGE = 5; // Damage dealt by regular enemies to character
+
+// Endboss collision box offsets
+// Endboss sprite: 250×400 → Effective hitbox: 170×230
+const ENDBOSS_COLLISION_OFFSET_X = 40;       // Left inset
+const ENDBOSS_COLLISION_OFFSET_Y = 70;       // Top inset
+const ENDBOSS_COLLISION_OFFSET_WIDTH = 40;   // Right inset
+const ENDBOSS_COLLISION_OFFSET_HEIGHT = 100; // Bottom inset
 
 // ============================================
 // COLLECTIBLE CONSTANTS
@@ -68,8 +99,22 @@ const COIN_WIDTH = 60;  // Increased from 40 for better visibility
 const COIN_HEIGHT = 60; // Increased from 40 for better visibility
 const COIN_VALUE = 10;
 
+// Coin collision box offsets (keep generous for easier collection)
+// Coin sprite: 60×60 → Effective hitbox: 40×40
+const COIN_COLLISION_OFFSET_X = 10;        // Left inset
+const COIN_COLLISION_OFFSET_Y = 10;        // Top inset
+const COIN_COLLISION_OFFSET_WIDTH = 10;    // Right inset
+const COIN_COLLISION_OFFSET_HEIGHT = 10;   // Bottom inset
+
 const BOTTLE_WIDTH = 60;
 const BOTTLE_HEIGHT = 70;
+
+// Bottle collision box offsets (keep generous for easier collection)
+// Bottle sprite: 60×70 → Effective hitbox: 40×50
+const BOTTLE_COLLISION_OFFSET_X = 10;        // Left inset
+const BOTTLE_COLLISION_OFFSET_Y = 10;        // Top inset
+const BOTTLE_COLLISION_OFFSET_WIDTH = 10;    // Right inset
+const BOTTLE_COLLISION_OFFSET_HEIGHT = 10;   // Bottom inset
 
 // ============================================
 // THROWABLE OBJECT CONSTANTS
@@ -77,6 +122,13 @@ const BOTTLE_HEIGHT = 70;
 const THROWABLE_SPEED = 15;
 const THROWABLE_GRAVITY = 2;
 const THROWABLE_DAMAGE = 20;
+
+// Throwable collision box offsets (keep tight for precise hits)
+// Throwable sprite: 60×70 → Effective hitbox: 50×60
+const THROWABLE_COLLISION_OFFSET_X = 5;        // Left inset
+const THROWABLE_COLLISION_OFFSET_Y = 5;        // Top inset
+const THROWABLE_COLLISION_OFFSET_WIDTH = 5;    // Right inset
+const THROWABLE_COLLISION_OFFSET_HEIGHT = 5;   // Bottom inset
 
 // ============================================
 // ANIMATION SPEEDS (in milliseconds)

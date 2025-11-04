@@ -30,6 +30,12 @@ class ThrowableObject extends MovableObject {
         // Set initial image
         this.img = this.IMAGES_CACHE[IMAGES_BOTTLE_ROTATION[0]];
 
+        // Set collision box offsets (tight for precise hits)
+        this.collisionOffsetX = THROWABLE_COLLISION_OFFSET_X;
+        this.collisionOffsetY = THROWABLE_COLLISION_OFFSET_Y;
+        this.collisionOffsetWidth = THROWABLE_COLLISION_OFFSET_WIDTH;
+        this.collisionOffsetHeight = THROWABLE_COLLISION_OFFSET_HEIGHT;
+
         // Start the throw
         this.throw();
 
