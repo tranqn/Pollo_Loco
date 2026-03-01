@@ -1,5 +1,10 @@
 // MovableObject - Base class for objects that can move
 
+/**
+ * @class MovableObject
+ * @extends DrawableObject
+ * @description Base class for all objects that can move, jump, and be affected by gravity.
+ */
 class MovableObject extends DrawableObject {
     OBJECT_SPEED;
     yVelocity = 0;

@@ -3,6 +3,7 @@
 /**
  * Creates a fresh level1 object with all enemies, coins, and bottles
  * Used for initial load and when restarting the game
+ * @returns {Object} Level data containing enemies, clouds, backgroundObjects, coins, and bottles
  */
 function createLevel1() {
     return {
@@ -86,6 +87,6 @@ function createLevel1() {
     };
 }
 
-// Initialize level1 on first load
+/** @type {Object} Current level data instance */
 let level1 = createLevel1();
 

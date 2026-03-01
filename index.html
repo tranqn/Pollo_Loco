@@ -1,119 +1,168 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>El Pollo Loco - Jump & Run Game</title>
-    <link rel="icon" type="image/png" href="img/favicon.png">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <!-- Main Game Container -->
     <div id="game-container">
-        <!-- The Canvas where our game will be drawn -->
-        <canvas id="canvas" width="720" height="480"></canvas>
+      <!-- The Canvas where our game will be drawn -->
+      <canvas id="canvas" width="720" height="480"></canvas>
 
-        <!-- Landing Page -->
-        <div id="landing-page" class="landing-page">
-            <h1 class="game-title">El Pollo Loco</h1>
-            <p class="game-subtitle">Help Pepe defeat the crazy chickens!</p>
+      <!-- Landing Page -->
+      <div id="landing-page" class="landing-page">
+        <h1 class="game-title">El Pollo Loco</h1>
+        <p class="game-subtitle">Help Pepe defeat the crazy chickens!</p>
 
-            <div class="landing-buttons">
-                <button class="btn btn-primary" onclick="startGame()">Start Game</button>
-                <button class="btn btn-secondary" onclick="showInstructions()">How to Play</button>
-            </div>
-
-            <div class="landing-footer">
-                <span class="footer-text">© 2025 El Pollo Loco</span>
-                <span class="footer-text">|</span>
-                <a href="impressum.html" class="footer-link">Impressum</a>
-            </div>
+        <div class="landing-buttons">
+          <button class="btn btn-primary" onclick="startGame()">
+            Start Game
+          </button>
+          <button class="btn btn-secondary" onclick="showInstructions()">
+            How to Play
+          </button>
         </div>
 
-        <!-- Instructions Dialog -->
-        <div id="instructions-dialog" class="dialog-overlay hidden" onclick="hideInstructions()">
-            <div class="dialog" onclick="event.stopPropagation()">
-                <button class="dialog-close" onclick="hideInstructions()">&times;</button>
-                <h2>How to Play</h2>
+        <div class="landing-footer">
+          <span class="footer-text">© 2026 El Pollo Loco</span>
+          <span class="footer-text">|</span>
+          <a href="impressum.html" class="footer-link">Impressum</a>
+        </div>
+      </div>
 
-                <div class="instructions-content">
-                    <h3>The Story</h3>
-                    <p>Pepe has lost his way in the desert and must fight through hordes of crazy chickens!</p>
+      <!-- Instructions Dialog -->
+      <div
+        id="instructions-dialog"
+        class="dialog-overlay hidden"
+        onclick="hideInstructions()"
+      >
+        <div class="dialog" onclick="event.stopPropagation()">
+          <button class="dialog-close" onclick="hideInstructions()">
+            &times;
+          </button>
+          <h2>How to Play</h2>
 
-                    <h3>Controls</h3>
-                    <div class="controls-grid">
-                        <div class="control-item">
-                            <span class="key">←→</span>
-                            <span>Move</span>
-                        </div>
-                        <div class="control-item">
-                            <span class="key">Space</span>
-                            <span>Jump</span>
-                        </div>
-                        <div class="control-item">
-                            <span class="key">D</span>
-                            <span>Throw Bottle</span>
-                        </div>
-                    </div>
-                </div>
+          <div class="instructions-content">
+            <h3>The Story</h3>
+            <p>
+              Pepe, a brave wanderer, got lost deep in the scorching Mexican
+              desert. With nothing but his courage and a handful of salsa
+              bottles, he must battle through hordes of crazy chickens and face
+              the mighty Endboss a giant, furious rooster guarding the only way
+              home.
+            </p>
+            <p>
+              Collect coins for glory, grab bottles to throw at enemies, and
+              jump on chickens to squash them. But beware the Endboss won't go
+              down easily!
+            </p>
 
-                <button class="btn btn-primary" onclick="hideInstructions()" style="margin-top: 20px;">Got it!</button>
+            <h3>Controls</h3>
+            <div class="controls-grid">
+              <div class="control-item">
+                <span class="key">←</span>
+                <span class="key">→</span>
+                <span>Move</span>
+              </div>
+              <div class="control-item">
+                <span class="key">Space</span>
+                <span>Jump</span>
+              </div>
+              <div class="control-item">
+                <span class="key">D</span>
+                <span>Throw Bottle</span>
+              </div>
             </div>
-        </div>
+          </div>
 
-        <!-- Pause Screen Overlay -->
-        <div id="pause-screen" class="overlay hidden">
-            <div class="overlay-content">
-                <h2>PAUSED</h2>
-                <p>Press ESC to resume</p>
-                <button id="resume-btn" class="game-btn">RESUME</button>
-            </div>
+          <button
+            class="btn btn-primary"
+            onclick="hideInstructions()"
+            style="margin-top: 20px"
+          >
+            Got it!
+          </button>
         </div>
+      </div>
 
-        <!-- Sound Control -->
-        <button id="mute-btn" class="mute-btn hidden" onclick="toggleMute()">🔊</button>
-
-        <!-- Game Over Screen Overlay -->
-        <div id="gameover-screen" class="overlay hidden">
-            <div class="overlay-content">
-                <h2>GAME OVER</h2>
-                <p>Pepe has been defeated!</p>
-                <div class="game-screen-buttons">
-                    <button id="restart-btn" class="game-btn">Try Again</button>
-                    <button class="game-btn" onclick="backToMenu()">Back to Home</button>
-                </div>
-            </div>
+      <!-- Pause Screen Overlay -->
+      <div id="pause-screen" class="overlay hidden">
+        <div class="overlay-content">
+          <h2>PAUSED</h2>
+          <p>Press ESC to resume</p>
+          <div class="game-screen-buttons">
+            <button class="game-btn" onclick="resumeGame()">Resume</button>
+            <button class="game-btn" onclick="restartGame()">Play Again</button>
+            <button class="game-btn" onclick="backToMenu()">
+              Back to Home
+            </button>
+          </div>
         </div>
+      </div>
 
-        <!-- Victory Screen Overlay -->
-        <div id="win-screen" class="overlay hidden">
-            <div class="overlay-content">
-                <h2>VICTORY!</h2>
-                <p>You defeated the Endboss!</p>
-                <div class="game-screen-buttons">
-                    <button id="win-restart-btn" class="game-btn">Play Again</button>
-                    <button class="game-btn" onclick="backToMenu()">Back to Home</button>
-                </div>
-            </div>
-        </div>
+      <!-- Game UI Buttons -->
+      <button id="mute-btn" class="mute-btn hidden" onclick="toggleMute()">
+        🔊
+      </button>
+      <button
+        id="fullscreen-btn"
+        class="fullscreen-btn hidden"
+        onclick="toggleFullscreen()"
+      >
+        ⛶
+      </button>
+      <button id="pause-btn" class="pause-btn hidden" onclick="togglePause()">
+        ⏸
+      </button>
 
-        <!-- Mobile Touch Controls (hidden on desktop) -->
-        <div id="mobile-controls" class="hidden">
-            <button class="touch-btn left-btn">←</button>
-            <button class="touch-btn right-btn">→</button>
-            <button class="touch-btn jump-btn">JUMP</button>
-            <button class="touch-btn throw-btn">THROW</button>
+      <!-- Game Over Screen Overlay -->
+      <div id="gameover-screen" class="overlay hidden">
+        <div class="overlay-content">
+          <h2>GAME OVER</h2>
+          <p>Pepe has been defeated!</p>
+          <div class="game-screen-buttons">
+            <button id="restart-btn" class="game-btn">Try Again</button>
+            <button class="game-btn" onclick="backToMenu()">
+              Back to Home
+            </button>
+          </div>
         </div>
+      </div>
 
-        <!-- Portrait Warning (only shown when device is in portrait mode) -->
-        <div id="portrait-warning" class="hidden">
-            <div class="warning-content">
-                <h2>📱</h2>
-                <p>Please rotate your device</p>
-                <p class="small">This game is best played in landscape mode</p>
-            </div>
+      <!-- Victory Screen Overlay -->
+      <div id="win-screen" class="overlay hidden">
+        <div class="overlay-content">
+          <h2>VICTORY!</h2>
+          <p>You defeated the Endboss!</p>
+          <div class="game-screen-buttons">
+            <button id="win-restart-btn" class="game-btn">Play Again</button>
+            <button class="game-btn" onclick="backToMenu()">
+              Back to Home
+            </button>
+          </div>
         </div>
+      </div>
+
+      <!-- Mobile Touch Controls (hidden on desktop) -->
+      <div id="mobile-controls" class="hidden">
+        <button class="touch-btn left-btn">←</button>
+        <button class="touch-btn right-btn">→</button>
+        <button class="touch-btn jump-btn">JUMP</button>
+        <button class="touch-btn throw-btn">THROW</button>
+      </div>
+
+      <!-- Portrait Warning (only shown when device is in portrait mode) -->
+      <div id="portrait-warning" class="hidden">
+        <div class="warning-content">
+          <h2>📱</h2>
+          <p>Please rotate your device</p>
+          <p class="small">This game is best played in landscape mode</p>
+        </div>
+      </div>
     </div>
 
     <!-- Game Scripts - Order matters! -->
@@ -139,5 +188,5 @@
     <script src="classes/World.js"></script>
     <script src="levels/level1.js"></script>
     <script src="scripts/script.js"></script>
-</body>
+  </body>
 </html>

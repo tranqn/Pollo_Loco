@@ -1,8 +1,6 @@
 /**
- * ============================================
- * GAME CONSTANTS
- * ============================================
- * All magic numbers and image paths centralized here for clean code
+ * @file constants.js
+ * @description All game constants, magic numbers, image paths, and audio paths centralized here for clean code.
  */
 
 // ============================================
@@ -420,7 +418,7 @@ const CLOUD_Y_RANGE = 130;
 // GAMEPLAY CONSTANTS
 // ============================================
 const CHARACTER_START_X = 100;
-const HURT_DURATION = 2000;
+const HURT_DURATION = 1000;
 const THROW_COOLDOWN = 500;
 const THROW_HAND_LEVEL = 170;
 const THROW_INITIAL_VELOCITY = -25;

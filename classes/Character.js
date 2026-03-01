@@ -1,5 +1,10 @@
 // Character - The player character (Pepe)
 
+/**
+ * @class Character
+ * @extends MovableObject
+ * @description The player character (Pepe) with movement, jumping, health, and animation states.
+ */
 class Character extends MovableObject {
     IMAGES_IDLE = [];
     IMAGES_LONG_IDLE = [];
@@ -20,6 +25,10 @@ class Character extends MovableObject {
     isDead = false;
     isSnoring = false;
 
+    /**
+     * Create the player character
+     * @param {Keyboard} keyboard - The keyboard input handler
+     */
     constructor(keyboard) {
         super(CHARACTER_WIDTH, CHARACTER_HEIGHT, CHARACTER_SPEED);
 

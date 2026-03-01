@@ -1,5 +1,10 @@
 // Cloud - Moving clouds in the sky
 
+/**
+ * @class Cloud
+ * @extends MovableObject
+ * @description Decorative cloud that drifts slowly to the left across the sky.
+ */
 class Cloud extends MovableObject {
     /**
      * Create a cloud that floats slowly across the sky

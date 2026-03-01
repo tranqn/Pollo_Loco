@@ -1,5 +1,9 @@
 // CollisionHandler - Handles all collision detection and responses
 
+/**
+ * @class CollisionHandler
+ * @description Handles all collision detection and responses between the character, enemies, and collectibles.
+ */
 class CollisionHandler {
     /** @type {World} */
     world;

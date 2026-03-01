@@ -1,11 +1,17 @@
 // Main game script
 
-// Global variables
+/** @type {HTMLCanvasElement} The game canvas element */
 let canvas;
+/** @type {World} The game world instance */
 let world;
+/** @type {number|null} The game loop interval ID */
 let gameInterval;
+/** @type {Keyboard} The keyboard input handler */
 let keyboard;
+/** @type {boolean} Whether audio is currently muted */
 let isMuted = false;
+/** @type {boolean} Whether the game is currently paused */
+let isPaused = false;
 
 /**
  * Detect if the device supports touch input
@@ -24,6 +30,12 @@ function startGame() {
 
     const muteBtn = document.getElementById('mute-btn');
     if (muteBtn) muteBtn.classList.remove('hidden');
+
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    if (fullscreenBtn) fullscreenBtn.classList.remove('hidden');
+
+    const pauseBtn = document.getElementById('pause-btn');
+    if (pauseBtn) pauseBtn.classList.remove('hidden');
 
     init();
 
@@ -63,10 +75,52 @@ function toggleMute() {
 }
 
 /**
+ * Toggle fullscreen mode on the document
+ */
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+/**
+ * Toggle pause state of the game
+ */
+function togglePause() {
+    if (!world || world.isGameOver) return;
+    if (isPaused) {
+        resumeGame();
+    } else {
+        isPaused = true;
+        stopGameLoop();
+        const pauseScreen = document.getElementById('pause-screen');
+        if (pauseScreen) pauseScreen.classList.remove('hidden');
+    }
+}
+
+/**
+ * Resume the game from paused state
+ */
+function resumeGame() {
+    isPaused = false;
+    hideScreen('pause-screen');
+    if (world && world.character) {
+        world.character.lastActionTime = Date.now();
+    }
+    startGameLoop();
+}
+
+/**
  * Clear all animation intervals from game objects
  */
 function clearGameIntervals() {
     if (!world) return;
+
+    if (world.endScreenTimeout) {
+        clearTimeout(world.endScreenTimeout);
+    }
 
     if (world.character && world.character.animationInterval) {
         clearInterval(world.character.animationInterval);
@@ -106,8 +160,12 @@ function backToMenu() {
 
     hideScreen('gameover-screen');
     hideScreen('win-screen');
+    hideScreen('pause-screen');
     hideScreen('mute-btn');
+    hideScreen('fullscreen-btn');
+    hideScreen('pause-btn');
     hideScreen('mobile-controls');
+    isPaused = false;
 
     const landingPage = document.getElementById('landing-page');
     if (landingPage) landingPage.classList.remove('hidden');
@@ -147,6 +205,7 @@ function init() {
  */
 function initKeyboardListeners() {
     window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') togglePause();
         if (e.key === 'ArrowLeft') keyboard.LEFT = true;
         if (e.key === 'ArrowRight') keyboard.RIGHT = true;
         if (e.key === ' ') keyboard.SPACE = true;
@@ -170,6 +229,8 @@ function restartGame() {
 
     hideScreen('gameover-screen');
     hideScreen('win-screen');
+    hideScreen('pause-screen');
+    isPaused = false;
 
     resetKeyboard();
     world = null;
@@ -234,6 +295,7 @@ function initMobileControls() {
     });
 }
 
+/** @type {boolean} Whether touch controls have been initialized */
 let touchControlsInitialized = false;
 
 /**

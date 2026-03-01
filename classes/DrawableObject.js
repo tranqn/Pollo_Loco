@@ -1,5 +1,10 @@
 // DrawableObject - Base class for all drawable game objects
 
+/**
+ * @class DrawableObject
+ * @description Base class for all objects that can be drawn on the canvas.
+ * Provides image loading, drawing, collision detection, and debug frame rendering.
+ */
 class DrawableObject {
     xCoordinate;
     yCoordinate;
@@ -16,6 +21,13 @@ class DrawableObject {
     collisionOffsetWidth = 0;
     collisionOffsetHeight = 0;
 
+    /**
+     * Create a drawable object
+     * @param {number} xCoordinate - X position on the canvas
+     * @param {number} yCoordinate - Y position on the canvas
+     * @param {number} width - Width of the object
+     * @param {number} height - Height of the object
+     */
     constructor(xCoordinate, yCoordinate, width, height) {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
@@ -90,6 +102,11 @@ class DrawableObject {
         }
     }
 
+    /**
+     * Load multiple images into cache and storage array
+     * @param {Array<HTMLImageElement>} STORAGE - Array to store loaded image elements
+     * @param {Array<string>} IMAGES_PATHS - Array of image file paths to load
+     */
     loadImages(STORAGE, IMAGES_PATHS)
     {
         IMAGES_PATHS.forEach((path) => {

@@ -1,5 +1,10 @@
 // Chicken - Enemy class (normal chicken)
 
+/**
+ * @class Chicken
+ * @extends MovableObject
+ * @description Regular chicken enemy that patrols back and forth within a set range.
+ */
 class Chicken extends MovableObject {
     IMAGES_WALKING = [];
     IMAGES_DEAD = [];

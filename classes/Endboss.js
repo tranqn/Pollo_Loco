@@ -1,5 +1,10 @@
 // Endboss - Final boss enemy
 
+/**
+ * @class Endboss
+ * @extends MovableObject
+ * @description Final boss enemy with health, patrol, alert, attack, hurt, and dead states.
+ */
 class Endboss extends MovableObject {
     IMAGES_WALKING = [];
     IMAGES_ALERT = [];

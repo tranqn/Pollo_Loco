@@ -1,5 +1,10 @@
 // BackgroundObject - Background images (parallax layers)
 
+/**
+ * @class BackgroundObject
+ * @extends DrawableObject
+ * @description A background image layer used for parallax scrolling, tiled across the level.
+ */
 class BackgroundObject extends DrawableObject {
     /**
      * Create a background layer object

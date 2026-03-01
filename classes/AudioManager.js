@@ -1,5 +1,9 @@
 // AudioManager - Singleton for managing all game audio
 
+/**
+ * @class AudioManager
+ * @description Singleton that manages all game audio including background music, sound effects, and mute state persistence.
+ */
 class AudioManager {
     /** @type {AudioManager} */
     static instance = null;

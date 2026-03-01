@@ -1,5 +1,9 @@
 // World - Game world that contains all objects
 
+/**
+ * @class World
+ * @description Main game world that manages all game objects, state, collisions, and rendering.
+ */
 class World {
     canvas;
     ctx;
@@ -140,7 +144,8 @@ class World {
             stopGameLoop();
         }
 
-        setTimeout(() => {
+        this.endScreenTimeout = setTimeout(() => {
+            if (!this.isGameOver) return;
             const gameOverScreen = document.getElementById('gameover-screen');
             if (gameOverScreen) {
                 gameOverScreen.classList.remove('hidden');
@@ -161,7 +166,8 @@ class World {
             stopGameLoop();
         }
 
-        setTimeout(() => {
+        this.endScreenTimeout = setTimeout(() => {
+            if (!this.isGameOver) return;
             const winScreen = document.getElementById('win-screen');
             if (winScreen) {
                 winScreen.classList.remove('hidden');

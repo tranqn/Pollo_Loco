@@ -1,5 +1,10 @@
 // ThrowableObject - Bottles that can be thrown at enemies
 
+/**
+ * @class ThrowableObject
+ * @extends MovableObject
+ * @description A bottle that can be thrown at enemies, following a parabolic arc with rotation and splash animations.
+ */
 class ThrowableObject extends MovableObject {
     IMAGES_ROTATION = [];
     IMAGES_SPLASH = [];

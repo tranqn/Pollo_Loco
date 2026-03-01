@@ -1,5 +1,10 @@
 // StatusBar - Visual status indicator for health, coins, bottles, etc.
 
+/**
+ * @class StatusBar
+ * @extends DrawableObject
+ * @description Visual status bar that displays a percentage value using one of six images (0-100%).
+ */
 class StatusBar extends DrawableObject {
     percentage = 100; // Current value (0-100)
     images = []; // Array of 6 images for different percentages

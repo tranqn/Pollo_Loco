@@ -1,5 +1,9 @@
 // WorldRenderer - Handles all drawing/rendering for the game world
 
+/**
+ * @class WorldRenderer
+ * @description Handles all canvas drawing and rendering for the game world including backgrounds, objects, UI, and debug info.
+ */
 class WorldRenderer {
     /** @type {World} */
     world;

@@ -1,5 +1,10 @@
 // Coin - Collectible coins (animated)
 
+/**
+ * @class Coin
+ * @extends DrawableObject
+ * @description A collectible coin with a spinning animation that updates the coin status bar.
+ */
 class Coin extends DrawableObject {
     IMAGES_COIN = [];
     animationInterval;

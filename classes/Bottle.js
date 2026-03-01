@@ -1,5 +1,10 @@
 // Bottle - Collectible bottles on the ground (static, no animation)
 
+/**
+ * @class Bottle
+ * @extends DrawableObject
+ * @description A collectible bottle on the ground that the character can pick up and throw.
+ */
 class Bottle extends DrawableObject {
     /**
      * Create a bottle collectible on the ground

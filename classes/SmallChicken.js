@@ -1,5 +1,10 @@
 // SmallChicken - Smaller, faster enemy variant
 
+/**
+ * @class SmallChicken
+ * @extends MovableObject
+ * @description Smaller and faster chicken enemy variant that patrols back and forth.
+ */
 class SmallChicken extends MovableObject {
     IMAGES_WALKING = [];
     animationInterval;
