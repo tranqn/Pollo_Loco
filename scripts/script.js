@@ -9,154 +9,127 @@ let isMuted = false;
 
 /**
  * Start the game from landing page
- * Hides landing page, shows game container and mute button
  */
 function startGame() {
-    // Hide landing page
     const landingPage = document.getElementById('landing-page');
-    if (landingPage) {
-        landingPage.classList.add('hidden');
-    }
+    if (landingPage) landingPage.classList.add('hidden');
 
-    // Show mute button
     const muteBtn = document.getElementById('mute-btn');
-    if (muteBtn) {
-        muteBtn.classList.remove('hidden');
-    }
+    if (muteBtn) muteBtn.classList.remove('hidden');
 
-    // Check if mobile to show controls
+    init();
+
     if (window.innerWidth <= 768) {
         const mobileControls = document.getElementById('mobile-controls');
-        if (mobileControls) {
-            mobileControls.classList.remove('hidden');
-        }
+        if (mobileControls) mobileControls.classList.remove('hidden');
     }
 
-    // Initialize the game
-    init();
+    setupTouchControls();
 }
 
 /**
  * Show instructions modal dialog
  */
 function showInstructions() {
-    const instructionsDialog = document.getElementById('instructions-dialog');
-    if (instructionsDialog) {
-        instructionsDialog.classList.remove('hidden');
-    }
+    const dialog = document.getElementById('instructions-dialog');
+    if (dialog) dialog.classList.remove('hidden');
 }
 
 /**
  * Hide instructions modal dialog
  */
 function hideInstructions() {
-    const instructionsDialog = document.getElementById('instructions-dialog');
-    if (instructionsDialog) {
-        instructionsDialog.classList.add('hidden');
-    }
+    const dialog = document.getElementById('instructions-dialog');
+    if (dialog) dialog.classList.add('hidden');
 }
 
 /**
  * Toggle mute/unmute sound
- * Persists setting to localStorage
  */
 function toggleMute() {
-    isMuted = !isMuted;
-    localStorage.setItem('gameMuted', isMuted);
+    const audioManager = AudioManager.getInstance();
+    isMuted = audioManager.toggleMute();
 
     const muteBtn = document.getElementById('mute-btn');
-    if (muteBtn) {
-        muteBtn.textContent = isMuted ? '🔇' : '🔊';
+    if (muteBtn) muteBtn.textContent = isMuted ? '🔇' : '🔊';
+}
+
+/**
+ * Clear all animation intervals from game objects
+ */
+function clearGameIntervals() {
+    if (!world) return;
+
+    if (world.character && world.character.animationInterval) {
+        clearInterval(world.character.animationInterval);
     }
 
-    // Here you would also mute/unmute actual game sounds when implemented
-    // Example: world.toggleSound(isMuted);
+    if (world.level && world.level.enemies) {
+        world.level.enemies.forEach(enemy => {
+            if (enemy.animationInterval) clearInterval(enemy.animationInterval);
+        });
+    }
+
+    if (world.thrownBottles) {
+        world.thrownBottles.forEach(bottle => {
+            if (bottle.animationInterval) clearInterval(bottle.animationInterval);
+        });
+    }
+}
+
+/**
+ * Reset keyboard state to all keys released
+ */
+function resetKeyboard() {
+    if (!keyboard) return;
+    keyboard.LEFT = false;
+    keyboard.RIGHT = false;
+    keyboard.SPACE = false;
+    keyboard.D = false;
 }
 
 /**
  * Go back to main menu (landing page)
- * Stops game and resets to landing page
  */
 function backToMenu() {
-    // Stop the game loop
+    AudioManager.getInstance().stopMusic();
     stopGameLoop();
+    clearGameIntervals();
 
-    // Clear all intervals from game objects
-    if (world) {
-        if (world.character && world.character.animationInterval) {
-            clearInterval(world.character.animationInterval);
-        }
-        if (world.character && world.character.jumpAnimationInterval) {
-            clearInterval(world.character.jumpAnimationInterval);
-        }
+    hideScreen('gameover-screen');
+    hideScreen('win-screen');
+    hideScreen('mute-btn');
+    hideScreen('mobile-controls');
 
-        if (world.level && world.level.enemies) {
-            world.level.enemies.forEach(enemy => {
-                if (enemy.animationInterval) {
-                    clearInterval(enemy.animationInterval);
-                }
-            });
-        }
-
-        if (world.thrownBottles) {
-            world.thrownBottles.forEach(bottle => {
-                if (bottle.animationInterval) {
-                    clearInterval(bottle.animationInterval);
-                }
-            });
-        }
-    }
-
-    // Hide all game screens
-    const gameOverScreen = document.getElementById('gameover-screen');
-    const winScreen = document.getElementById('win-screen');
-    const muteBtn = document.getElementById('mute-btn');
-    const mobileControls = document.getElementById('mobile-controls');
-
-    if (gameOverScreen) gameOverScreen.classList.add('hidden');
-    if (winScreen) winScreen.classList.add('hidden');
-    if (muteBtn) muteBtn.classList.add('hidden');
-    if (mobileControls) mobileControls.classList.add('hidden');
-
-    // Show landing page
     const landingPage = document.getElementById('landing-page');
-    if (landingPage) {
-        landingPage.classList.remove('hidden');
-    }
+    if (landingPage) landingPage.classList.remove('hidden');
 
-    // Reset keyboard state
-    if (keyboard) {
-        keyboard.LEFT = false;
-        keyboard.RIGHT = false;
-        keyboard.SPACE = false;
-        keyboard.D = false;
-    }
-
-    // Clear world
+    resetKeyboard();
     world = null;
 }
 
 /**
+ * Hide a screen element by adding 'hidden' class
+ * @param {string} id - Element ID
+ */
+function hideScreen(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+}
+
+/**
  * Initialize the game
- * Called when player clicks "START GAME" button
  */
 function init() {
-    // Get canvas element
     canvas = document.getElementById('canvas');
-    if (!canvas) {
-        return;
-    }
+    if (!canvas) return;
 
-    // Initialize keyboard (only once)
     if (!keyboard) {
         keyboard = new Keyboard();
         initKeyboardListeners();
     }
 
-    // Create world (this creates the character and all game objects)
     world = new World(canvas, keyboard);
-
-    // Start game loop
     startGameLoop();
 }
 
@@ -165,143 +138,68 @@ function init() {
  */
 function initKeyboardListeners() {
     window.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-            keyboard.LEFT = true;
-        }
-        if (e.key === 'ArrowRight') {
-            keyboard.RIGHT = true;
-        }
-        if (e.key === ' ') {
-            keyboard.SPACE = true;
-        }
-        if (e.key === 'd' || e.key === 'D') {
-            keyboard.D = true;
-        }
+        if (e.key === 'ArrowLeft') keyboard.LEFT = true;
+        if (e.key === 'ArrowRight') keyboard.RIGHT = true;
+        if (e.key === ' ') keyboard.SPACE = true;
+        if (e.key === 'd' || e.key === 'D') keyboard.D = true;
     });
 
     window.addEventListener('keyup', (e) => {
-        if (e.key === 'ArrowLeft') {
-            keyboard.LEFT = false;
-        }
-        if (e.key === 'ArrowRight') {
-            keyboard.RIGHT = false;
-        }
-        if (e.key === ' ') {
-            keyboard.SPACE = false;
-        }
-        if (e.key === 'd' || e.key === 'D') {
-            keyboard.D = false;
-        }
+        if (e.key === 'ArrowLeft') keyboard.LEFT = false;
+        if (e.key === 'ArrowRight') keyboard.RIGHT = false;
+        if (e.key === ' ') keyboard.SPACE = false;
+        if (e.key === 'd' || e.key === 'D') keyboard.D = false;
     });
 }
 
 /**
- * Restart the game
- * Resets game state without page reload
+ * Restart the game without page reload
  */
 function restartGame() {
-    // Stop the game loop
     stopGameLoop();
+    clearGameIntervals();
 
-    // Clear all intervals from game objects
-    if (world) {
-        // Clear character intervals
-        if (world.character && world.character.animationInterval) {
-            clearInterval(world.character.animationInterval);
-        }
-        if (world.character && world.character.jumpAnimationInterval) {
-            clearInterval(world.character.jumpAnimationInterval);
-        }
+    hideScreen('gameover-screen');
+    hideScreen('win-screen');
 
-        // Clear enemy intervals
-        if (world.level && world.level.enemies) {
-            world.level.enemies.forEach(enemy => {
-                if (enemy.animationInterval) {
-                    clearInterval(enemy.animationInterval);
-                }
-            });
-        }
-
-        // Clear thrown bottle intervals
-        if (world.thrownBottles) {
-            world.thrownBottles.forEach(bottle => {
-                if (bottle.animationInterval) {
-                    clearInterval(bottle.animationInterval);
-                }
-            });
-        }
-    }
-
-    // Hide end screens
-    const gameOverScreen = document.getElementById('gameover-screen');
-    const winScreen = document.getElementById('win-screen');
-    if (gameOverScreen) gameOverScreen.classList.add('hidden');
-    if (winScreen) winScreen.classList.add('hidden');
-
-    // Reset keyboard state
-    if (keyboard) {
-        keyboard.LEFT = false;
-        keyboard.RIGHT = false;
-        keyboard.SPACE = false;
-        keyboard.D = false;
-    }
-
-    // Clear world (will be recreated on next init())
+    resetKeyboard();
     world = null;
 
-    // Recreate level1 with fresh enemies, coins, and bottles
     level1 = createLevel1();
-
-    // Immediately start a new game (don't show start screen)
     init();
 }
 
 // Initialize restart buttons and mobile controls when page loads
 window.addEventListener('DOMContentLoaded', () => {
-    // Load mute state from localStorage
     const savedMuteState = localStorage.getItem('gameMuted');
     if (savedMuteState === 'true') {
         isMuted = true;
         const muteBtn = document.getElementById('mute-btn');
-        if (muteBtn) {
-            muteBtn.textContent = '🔇';
-        }
+        if (muteBtn) muteBtn.textContent = '🔇';
     }
 
-    // Game over restart button
     const restartBtn = document.getElementById('restart-btn');
-    if (restartBtn) {
-        restartBtn.addEventListener('click', restartGame);
-    }
+    if (restartBtn) restartBtn.addEventListener('click', restartGame);
 
-    // Win screen restart button
     const winRestartBtn = document.getElementById('win-restart-btn');
-    if (winRestartBtn) {
-        winRestartBtn.addEventListener('click', restartGame);
-    }
+    if (winRestartBtn) winRestartBtn.addEventListener('click', restartGame);
 
-    // Initialize mobile controls
     initMobileControls();
     checkOrientation();
 });
 
 /**
- * Start the game loop - runs 60 times per second
- * For now, we only draw (no movement)
+ * Start the game loop
  */
 function startGameLoop() {
     gameInterval = setInterval(() => {
-        // Update game state (movement, physics, collisions)
         world.update();
-
-        // Draw everything on the canvas
         world.draw();
-    }, FRAME_INTERVAL); // From constants.js: 1000/60 ≈ 16.67ms
+    }, FRAME_INTERVAL);
 }
 
 /**
  * Stop the game loop
- * Useful for pause functionality
  */
 function stopGameLoop() {
     if (gameInterval) {
@@ -311,22 +209,15 @@ function stopGameLoop() {
 }
 
 /**
- * Initialize mobile touch controls
- * Shows controls on mobile/tablet, hides on desktop
+ * Initialize mobile touch controls visibility and resize handling
  */
 function initMobileControls() {
     const mobileControls = document.getElementById('mobile-controls');
-    const isMobile = window.innerWidth <= 768;
+    if (!mobileControls) return;
 
-    if (isMobile && mobileControls) {
-        mobileControls.classList.remove('hidden');
-        setupTouchControls();
-    }
-
-    // Re-check on window resize
     window.addEventListener('resize', () => {
-        const isMobileNow = window.innerWidth <= 768;
-        if (isMobileNow) {
+        if (!world) return;
+        if (window.innerWidth <= 768) {
             mobileControls.classList.remove('hidden');
         } else {
             mobileControls.classList.add('hidden');
@@ -334,69 +225,38 @@ function initMobileControls() {
     });
 }
 
+let touchControlsInitialized = false;
+
 /**
  * Setup touch event listeners for mobile buttons
  */
 function setupTouchControls() {
-    const leftBtn = document.querySelector('.left-btn');
-    const rightBtn = document.querySelector('.right-btn');
-    const jumpBtn = document.querySelector('.jump-btn');
-    const throwBtn = document.querySelector('.throw-btn');
+    if (touchControlsInitialized) return;
+    setupTouchButton('.left-btn', 'LEFT');
+    setupTouchButton('.right-btn', 'RIGHT');
+    setupTouchButton('.jump-btn', 'SPACE');
+    setupTouchButton('.throw-btn', 'D');
+    touchControlsInitialized = true;
+}
 
-    // Disable context menu on all touch buttons
-    [leftBtn, rightBtn, jumpBtn, throwBtn].forEach(btn => {
-        if (btn) {
-            btn.addEventListener('contextmenu', (e) => e.preventDefault());
-        }
+/**
+ * Setup touch events for a single mobile button
+ * @param {string} selector - CSS selector for the button
+ * @param {string} key - Keyboard property name to toggle
+ */
+function setupTouchButton(selector, key) {
+    const btn = document.querySelector(selector);
+    if (!btn || !keyboard) return;
+
+    btn.addEventListener('contextmenu', (e) => e.preventDefault());
+    btn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard[key] = true;
     });
-
-    // Left button
-    if (leftBtn && keyboard) {
-        leftBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            keyboard.LEFT = true;
-        });
-        leftBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            keyboard.LEFT = false;
-        });
-    }
-
-    // Right button
-    if (rightBtn && keyboard) {
-        rightBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            keyboard.RIGHT = true;
-        });
-        rightBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            keyboard.RIGHT = false;
-        });
-    }
-
-    // Jump button
-    if (jumpBtn && keyboard) {
-        jumpBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            keyboard.SPACE = true;
-        });
-        jumpBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            keyboard.SPACE = false;
-        });
-    }
-
-    // Throw button
-    if (throwBtn && keyboard) {
-        throwBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            keyboard.D = true;
-        });
-        throwBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            keyboard.D = false;
-        });
-    }
+    btn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard[key] = false;
+    });
 }
 
 /**
@@ -416,10 +276,7 @@ function checkOrientation() {
         }
     }
 
-    // Check on load
     updateOrientation();
-
-    // Check on orientation change
     window.addEventListener('orientationchange', updateOrientation);
     window.addEventListener('resize', updateOrientation);
 }

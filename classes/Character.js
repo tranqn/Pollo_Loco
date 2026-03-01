@@ -36,7 +36,7 @@ class Character extends MovableObject {
         this.img = this.IMAGES_CACHE[IMAGES_CHARACTER_IDLE[0]];
 
         // Set initial position
-        this.xCoordinate = 100;  // Start position X
+        this.xCoordinate = CHARACTER_START_X;
         this.yCoordinate = GROUND_LEVEL;  // Start on ground (180px)
 
         // Set collision box offsets for more accurate hitbox
@@ -87,7 +87,8 @@ class Character extends MovableObject {
         if (this.keyboard.SPACE && !this.isJumping && !this.spaceWasPressed) {
             this.jump();
             this.lastActionTime = Date.now();
-            this.spaceWasPressed = true; // Mark as pressed
+            this.spaceWasPressed = true;
+            AudioManager.getInstance().playSFX(AUDIO_SFX_JUMP);
         }
 
         // Reset when spacebar is released
@@ -129,27 +130,28 @@ class Character extends MovableObject {
      */
     isHurt() {
         const timeSinceHit = Date.now() - this.lastHitTime;
-        return timeSinceHit < 1000; // Hurt animation lasts 1 second
+        return timeSinceHit < HURT_DURATION;
     }
 
     /**
      * Character takes damage from enemy
      * @param {number} damage - Amount of damage to take
+     * @returns {boolean} True if damage was applied
      */
-    hit(damage = 20) {
-        if (this.isDead) return; // Can't damage dead character
+    hit(damage = CHARACTER_DEFAULT_DAMAGE) {
+        if (this.isDead) return false;
 
-        // Only take damage if not recently hit (invincibility frames)
         if (!this.isHurt()) {
             this.health -= damage;
             this.lastHitTime = Date.now();
 
-            // Check if character died
             if (this.health <= 0) {
                 this.health = 0;
                 this.isDead = true;
             }
+            return true;
         }
+        return false;
     }
 
     /**

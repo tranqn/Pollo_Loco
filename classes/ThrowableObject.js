@@ -49,7 +49,7 @@ class ThrowableObject extends MovableObject {
      */
     throw() {
         // Initial upward velocity (creates arc)
-        this.yVelocity = -25;
+        this.yVelocity = THROW_INITIAL_VELOCITY;
 
         // Set horizontal movement based on direction
         // (handled in update method)
@@ -61,7 +61,7 @@ class ThrowableObject extends MovableObject {
     update() {
         if (this.isSplashing) {
             // Check if splash animation is complete (500ms)
-            if (Date.now() - this.splashStartTime > 500) {
+            if (Date.now() - this.splashStartTime > SPLASH_DURATION) {
                 this.markForRemoval = true; // Flag for removal from world
             }
             return; // Don't move while splashing
@@ -92,6 +92,7 @@ class ThrowableObject extends MovableObject {
             this.isSplashing = true;
             this.hasHit = true;
             this.splashStartTime = Date.now();
+            AudioManager.getInstance().playSFX(AUDIO_SFX_BOTTLE_BREAK);
 
             // Stop rotation animation and start splash animation
             clearInterval(this.animationInterval);

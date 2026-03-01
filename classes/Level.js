@@ -8,7 +8,7 @@ class Level
     bottles = [];
     coins = [];
     endboss = null;
-    levelEndX = WORLD_END_X;
+    levelEndX = LEVEL_END_X;
 
     constructor(clouds, chickens, backgroundObjects, bottles, coins, endboss) {
         this.clouds = clouds;

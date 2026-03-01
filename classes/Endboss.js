@@ -8,49 +8,41 @@ class Endboss extends MovableObject {
     IMAGES_DEAD = [];
 
     health = ENDBOSS_MAX_HEALTH;
-    lastHitTime = 0; // Track last time hit
+    lastHitTime = 0;
     isDead = false;
-    currentState = 'walking'; // walking, alert, attack, hurt, dead
+    currentState = 'walking';
     animationInterval;
 
-    // Patrol behavior - stays within last background section (1438 to 2158)
-    patrolStartX = 1600;  // Start of patrol area (within last background)
-    patrolEndX = 1850;    // End of patrol area (within last background)
-    movingRight = true;   // Current direction
+    // Patrol behavior
+    patrolStartX = 1600;
+    patrolEndX = 1850;
+    movingRight = true;
+
+    // Character tracking (set by World each frame)
+    characterX = 0;
 
     /**
      * Create the endboss enemy
      */
     constructor() {
-        // Initialize with endboss dimensions and speed
         super(ENDBOSS_WIDTH, ENDBOSS_HEIGHT, ENDBOSS_SPEED);
 
-        // Load all animation images
         this.loadImages(this.IMAGES_WALKING, IMAGES_ENDBOSS_WALKING);
         this.loadImages(this.IMAGES_ALERT, IMAGES_ENDBOSS_ALERT);
         this.loadImages(this.IMAGES_ATTACK, IMAGES_ENDBOSS_ATTACK);
         this.loadImages(this.IMAGES_HURT, IMAGES_ENDBOSS_HURT);
         this.loadImages(this.IMAGES_DEAD, IMAGES_ENDBOSS_DEAD);
 
-        // Set initial image
         this.img = this.IMAGES_CACHE[IMAGES_ENDBOSS_WALKING[0]];
-
-        // Starts moving right, so mirror image (images face left by default)
         this.otherDirection = true;
-
-        // Position at end of level
         this.xCoordinate = this.patrolStartX;
-
-        // Y: On the ground (accounting for endboss height)
         this.yCoordinate = GROUND_LEVEL + (CHARACTER_HEIGHT - ENDBOSS_HEIGHT);
 
-        // Set collision box offsets for more accurate hitbox
         this.collisionOffsetX = ENDBOSS_COLLISION_OFFSET_X;
         this.collisionOffsetY = ENDBOSS_COLLISION_OFFSET_Y;
         this.collisionOffsetWidth = ENDBOSS_COLLISION_OFFSET_WIDTH;
         this.collisionOffsetHeight = ENDBOSS_COLLISION_OFFSET_HEIGHT;
 
-        // Start animation
         this.startAnimation();
     }
 
@@ -58,45 +50,55 @@ class Endboss extends MovableObject {
      * Update endboss state (called every frame)
      */
     update() {
-        // Update state based on health
         this.updateState();
 
-        // Only move if alive and walking
         if (this.currentState === 'walking') {
-            // Patrol back and forth
-            // Endboss images face LEFT by default
-            if (this.movingRight) {
-                this.moveRight();
-                this.otherDirection = true; // Face right (mirror image since default is left)
-                // Turn around at patrol end
-                if (this.xCoordinate >= this.patrolEndX) {
-                    this.movingRight = false;
-                }
-            } else {
-                this.moveLeft();
-                this.otherDirection = false; // Face left (default direction, no mirror)
-                // Turn around at patrol start
-                if (this.xCoordinate <= this.patrolStartX) {
-                    this.movingRight = true;
-                }
+            this.patrol();
+        }
+    }
+
+    /**
+     * Patrol back and forth within the patrol area
+     */
+    patrol() {
+        if (this.movingRight) {
+            this.moveRight();
+            this.otherDirection = true;
+            if (this.xCoordinate >= this.patrolEndX) {
+                this.movingRight = false;
+            }
+        } else {
+            this.moveLeft();
+            this.otherDirection = false;
+            if (this.xCoordinate <= this.patrolStartX) {
+                this.movingRight = true;
             }
         }
     }
 
     /**
-     * Update endboss state based on health
+     * Update endboss state based on health and character proximity
      */
     updateState() {
-        // Dead state has highest priority
         if (this.isDead) {
             this.currentState = 'dead';
-        }
-        // Hurt state (recently damaged)
-        else if (this.isHurt()) {
+        } else if (this.isHurt()) {
             this.currentState = 'hurt';
+        } else if (this.getDistanceToCharacter() < ENDBOSS_ALERT_DISTANCE / 2) {
+            this.currentState = 'attack';
+        } else if (this.getDistanceToCharacter() < ENDBOSS_ALERT_DISTANCE) {
+            this.currentState = 'alert';
         } else {
             this.currentState = 'walking';
         }
+    }
+
+    /**
+     * Get horizontal distance to the character
+     * @returns {number} Distance in pixels
+     */
+    getDistanceToCharacter() {
+        return Math.abs(this.xCoordinate - this.characterX);
     }
 
     /**
@@ -105,7 +107,7 @@ class Endboss extends MovableObject {
      */
     isHurt() {
         const timeSinceHit = Date.now() - this.lastHitTime;
-        return timeSinceHit < 1000; // Hurt animation lasts 1 second
+        return timeSinceHit < HURT_DURATION;
     }
 
     /**
@@ -113,18 +115,14 @@ class Endboss extends MovableObject {
      * @param {number} damage - Amount of damage to take
      */
     hit(damage = THROWABLE_DAMAGE) {
-        if (this.isDead) return; // Can't damage dead boss
+        if (this.isDead) return;
 
-        // Only take damage if not recently hit (invincibility frames)
-        if (!this.isHurt()) {
-            this.health -= damage;
-            this.lastHitTime = Date.now();
+        this.health -= damage;
+        this.lastHitTime = Date.now();
 
-            // Check if endboss died
-            if (this.health <= 0) {
-                this.health = 0;
-                this.isDead = true;
-            }
+        if (this.health <= 0) {
+            this.health = 0;
+            this.isDead = true;
         }
     }
 
@@ -133,16 +131,18 @@ class Endboss extends MovableObject {
      */
     startAnimation() {
         this.animationInterval = setInterval(() => {
-            // Play animation based on current state
             if (this.currentState === 'dead') {
                 this.playAnimation(IMAGES_ENDBOSS_DEAD);
             } else if (this.currentState === 'hurt') {
                 this.playAnimation(IMAGES_ENDBOSS_HURT);
-            } else if (this.currentState === 'walking') {
+            } else if (this.currentState === 'attack') {
+                this.playAnimation(IMAGES_ENDBOSS_ATTACK);
+            } else if (this.currentState === 'alert') {
+                this.playAnimation(IMAGES_ENDBOSS_ALERT);
+            } else {
                 this.playAnimation(IMAGES_ENDBOSS_WALKING);
             }
-            // Other states (alert, attack) can be added later
-        }, ANIMATION_SPEED_NORMAL); // Same speed as other animations
+        }, ANIMATION_SPEED_NORMAL);
     }
 
     /**

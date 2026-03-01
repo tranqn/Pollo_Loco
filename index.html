@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El Pollo Loco - Jump & Run Game</title>
+    <link rel="icon" type="image/png" href="img/favicon.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,13 +25,15 @@
             </div>
 
             <div class="landing-footer">
-                <span class="footer-text">© 2024 El Pollo Loco</span>
+                <span class="footer-text">© 2025 El Pollo Loco</span>
+                <span class="footer-text">|</span>
+                <a href="impressum.html" class="footer-link">Impressum</a>
             </div>
         </div>
 
         <!-- Instructions Dialog -->
-        <div id="instructions-dialog" class="dialog-overlay hidden">
-            <div class="dialog">
+        <div id="instructions-dialog" class="dialog-overlay hidden" onclick="hideInstructions()">
+            <div class="dialog" onclick="event.stopPropagation()">
                 <button class="dialog-close" onclick="hideInstructions()">&times;</button>
                 <h2>How to Play</h2>
 
@@ -76,7 +79,10 @@
             <div class="overlay-content">
                 <h2>GAME OVER</h2>
                 <p>Pepe has been defeated!</p>
-                <button id="restart-btn" class="game-btn">Try Again</button>
+                <div class="game-screen-buttons">
+                    <button id="restart-btn" class="game-btn">Try Again</button>
+                    <button class="game-btn" onclick="backToMenu()">Back to Home</button>
+                </div>
             </div>
         </div>
 
@@ -85,7 +91,10 @@
             <div class="overlay-content">
                 <h2>VICTORY!</h2>
                 <p>You defeated the Endboss!</p>
-                <button id="win-restart-btn" class="game-btn">Play Again</button>
+                <div class="game-screen-buttons">
+                    <button id="win-restart-btn" class="game-btn">Play Again</button>
+                    <button class="game-btn" onclick="backToMenu()">Back to Home</button>
+                </div>
             </div>
         </div>
 
@@ -124,6 +133,9 @@
     <script src="classes/StatusBar.js"></script>
     <script src="classes/Keyboard.js"></script>
     <script src="classes/Level.js"></script>
+    <script src="classes/AudioManager.js"></script>
+    <script src="classes/CollisionHandler.js"></script>
+    <script src="classes/WorldRenderer.js"></script>
     <script src="classes/World.js"></script>
     <script src="levels/level1.js"></script>
     <script src="scripts/script.js"></script>

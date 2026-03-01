@@ -14,10 +14,10 @@ class Cloud extends MovableObject {
 
         // Random starting position
         // X: Start somewhere in the level (random position)
-        this.xCoordinate = Math.random() * 2000; // Spread across level
+        this.xCoordinate = Math.random() * CLOUD_SPREAD_RANGE;
 
-        // Y: Random height in upper part of sky (20 to 150 pixels from top)
-        this.yCoordinate = 20 + Math.random() * 130;
+        // Y: Random height in upper part of sky
+        this.yCoordinate = CLOUD_Y_MIN + Math.random() * CLOUD_Y_RANGE;
     }
 
     /**

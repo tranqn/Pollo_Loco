@@ -1,4 +1,15 @@
 /* ============================================
+   CUSTOM FONT
+   ============================================ */
+@font-face {
+    font-family: 'Boogaloo';
+    src: url('fonts/Boogaloo-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ============================================
    RESET & BASE STYLES
    ============================================ */
 * {
@@ -8,7 +19,7 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Boogaloo', Arial, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     justify-content: center;
@@ -99,6 +110,16 @@ body {
 .footer-text {
     color: #fff;
     padding: 5px 10px;
+}
+
+.footer-link {
+    color: #fff;
+    text-decoration: none;
+    padding: 5px 10px;
+}
+
+.footer-link:hover {
+    text-decoration: underline;
 }
 
 /* ============================================

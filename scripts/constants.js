@@ -42,6 +42,7 @@ const CHARACTER_HEIGHT = 280;
 const CHARACTER_SPEED = 5;
 const CHARACTER_JUMP_FORCE = 30;
 const CHARACTER_MAX_HEALTH = 100;
+const CHARACTER_DEFAULT_DAMAGE = 20; // Default damage value for hit() function
 const CHARACTER_IDLE_TIMEOUT = 15000; // Time before long idle animation (15 seconds)
 
 // Character collision box offsets (smaller hitbox for fairer gameplay)
@@ -79,7 +80,7 @@ const SMALL_CHICKEN_COLLISION_OFFSET_HEIGHT = 5;   // Bottom inset
 const ENDBOSS_WIDTH = 250;
 const ENDBOSS_HEIGHT = 400;
 const ENDBOSS_SPEED = 2;
-const ENDBOSS_MAX_HEALTH = 80; // Dies in 4 hits (4 x 20 damage = 80)
+const ENDBOSS_MAX_HEALTH = 100; // Dies in 5 hits (5 x 20 damage = 100)
 const ENDBOSS_ALERT_DISTANCE = 500;
 
 // Enemy damage
@@ -108,6 +109,7 @@ const COIN_COLLISION_OFFSET_HEIGHT = 10;   // Bottom inset
 
 const BOTTLE_WIDTH = 60;
 const BOTTLE_HEIGHT = 70;
+const BOTTLE_Y = GROUND_LEVEL + (CHARACTER_HEIGHT - BOTTLE_HEIGHT); // Y position for bottles on ground
 
 // Bottle collision box offsets (keep generous for easier collection)
 // Bottle sprite: 60×70 → Effective hitbox: 40×50
@@ -410,3 +412,42 @@ const IMAGES_WIN_SCREEN = [
 const CLOUD_WIDTH = 500;
 const CLOUD_HEIGHT = 250;
 const CLOUD_SPEED = 0.5;
+const CLOUD_SPREAD_RANGE = 2000;
+const CLOUD_Y_MIN = 20;
+const CLOUD_Y_RANGE = 130;
+
+// ============================================
+// GAMEPLAY CONSTANTS
+// ============================================
+const CHARACTER_START_X = 100;
+const HURT_DURATION = 2000;
+const THROW_COOLDOWN = 500;
+const THROW_HAND_LEVEL = 170;
+const THROW_INITIAL_VELOCITY = -25;
+const SPLASH_DURATION = 500;
+const ITEMS_PER_FULL_BAR = 10;
+const CAMERA_OFFSET_X = 100;
+const ENDBOSS_VISIBILITY_BUFFER = 100;
+const GAMEOVER_DELAY = 1000;
+const VICTORY_DELAY = 1500;
+const CHICKEN_SPAWN_MIN_X = 300;
+const CHICKEN_SPAWN_RANGE = 1200;
+const CHICKEN_PATROL_WIDTH = 500;
+
+// ============================================
+// AUDIO PATHS
+// ============================================
+const AUDIO_MUSIC_BG = 'audio/music/desert-theme.mp3';
+const AUDIO_MUSIC_GAMEOVER = 'audio/music/game-over.mp3';
+const AUDIO_SFX_WALK = 'audio/sfx/walk.mp3';
+const AUDIO_SFX_JUMP = 'audio/sfx/jump.mp3';
+const AUDIO_SFX_HURT = 'audio/sfx/hurt.mp3';
+const AUDIO_SFX_DEATH = 'audio/sfx/death.mp3';
+const AUDIO_SFX_CHICKEN = 'audio/sfx/chicken-cluck.mp3';
+const AUDIO_SFX_BOSS = 'audio/sfx/chicken-boss.mp3';
+const AUDIO_SFX_COIN = 'audio/sfx/coin-pickup.mp3';
+const AUDIO_SFX_BOTTLE_PICKUP = 'audio/sfx/bottle-pickup.mp3';
+const AUDIO_SFX_BOTTLE_THROW = 'audio/sfx/bottle-throw.mp3';
+const AUDIO_SFX_BOTTLE_BREAK = 'audio/sfx/bottle-break.mp3';
+const AUDIO_SFX_VICTORY = 'audio/sfx/victory.mp3';
+const AUDIO_SFX_SNORING = 'audio/sfx/snoring.mp3';

@@ -6,11 +6,8 @@ class Bottle extends DrawableObject {
      * @param {number} x - X position in the level
      */
     constructor(x) {
-        // Calculate Y position (bottles sit on ground)
-        const bottleY = GROUND_LEVEL + (CHARACTER_HEIGHT - BOTTLE_HEIGHT);
-
-        // Initialize with bottle dimensions
-        super(x, bottleY, BOTTLE_WIDTH, BOTTLE_HEIGHT);
+        // Initialize with bottle dimensions and ground position
+        super(x, BOTTLE_Y, BOTTLE_WIDTH, BOTTLE_HEIGHT);
 
         // Load static bottle image (no animation)
         this.img = new Image();

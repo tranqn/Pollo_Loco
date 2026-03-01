@@ -26,11 +26,11 @@ class Chicken extends MovableObject {
         this.img = this.IMAGES_CACHE[IMAGES_CHICKEN_WALKING[0]];
 
         // Random starting position between character and endboss
-        this.xCoordinate = 300 + Math.random() * 1200;
+        this.xCoordinate = CHICKEN_SPAWN_MIN_X + Math.random() * CHICKEN_SPAWN_RANGE;
 
-        // Set patrol range (500px wide area)
+        // Set patrol range
         this.patrolStartX = this.xCoordinate;
-        this.patrolEndX = this.xCoordinate + 500;
+        this.patrolEndX = this.xCoordinate + CHICKEN_PATROL_WIDTH;
 
         // Y: On the ground (accounting for chicken height)
         this.yCoordinate = GROUND_LEVEL + (CHARACTER_HEIGHT - CHICKEN_HEIGHT);
