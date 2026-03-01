@@ -106,6 +106,7 @@ function backToMenu() {
 
     resetKeyboard();
     world = null;
+    level1 = createLevel1();
 }
 
 /**
