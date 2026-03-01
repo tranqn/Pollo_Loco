@@ -8,6 +8,14 @@ let keyboard;
 let isMuted = false;
 
 /**
+ * Detect if the device supports touch input
+ * @returns {boolean} True if the device has touch capability
+ */
+function isTouchDevice() {
+    return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+}
+
+/**
  * Start the game from landing page
  */
 function startGame() {
@@ -19,7 +27,7 @@ function startGame() {
 
     init();
 
-    if (window.innerWidth <= 768) {
+    if (isTouchDevice()) {
         const mobileControls = document.getElementById('mobile-controls');
         if (mobileControls) mobileControls.classList.remove('hidden');
     }
@@ -218,7 +226,7 @@ function initMobileControls() {
 
     window.addEventListener('resize', () => {
         if (!world) return;
-        if (window.innerWidth <= 768) {
+        if (isTouchDevice()) {
             mobileControls.classList.remove('hidden');
         } else {
             mobileControls.classList.add('hidden');
@@ -268,7 +276,7 @@ function checkOrientation() {
 
     function updateOrientation() {
         const isPortrait = window.innerHeight > window.innerWidth;
-        const isMobile = window.innerWidth <= 768;
+        const isMobile = isTouchDevice();
 
         if (isPortrait && isMobile && portraitWarning) {
             portraitWarning.classList.remove('hidden');

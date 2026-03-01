@@ -242,7 +242,7 @@ body {
 .overlay-content {
     text-align: center;
     color: white;
-    width: 100%;
+    max-width: 80%;
     padding: 40px;
     background: linear-gradient(135deg, rgba(44, 62, 80, 0.9), rgba(52, 73, 94, 0.9));
     border-radius: 20px;
@@ -265,6 +265,12 @@ body {
 
 #win-screen .overlay-content h2 {
     color: #2ecc71;
+}
+
+.overlay-content p {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #fff;
 }
 
 .subtitle {

@@ -43,7 +43,7 @@ const CHARACTER_SPEED = 5;
 const CHARACTER_JUMP_FORCE = 30;
 const CHARACTER_MAX_HEALTH = 100;
 const CHARACTER_DEFAULT_DAMAGE = 20; // Default damage value for hit() function
-const CHARACTER_IDLE_TIMEOUT = 15000; // Time before long idle animation (15 seconds)
+const CHARACTER_IDLE_TIMEOUT = 5000; // Time before long idle animation (5 seconds)
 
 // Character collision box offsets (smaller hitbox for fairer gameplay)
 // Character sprite: 120×280 → Effective hitbox: 80×150
@@ -84,7 +84,7 @@ const ENDBOSS_MAX_HEALTH = 100; // Dies in 5 hits (5 x 20 damage = 100)
 const ENDBOSS_ALERT_DISTANCE = 500;
 
 // Enemy damage
-const ENEMY_DAMAGE = 5; // Damage dealt by regular enemies to character
+const ENEMY_DAMAGE = 20; // Damage dealt by regular enemies to character
 
 // Endboss collision box offsets
 // Endboss sprite: 250×400 → Effective hitbox: 170×230
@@ -437,17 +437,19 @@ const CHICKEN_PATROL_WIDTH = 500;
 // ============================================
 // AUDIO PATHS
 // ============================================
-const AUDIO_MUSIC_BG = 'audio/music/desert-theme.mp3';
-const AUDIO_MUSIC_GAMEOVER = 'audio/music/game-over.mp3';
+const AUDIO_MUSIC_BG = 'audio/music/game-theme.mp3';
+const AUDIO_MUSIC_GAMEOVER = 'audio/music/game-over-new.mp3';
 const AUDIO_SFX_WALK = 'audio/sfx/walk.mp3';
 const AUDIO_SFX_JUMP = 'audio/sfx/jump.mp3';
 const AUDIO_SFX_HURT = 'audio/sfx/hurt.mp3';
 const AUDIO_SFX_DEATH = 'audio/sfx/death.mp3';
 const AUDIO_SFX_CHICKEN = 'audio/sfx/chicken-cluck.mp3';
-const AUDIO_SFX_BOSS = 'audio/sfx/chicken-boss.mp3';
-const AUDIO_SFX_COIN = 'audio/sfx/coin-pickup.mp3';
+const AUDIO_SFX_SMALL_CHICKEN = 'audio/sfx/small-chicken.mp3';
+const AUDIO_SFX_BOSS = 'audio/sfx/endboss-hit.mp3';
+const AUDIO_SFX_COIN = 'audio/sfx/coin-pickup-new.mp3';
 const AUDIO_SFX_BOTTLE_PICKUP = 'audio/sfx/bottle-pickup.mp3';
 const AUDIO_SFX_BOTTLE_THROW = 'audio/sfx/bottle-throw.mp3';
 const AUDIO_SFX_BOTTLE_BREAK = 'audio/sfx/bottle-break.mp3';
-const AUDIO_SFX_VICTORY = 'audio/sfx/victory.mp3';
+const AUDIO_SFX_VICTORY = 'audio/sfx/victory-new.mp3';
 const AUDIO_SFX_SNORING = 'audio/sfx/snoring.mp3';
+const AUDIO_SFX_SWOOSH = 'audio/sfx/swoosh.mp3';

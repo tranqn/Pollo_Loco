@@ -49,7 +49,8 @@ class CollisionHandler {
         if (isStomp && !(enemy instanceof Endboss)) {
             this.world.level.enemies.splice(index, 1);
             this.world.character.yVelocity = -ENEMY_BOUNCE_FORCE;
-            AudioManager.getInstance().playSFX(AUDIO_SFX_CHICKEN);
+            const sfx = enemy instanceof SmallChicken ? AUDIO_SFX_SMALL_CHICKEN : AUDIO_SFX_CHICKEN;
+            AudioManager.getInstance().playSFX(sfx);
         } else if (isStomp && enemy instanceof Endboss) {
             this.world.character.yVelocity = -ENEMY_BOUNCE_FORCE;
         } else {

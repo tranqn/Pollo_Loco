@@ -18,6 +18,7 @@ class Character extends MovableObject {
     health = CHARACTER_MAX_HEALTH; // 100 HP
     lastHitTime = 0; // Track last time character was hit
     isDead = false;
+    isSnoring = false;
 
     constructor(keyboard) {
         super(CHARACTER_WIDTH, CHARACTER_HEIGHT, CHARACTER_SPEED);
@@ -118,10 +119,37 @@ class Character extends MovableObject {
             // Check if idle for long time
             if (Date.now() - this.lastActionTime > CHARACTER_IDLE_TIMEOUT) {
                 this.currentState = 'longIdle';
+                this.startSnoring();
             } else {
                 this.currentState = 'idle';
             }
         }
+
+        if (this.currentState !== 'longIdle' && this.isSnoring) {
+            this.stopSnoring();
+        }
+    }
+
+    /**
+     * Start playing the snoring sound on loop
+     */
+    startSnoring() {
+        if (this.isSnoring) return;
+        this.isSnoring = true;
+        const sound = AudioManager.getInstance().getSound(AUDIO_SFX_SNORING);
+        sound.loop = true;
+        AudioManager.getInstance().playSFX(AUDIO_SFX_SNORING);
+    }
+
+    /**
+     * Stop the snoring sound
+     */
+    stopSnoring() {
+        this.isSnoring = false;
+        const sound = AudioManager.getInstance().getSound(AUDIO_SFX_SNORING);
+        sound.loop = false;
+        sound.pause();
+        sound.currentTime = 0;
     }
 
     /**

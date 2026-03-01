@@ -51,6 +51,7 @@ class World {
         this.createStatusBars();
         this.renderer = new WorldRenderer(this);
         this.collisionHandler = new CollisionHandler(this);
+        AudioManager.getInstance().playSFX(AUDIO_SFX_SWOOSH);
         AudioManager.getInstance().playMusic(AUDIO_MUSIC_BG);
     }
 
@@ -133,6 +134,7 @@ class World {
         if (this.isGameOver) return;
         this.isGameOver = true;
         AudioManager.getInstance().stopMusic();
+        AudioManager.getInstance().playSFX(AUDIO_MUSIC_GAMEOVER);
 
         if (typeof stopGameLoop === 'function') {
             stopGameLoop();
