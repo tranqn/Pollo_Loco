@@ -154,6 +154,9 @@ function resetKeyboard() {
  * Go back to main menu (landing page)
  */
 function backToMenu() {
+    if (world && world.character) {
+        world.character.stopSnoring();
+    }
     AudioManager.getInstance().stopMusic();
     stopGameLoop();
     clearGameIntervals();

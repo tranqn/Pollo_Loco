@@ -146,6 +146,7 @@ class World {
 
         this.endScreenTimeout = setTimeout(() => {
             if (!this.isGameOver) return;
+            this.setRandomScreenImage('gameover-bg', IMAGES_GAME_OVER);
             const gameOverScreen = document.getElementById('gameover-screen');
             if (gameOverScreen) {
                 gameOverScreen.classList.remove('hidden');
@@ -168,11 +169,24 @@ class World {
 
         this.endScreenTimeout = setTimeout(() => {
             if (!this.isGameOver) return;
+            this.setRandomScreenImage('win-bg', IMAGES_WIN_SCREEN);
             const winScreen = document.getElementById('win-screen');
             if (winScreen) {
                 winScreen.classList.remove('hidden');
             }
         }, VICTORY_DELAY);
+    }
+
+    /**
+     * Set a random image from an array on an img element
+     * @param {string} elementId - The img element ID
+     * @param {Array} images - Array of image paths to pick from
+     */
+    setRandomScreenImage(elementId, images) {
+        const img = document.getElementById(elementId);
+        if (img && images.length > 0) {
+            img.src = images[Math.floor(Math.random() * images.length)];
+        }
     }
 
     /**

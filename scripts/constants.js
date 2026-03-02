@@ -344,7 +344,7 @@ const IMAGE_BACKGROUND_AIR = 'img/5_background/layers/air.png';
 const IMAGE_CLOUD = 'img/5_background/layers/4_clouds/1.png';
 
 // ============================================
-// IMAGE PATHS - STATUS BARS (GREEN THEME)
+// IMAGE PATHS - STATUS BARS (GREEN THEME — player bars)
 // ============================================
 const IMAGES_STATUSBAR_HEALTH = [
     'img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',
@@ -373,14 +373,94 @@ const IMAGES_STATUSBAR_BOTTLE = [
     'img/7_statusbars/1_statusbar/3_statusbar_bottle/green/100.png'
 ];
 
-const IMAGES_STATUSBAR_ENDBOSS = [
-    'img/7_statusbars/2_statusbar_endboss/green/green0.png',
-    'img/7_statusbars/2_statusbar_endboss/green/green20.png',
-    'img/7_statusbars/2_statusbar_endboss/green/green40.png',
-    'img/7_statusbars/2_statusbar_endboss/green/green60.png',
-    'img/7_statusbars/2_statusbar_endboss/green/green80.png',
-    'img/7_statusbars/2_statusbar_endboss/green/green100.png'
+// ============================================
+// IMAGE PATHS - STATUS BARS (BLUE THEME)
+// ============================================
+const IMAGES_STATUSBAR_HEALTH_BLUE = [
+    'img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/blue/40.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/blue/60.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/blue/80.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png'
 ];
+
+const IMAGES_STATUSBAR_COIN_BLUE = [
+    'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/0.png',
+    'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/20.png',
+    'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/40.png',
+    'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/60.png',
+    'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/80.png',
+    'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/100.png'
+];
+
+const IMAGES_STATUSBAR_BOTTLE_BLUE = [
+    'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/0.png',
+    'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/20.png',
+    'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/40.png',
+    'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/60.png',
+    'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/80.png',
+    'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/100.png'
+];
+
+const IMAGES_STATUSBAR_ENDBOSS_BLUE = [
+    'img/7_statusbars/2_statusbar_endboss/blue/blue0.png',
+    'img/7_statusbars/2_statusbar_endboss/blue/blue20.png',
+    'img/7_statusbars/2_statusbar_endboss/blue/blue40.png',
+    'img/7_statusbars/2_statusbar_endboss/blue/blue60.png',
+    'img/7_statusbars/2_statusbar_endboss/blue/blue80.png',
+    'img/7_statusbars/2_statusbar_endboss/blue/blue100.png'
+];
+
+// ============================================
+// IMAGE PATHS - STATUS BARS (ORANGE THEME — endboss bar)
+// ============================================
+const IMAGES_STATUSBAR_HEALTH_ORANGE = [
+    'img/7_statusbars/1_statusbar/2_statusbar_health/orange/0.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/orange/20.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/orange/40.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/orange/60.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/orange/80.png',
+    'img/7_statusbars/1_statusbar/2_statusbar_health/orange/100.png'
+];
+
+const IMAGES_STATUSBAR_COIN_ORANGE = [
+    'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/0.png',
+    'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/20.png',
+    'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/40.png',
+    'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/60.png',
+    'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/80.png',
+    'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/100.png'
+];
+
+const IMAGES_STATUSBAR_BOTTLE_ORANGE = [
+    'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/0.png',
+    'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/20.png',
+    'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/40.png',
+    'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/60.png',
+    'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/80.png',
+    'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/100.png'
+];
+
+const IMAGES_STATUSBAR_ENDBOSS_ORANGE = [
+    'img/7_statusbars/2_statusbar_endboss/orange/orange0.png',
+    'img/7_statusbars/2_statusbar_endboss/orange/orange20.png',
+    'img/7_statusbars/2_statusbar_endboss/orange/orange40.png',
+    'img/7_statusbars/2_statusbar_endboss/orange/orange60.png',
+    'img/7_statusbars/2_statusbar_endboss/orange/orange80.png',
+    'img/7_statusbars/2_statusbar_endboss/orange/orange100.png'
+];
+
+// Active endboss bar uses orange theme to differentiate from player's green bars
+const IMAGES_STATUSBAR_ENDBOSS = IMAGES_STATUSBAR_ENDBOSS_ORANGE;
+
+// ============================================
+// IMAGE PATHS - BAR ELEMENTS
+// ============================================
+const IMAGE_BAR_EMPTY = 'img/7_statusbars/4_bar_elements/statusbar_empty.png';
+const IMAGE_BAR_GREEN = 'img/7_statusbars/4_bar_elements/statusbar_green.png';
+const IMAGE_BAR_BLUE = 'img/7_statusbars/4_bar_elements/statusbar_blue.png';
+const IMAGE_BAR_ORANGE = 'img/7_statusbars/4_bar_elements/statusbar_orange.png';
 
 // ============================================
 // IMAGE PATHS - ICONS
@@ -400,12 +480,20 @@ const IMAGES_START_SCREEN = [
 
 const IMAGES_GAME_OVER = [
     'img/game_result_screens/you_lost.png',
-    'img/game_result_screens/game_over.png'
+    'img/game_result_screens/game_over.png',
+    'img/You won, you lost/You lost.png',
+    'img/You won, you lost/You lost b.png',
+    'img/You won, you lost/Game Over.png',
+    'img/You won, you lost/Game over A.png'
 ];
 
 const IMAGES_WIN_SCREEN = [
     'img/game_result_screens/you_won_b.png',
-    'img/game_result_screens/you_win_b.png'
+    'img/game_result_screens/you_win_b.png',
+    'img/You won, you lost/You Won B.png',
+    'img/You won, you lost/You win B.png',
+    'img/You won, you lost/You won A.png',
+    'img/You won, you lost/You Win A.png'
 ];
 
 // ============================================
