@@ -200,60 +200,57 @@ class Character extends MovableObject {
         let lastState = '';
 
         this.animationInterval = setInterval(() => {
-            // If state changed to jumping, switch to fast animation
             if (lastState !== this.currentState && this.currentState === 'jumping') {
+                this.currentImageIndex = 0;
                 clearInterval(this.animationInterval);
-                this.startFastJumpAnimation();
+                this.startJumpAnimation();
                 return;
             }
             lastState = this.currentState;
 
-            // Play animation based on current state
             if (this.currentState === 'dead') {
                 this.playAnimation(IMAGES_CHARACTER_DEAD);
             } else if (this.currentState === 'hurt') {
                 this.playAnimation(IMAGES_CHARACTER_HURT);
             } else if (this.currentState === 'walking') {
                 this.playAnimation(IMAGES_CHARACTER_WALKING);
-            } else if (this.currentState === 'jumping') {
-                this.playAnimation(IMAGES_CHARACTER_JUMPING);
             } else if (this.currentState === 'longIdle') {
                 this.playAnimation(IMAGES_CHARACTER_LONG_IDLE);
             } else {
-                // Default idle
                 this.playAnimation(IMAGES_CHARACTER_IDLE);
             }
         }, ANIMATION_SPEED_NORMAL);
     }
 
     /**
-     * Fast animation specifically for jumping
-     * Runs at 45ms to sync all 9 frames with jump duration
+     * Jump animation — plays all 9 frames once, freezes on last frame, resets on landing
      */
-    startFastJumpAnimation() {
-        this.animationInterval = setInterval(() => {
-            // Play animation based on current state
-            if (this.currentState === 'dead') {
-                this.playAnimation(IMAGES_CHARACTER_DEAD);
-            } else if (this.currentState === 'hurt') {
-                this.playAnimation(IMAGES_CHARACTER_HURT);
-            } else if (this.currentState === 'walking') {
-                this.playAnimation(IMAGES_CHARACTER_WALKING);
-            } else if (this.currentState === 'jumping') {
-                this.playAnimation(IMAGES_CHARACTER_JUMPING);
-            } else if (this.currentState === 'longIdle') {
-                this.playAnimation(IMAGES_CHARACTER_LONG_IDLE);
-            } else {
-                // Default idle
-                this.playAnimation(IMAGES_CHARACTER_IDLE);
-            }
+    startJumpAnimation() {
+        const totalFrames = IMAGES_CHARACTER_JUMPING.length;
 
-            // Switch back to normal speed when no longer jumping
-            if (this.currentState !== 'jumping') {
+        this.animationInterval = setInterval(() => {
+            if (this.currentState === 'jumping') {
+                this.playJumpFrame(totalFrames);
+            } else {
+                this.currentImageIndex = 0;
                 clearInterval(this.animationInterval);
                 this.startAnimation();
             }
         }, ANIMATION_SPEED_JUMP);
+    }
+
+    /**
+     * Play a single jump frame, cycling through once then freezing on last
+     * @param {number} totalFrames - Total number of jump animation frames
+     */
+    playJumpFrame(totalFrames) {
+        const frameIndex = Math.min(this.currentImageIndex, totalFrames - 1);
+        let path = IMAGES_CHARACTER_JUMPING[frameIndex];
+        this.img = this.IMAGES_CACHE[path];
+
+        if (this.currentImageIndex < totalFrames - 1) {
+            this.currentImageIndex++;
+        }
     }
 
     /**

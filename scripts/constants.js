@@ -28,9 +28,9 @@ const CAMERA_MAX_X = LEVEL_END_X - CANVAS_WIDTH; // 2158 - 720 = 1438 (max camer
 // ============================================
 // PHYSICS CONSTANTS
 // ============================================
-const GRAVITY = 2.5;
+const GRAVITY = 0.3;
 const GROUND_LEVEL = 180; // Y-position where characters stand
-const ENEMY_BOUNCE_FORCE = 15; // Bounce when jumping on enemy (half of jump force)
+const ENEMY_BOUNCE_FORCE = 6; // Bounce when jumping on enemy (half of jump force)
 
 // ============================================
 // CHARACTER CONSTANTS
@@ -38,7 +38,7 @@ const ENEMY_BOUNCE_FORCE = 15; // Bounce when jumping on enemy (half of jump for
 const CHARACTER_WIDTH = 120;
 const CHARACTER_HEIGHT = 280;
 const CHARACTER_SPEED = 5;
-const CHARACTER_JUMP_FORCE = 30;
+const CHARACTER_JUMP_FORCE = 11;
 const CHARACTER_MAX_HEALTH = 100;
 const CHARACTER_DEFAULT_DAMAGE = 20; // Default damage value for hit() function
 const CHARACTER_IDLE_TIMEOUT = 5000; // Time before long idle animation (5 seconds)
@@ -77,9 +77,12 @@ const SMALL_CHICKEN_COLLISION_OFFSET_HEIGHT = 5;   // Bottom inset
 
 const ENDBOSS_WIDTH = 250;
 const ENDBOSS_HEIGHT = 400;
-const ENDBOSS_SPEED = 2;
+const ENDBOSS_SPEED = 6;
 const ENDBOSS_MAX_HEALTH = 100; // Dies in 5 hits (5 x 20 damage = 100)
 const ENDBOSS_ALERT_DISTANCE = 500;
+const ENDBOSS_MIN_X = 500; // Left boundary — boss cannot walk past this point
+const ENDBOSS_CHASE_DURATION = 1500; // Chase player for 1.5 seconds
+const ENDBOSS_WANDER_DURATION = 1500; // Walk randomly for 1.5 seconds
 
 // Enemy damage
 const ENEMY_DAMAGE = 20; // Damage dealt by regular enemies to character
@@ -137,10 +140,11 @@ const ANIMATION_SPEED_FAST = 50;
 const ANIMATION_SPEED_NORMAL = 100;
 const ANIMATION_SPEED_SLOW = 200;
 
-// Jump animation timing - calculated to sync with jump physics
-// Jump duration = 2 * JUMP_FORCE / GRAVITY = 2 * 30 / 2.5 = 24 frames = 400ms at 60 FPS
-// Jump animation has 9 frames, so: 400ms / 9 ≈ 44ms per frame
-const ANIMATION_SPEED_JUMP = 45;
+// Jump animation timing - synced so all 9 frames play exactly once during the jump
+// Jump duration = 2 * JUMP_FORCE / GRAVITY = 2 * 11 / 0.3 = 73 frames = 1222ms at 60 FPS
+// Peak height = 11² / (2 * 0.3) = 201px
+// 1222ms / 9 frames ≈ 136ms per frame
+const ANIMATION_SPEED_JUMP = 136;
 
 // ============================================
 // STATUS BAR CONSTANTS
@@ -395,13 +399,13 @@ const IMAGES_START_SCREEN = [
 ];
 
 const IMAGES_GAME_OVER = [
-    'img/You won, you lost/You lost.png',
-    'img/You won, you lost/Game Over.png'
+    'img/game_result_screens/you_lost.png',
+    'img/game_result_screens/game_over.png'
 ];
 
 const IMAGES_WIN_SCREEN = [
-    'img/You won, you lost/You Won B.png',
-    'img/You won, you lost/You win B.png'
+    'img/game_result_screens/you_won_b.png',
+    'img/game_result_screens/you_win_b.png'
 ];
 
 // ============================================

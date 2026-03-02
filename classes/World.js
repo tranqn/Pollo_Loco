@@ -67,7 +67,7 @@ class World {
         this.coinBar = new StatusBar(STATUSBAR_PADDING, STATUSBAR_PADDING + STATUSBAR_HEIGHT + 10, IMAGES_STATUSBAR_COIN);
         this.bottleBar = new StatusBar(STATUSBAR_PADDING, STATUSBAR_PADDING + (STATUSBAR_HEIGHT + 10) * 2, IMAGES_STATUSBAR_BOTTLE);
 
-        const endbossBarX = (CANVAS_WIDTH - STATUSBAR_WIDTH) / 2;
+        const endbossBarX = CANVAS_WIDTH - STATUSBAR_WIDTH - STATUSBAR_PADDING;
         this.endbossBar = new StatusBar(endbossBarX, STATUSBAR_PADDING, IMAGES_STATUSBAR_ENDBOSS);
         this.endbossBar.setPercentage(100);
 
@@ -85,7 +85,7 @@ class World {
         }
 
         const endboss = this.getEndboss();
-        if (endboss && endboss.isDead) {
+        if (endboss && endboss.deathAnimationComplete) {
             this.victory();
             return;
         }
