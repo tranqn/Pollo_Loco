@@ -116,15 +116,22 @@ class World {
             this.gameOver();
             return;
         }
-
         const endboss = this.getEndboss();
         if (endboss && endboss.deathAnimationComplete) {
             this.victory();
             return;
         }
-
         this.character.update();
         this.handleThrow();
+        this.updateEntities();
+        this.collisionHandler.checkCollisions();
+        this.updateCamera();
+    }
+
+    /**
+     * Update all level entities (enemies, clouds, coins, thrown bottles)
+     */
+    updateEntities() {
         this.level.clouds.forEach(cloud => cloud.update());
         this.level.enemies.forEach(enemy => {
             if (enemy === this.endboss) {
@@ -134,8 +141,6 @@ class World {
         });
         this.level.coins.forEach(coin => coin.update());
         this.updateThrownBottles();
-        this.collisionHandler.checkCollisions();
-        this.updateCamera();
     }
 
     /**

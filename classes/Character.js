@@ -148,25 +148,36 @@ class Character extends MovableObject {
      * Handle keyboard input for movement
      */
     handleMovement() {
+        this.handleHorizontalMovement();
+        this.handleJumpInput();
+    }
+
+    /**
+     * Handle left/right movement input
+     */
+    handleHorizontalMovement() {
         if (this.keyboard.RIGHT && this.xCoordinate < LEVEL_END_X - this.width) {
             this.moveRight();
             this.otherDirection = false;
             this.lastActionTime = Date.now();
         }
-
         if (this.keyboard.LEFT && this.xCoordinate > 0) {
             this.moveLeft();
             this.otherDirection = true;
             this.lastActionTime = Date.now();
         }
+    }
 
+    /**
+     * Handle jump input with press-and-release detection
+     */
+    handleJumpInput() {
         if (this.keyboard.SPACE && !this.isJumping && !this.spaceWasPressed) {
             this.jump();
             this.lastActionTime = Date.now();
             this.spaceWasPressed = true;
             AudioManager.getInstance().playSFX(Character.AUDIO_JUMP);
         }
-
         if (!this.keyboard.SPACE) {
             this.spaceWasPressed = false;
         }

@@ -56,8 +56,12 @@ function isTouchDevice() {
  * Preload all game images into GLOBAL_IMAGE_CACHE
  * @returns {Promise} Resolves when all images are loaded
  */
-function preloadImages() {
-    const allPaths = [
+/**
+ * Collect all image paths from every class into one flat array
+ * @returns {Array<string>}
+ */
+function collectAllImagePaths() {
+    return [
         ...Character.IMAGES_IDLE, ...Character.IMAGES_LONG_IDLE,
         ...Character.IMAGES_WALKING, ...Character.IMAGES_JUMPING,
         ...Character.IMAGES_HURT, ...Character.IMAGES_DEAD,
@@ -74,8 +78,28 @@ function preloadImages() {
         ...BackgroundObject.IMAGES_LAYER_3, ...BackgroundObject.IMAGES_CLOUDS,
         BackgroundObject.IMAGE_AIR, Cloud.IMAGE
     ];
+}
 
-    const uniquePaths = [...new Set(allPaths)];
+/**
+ * Populate each class's static IMAGES_CACHE from the global cache
+ */
+function populateClassCaches() {
+    Character.loadAllImages();
+    Chicken.loadAllImages();
+    SmallChicken.loadAllImages();
+    Endboss.loadAllImages();
+    Coin.loadAllImages();
+    Bottle.loadAllImages();
+    ThrowableObject.loadAllImages();
+    StatusBar.loadAllImages();
+}
+
+/**
+ * Preload all game images into GLOBAL_IMAGE_CACHE, then populate class caches
+ * @returns {Promise}
+ */
+function preloadImages() {
+    const uniquePaths = [...new Set(collectAllImagePaths())];
     const promises = uniquePaths.map(path => {
         return new Promise(resolve => {
             const img = getCachedImage(path);
@@ -84,17 +108,7 @@ function preloadImages() {
             img.onerror = resolve;
         });
     });
-
-    return Promise.all(promises).then(() => {
-        Character.loadAllImages();
-        Chicken.loadAllImages();
-        SmallChicken.loadAllImages();
-        Endboss.loadAllImages();
-        Coin.loadAllImages();
-        Bottle.loadAllImages();
-        ThrowableObject.loadAllImages();
-        StatusBar.loadAllImages();
-    });
+    return Promise.all(promises).then(populateClassCaches);
 }
 
 /**
@@ -201,6 +215,20 @@ function resetKeyboard() {
 /**
  * Go back to main menu (landing page)
  */
+/**
+ * Hide all game UI overlays and buttons
+ */
+function hideAllGameUI() {
+    const elementsToHide = [
+        DOM.gameoverScreen, DOM.winScreen, DOM.pauseScreen,
+        DOM.muteBtn, DOM.fullscreenBtn, DOM.pauseBtn, DOM.mobileControls
+    ];
+    elementsToHide.forEach(el => { if (el) el.classList.add('hidden'); });
+}
+
+/**
+ * Go back to main menu (landing page)
+ */
 function backToMenu() {
     if (world && world.character) {
         world.character.stopSnoring();
@@ -208,19 +236,10 @@ function backToMenu() {
     AudioManager.getInstance().stopMusic();
     stopGameLoop();
     clearGameIntervals();
-
-    if (DOM.gameoverScreen) DOM.gameoverScreen.classList.add('hidden');
-    if (DOM.winScreen) DOM.winScreen.classList.add('hidden');
-    if (DOM.pauseScreen) DOM.pauseScreen.classList.add('hidden');
-    if (DOM.muteBtn) DOM.muteBtn.classList.add('hidden');
-    if (DOM.fullscreenBtn) DOM.fullscreenBtn.classList.add('hidden');
-    if (DOM.pauseBtn) DOM.pauseBtn.classList.add('hidden');
-    if (DOM.mobileControls) DOM.mobileControls.classList.add('hidden');
+    hideAllGameUI();
     isPaused = false;
-
     if (DOM.canvas) DOM.canvas.classList.add('hidden');
     if (DOM.landingPage) DOM.landingPage.classList.remove('hidden');
-
     resetKeyboard();
     world = null;
     level1 = createLevel1();
