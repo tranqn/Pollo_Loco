@@ -569,17 +569,17 @@ body {
     font-size: clamp(16px, 4cqh, 20px);
 }
 
-/* Centered top — avoids overlapping endboss health bar */
+/* Between coin bar (~45%) and endboss bar (~77%), centered at ~61% */
 .pause-btn {
-    left: calc(50% - clamp(30px, 8cqh, 50px) * 1.5 - clamp(5px, 1cqw, 10px));
+    left: calc(61% - clamp(30px, 8cqh, 50px) * 1.5 - clamp(5px, 1cqw, 10px));
 }
 
 .fullscreen-btn {
-    left: calc(50% - clamp(30px, 8cqh, 50px) / 2);
+    left: calc(61% - clamp(30px, 8cqh, 50px) / 2);
 }
 
 .mute-btn {
-    left: calc(50% + clamp(30px, 8cqh, 50px) / 2 + clamp(5px, 1cqw, 10px));
+    left: calc(61% + clamp(30px, 8cqh, 50px) / 2 + clamp(5px, 1cqw, 10px));
 }
 
 .mute-btn.hidden,
