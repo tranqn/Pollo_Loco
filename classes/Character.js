@@ -1,59 +1,47 @@
-// Character - The player character (Pepe)
-
 /**
  * @class Character
  * @extends MovableObject
  * @description The player character (Pepe) with movement, jumping, health, and animation states.
  */
 class Character extends MovableObject {
-    IMAGES_IDLE = [];
-    IMAGES_LONG_IDLE = [];
-    IMAGES_WALKING = [];
-    IMAGES_JUMPING = [];
-    IMAGES_HURT = [];
-    IMAGES_DEAD = [];
+    static IMAGES_CACHE = {};
+
+    /**
+     * Preloads all Character images into the class-level cache
+     */
+    static loadAllImages() {
+        const allPaths = [
+            ...IMAGES_CHARACTER_IDLE, ...IMAGES_CHARACTER_LONG_IDLE,
+            ...IMAGES_CHARACTER_WALKING, ...IMAGES_CHARACTER_JUMPING,
+            ...IMAGES_CHARACTER_HURT, ...IMAGES_CHARACTER_DEAD
+        ];
+        allPaths.forEach(p => { Character.IMAGES_CACHE[p] = getCachedImage(p); });
+    }
 
     keyboard;
-    currentState = 'idle'; // idle, walking, jumping, hurt, dead
+    currentState = 'idle';
     lastActionTime = Date.now();
-    spaceWasPressed = false; // Track if space was pressed (for jump release detection)
+    spaceWasPressed = false;
+    showDebugFrame = true;
 
-    // Animation accumulator (replaces setInterval)
     animationTimer = 0;
     animationSpeed = ANIMATION_SPEED_NORMAL;
     lastAnimationState = '';
 
-    // Health system
-    health = CHARACTER_MAX_HEALTH; // 100 HP
-    lastHitTime = 0; // Track last time character was hit
+    health = CHARACTER_MAX_HEALTH;
+    lastHitTime = 0;
     isDead = false;
     isSnoring = false;
 
     /**
-     * Create the player character
      * @param {Keyboard} keyboard - The keyboard input handler
      */
     constructor(keyboard) {
         super(CHARACTER_WIDTH, CHARACTER_HEIGHT, CHARACTER_SPEED);
-
         this.keyboard = keyboard;
-
-        // Load all animation images into cache
-        this.loadImages(this.IMAGES_IDLE, IMAGES_CHARACTER_IDLE);
-        this.loadImages(this.IMAGES_LONG_IDLE, IMAGES_CHARACTER_LONG_IDLE);
-        this.loadImages(this.IMAGES_WALKING, IMAGES_CHARACTER_WALKING);
-        this.loadImages(this.IMAGES_JUMPING, IMAGES_CHARACTER_JUMPING);
-        this.loadImages(this.IMAGES_HURT, IMAGES_CHARACTER_HURT);
-        this.loadImages(this.IMAGES_DEAD, IMAGES_CHARACTER_DEAD);
-
-        // Set initial image (first frame of idle animation)
-        this.img = this.IMAGES_CACHE[IMAGES_CHARACTER_IDLE[0]];
-
-        // Set initial position
+        this.img = Character.IMAGES_CACHE[IMAGES_CHARACTER_IDLE[0]];
         this.xCoordinate = CHARACTER_START_X;
-        this.yCoordinate = GROUND_LEVEL;  // Start on ground (180px)
-
-        // Set collision box offsets for more accurate hitbox
+        this.yCoordinate = GROUND_LEVEL;
         this.collisionOffsetX = CHARACTER_COLLISION_OFFSET_X;
         this.collisionOffsetY = CHARACTER_COLLISION_OFFSET_Y;
         this.collisionOffsetWidth = CHARACTER_COLLISION_OFFSET_WIDTH;
@@ -62,7 +50,6 @@ class Character extends MovableObject {
 
     /**
      * Update character state (called every frame)
-     * Handles movement, physics, state changes, and animation
      */
     update() {
         this.handleMovement();
@@ -75,22 +62,18 @@ class Character extends MovableObject {
      * Handle keyboard input for movement
      */
     handleMovement() {
-        // Move right (can move to end of level)
         if (this.keyboard.RIGHT && this.xCoordinate < LEVEL_END_X - this.width) {
             this.moveRight();
-            this.otherDirection = false; // Face right (default direction)
+            this.otherDirection = false;
             this.lastActionTime = Date.now();
         }
 
-        // Move left (can move to start of level)
         if (this.keyboard.LEFT && this.xCoordinate > 0) {
             this.moveLeft();
-            this.otherDirection = true; // Face left (mirror image)
+            this.otherDirection = true;
             this.lastActionTime = Date.now();
         }
 
-        // Jump - only if space pressed AND was released before
-        // This prevents "holding spacebar" from causing double jumps
         if (this.keyboard.SPACE && !this.isJumping && !this.spaceWasPressed) {
             this.jump();
             this.lastActionTime = Date.now();
@@ -98,7 +81,6 @@ class Character extends MovableObject {
             AudioManager.getInstance().playSFX(AUDIO_SFX_JUMP);
         }
 
-        // Reset when spacebar is released
         if (!this.keyboard.SPACE) {
             this.spaceWasPressed = false;
         }
@@ -117,12 +99,7 @@ class Character extends MovableObject {
         } else if (this.keyboard.LEFT || this.keyboard.RIGHT) {
             this.currentState = 'walking';
         } else {
-            if (Date.now() - this.lastActionTime > CHARACTER_IDLE_TIMEOUT) {
-                this.currentState = 'longIdle';
-                this.startSnoring();
-            } else {
-                this.currentState = 'idle';
-            }
+            this.resolveIdleState();
         }
 
         if (this.currentState !== 'longIdle' && this.isSnoring) {
@@ -131,8 +108,19 @@ class Character extends MovableObject {
     }
 
     /**
+     * Determine whether to play idle or long idle animation
+     */
+    resolveIdleState() {
+        if (Date.now() - this.lastActionTime > CHARACTER_IDLE_TIMEOUT) {
+            this.currentState = 'longIdle';
+            this.startSnoring();
+        } else {
+            this.currentState = 'idle';
+        }
+    }
+
+    /**
      * Advance animation frame using delta-time accumulator
-     * Handles jump animation with separate speed and one-shot playback
      */
     updateAnimation() {
         if (this.lastAnimationState !== this.currentState && this.currentState === 'jumping') {
@@ -210,11 +198,9 @@ class Character extends MovableObject {
      */
     hit(damage = CHARACTER_DEFAULT_DAMAGE) {
         if (this.isDead) return false;
-
         if (!this.isHurt()) {
             this.health -= damage;
             this.lastHitTime = Date.now();
-
             if (this.health <= 0) {
                 this.health = 0;
                 this.isDead = true;
@@ -230,22 +216,10 @@ class Character extends MovableObject {
      */
     playJumpFrame(totalFrames) {
         const frameIndex = Math.min(this.currentImageIndex, totalFrames - 1);
-        let path = IMAGES_CHARACTER_JUMPING[frameIndex];
-        this.img = this.IMAGES_CACHE[path];
-
+        const path = IMAGES_CHARACTER_JUMPING[frameIndex];
+        this.img = Character.IMAGES_CACHE[path];
         if (this.currentImageIndex < totalFrames - 1) {
             this.currentImageIndex++;
         }
-    }
-
-    /**
-     * Play an animation by cycling through frames
-     * @param {Array} images - Array of image paths
-     */
-    playAnimation(images) {
-        let i = this.currentImageIndex % images.length;
-        let path = images[i];
-        this.img = this.IMAGES_CACHE[path];
-        this.currentImageIndex++;
     }
 }

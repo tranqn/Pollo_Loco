@@ -1,17 +1,22 @@
-// Endboss - Final boss enemy
-
 /**
  * @class Endboss
  * @extends MovableObject
  * @description Final boss enemy with health, patrol, alert, attack, hurt, and dead states.
- * When engaged, alternates between chasing the player and wandering randomly.
  */
 class Endboss extends MovableObject {
-    IMAGES_WALKING = [];
-    IMAGES_ALERT = [];
-    IMAGES_ATTACK = [];
-    IMAGES_HURT = [];
-    IMAGES_DEAD = [];
+    static IMAGES_CACHE = {};
+
+    /**
+     * Preloads all Endboss images into the class-level cache
+     */
+    static loadAllImages() {
+        const allPaths = [
+            ...IMAGES_ENDBOSS_WALKING, ...IMAGES_ENDBOSS_ALERT,
+            ...IMAGES_ENDBOSS_ATTACK, ...IMAGES_ENDBOSS_HURT,
+            ...IMAGES_ENDBOSS_DEAD
+        ];
+        allPaths.forEach(p => { Endboss.IMAGES_CACHE[p] = getCachedImage(p); });
+    }
 
     health = ENDBOSS_MAX_HEALTH;
     lastHitTime = 0;
@@ -19,22 +24,19 @@ class Endboss extends MovableObject {
     deathAnimationComplete = false;
     currentState = 'walking';
     previousState = 'walking';
+    showDebugFrame = true;
 
-    // Animation accumulator (replaces setInterval)
     animationTimer = 0;
     animationSpeed = ANIMATION_SPEED_NORMAL;
 
-    // Patrol behavior
     patrolStartX = 1600;
     patrolEndX = 1850;
     movingRight = true;
 
-    // Chase/wander cycle
     isChasing = true;
     cycleStartTime = 0;
-    wanderDirection = -1; // -1 = left, 1 = right
+    wanderDirection = -1;
 
-    // Character tracking (set by World each frame)
     characterX = 0;
 
     /**
@@ -42,18 +44,10 @@ class Endboss extends MovableObject {
      */
     constructor() {
         super(ENDBOSS_WIDTH, ENDBOSS_HEIGHT, ENDBOSS_SPEED);
-
-        this.loadImages(this.IMAGES_WALKING, IMAGES_ENDBOSS_WALKING);
-        this.loadImages(this.IMAGES_ALERT, IMAGES_ENDBOSS_ALERT);
-        this.loadImages(this.IMAGES_ATTACK, IMAGES_ENDBOSS_ATTACK);
-        this.loadImages(this.IMAGES_HURT, IMAGES_ENDBOSS_HURT);
-        this.loadImages(this.IMAGES_DEAD, IMAGES_ENDBOSS_DEAD);
-
-        this.img = this.IMAGES_CACHE[IMAGES_ENDBOSS_WALKING[0]];
+        this.img = Endboss.IMAGES_CACHE[IMAGES_ENDBOSS_WALKING[0]];
         this.otherDirection = true;
         this.xCoordinate = this.patrolStartX;
         this.yCoordinate = GROUND_LEVEL + (CHARACTER_HEIGHT - ENDBOSS_HEIGHT);
-
         this.collisionOffsetX = ENDBOSS_COLLISION_OFFSET_X;
         this.collisionOffsetY = ENDBOSS_COLLISION_OFFSET_Y;
         this.collisionOffsetWidth = ENDBOSS_COLLISION_OFFSET_WIDTH;
@@ -65,13 +59,11 @@ class Endboss extends MovableObject {
      */
     update() {
         this.updateState();
-
         if (this.currentState === 'walking') {
             this.patrol();
         } else if (this.currentState === 'alert' || this.currentState === 'attack') {
             this.updateChaseCycle();
         }
-
         this.clampPosition();
         this.updateAnimation();
     }
@@ -175,7 +167,6 @@ class Endboss extends MovableObject {
         } else {
             this.currentState = 'walking';
         }
-
         this.resetAnimationOnStateChange();
     }
 
@@ -212,10 +203,8 @@ class Endboss extends MovableObject {
      */
     hit(damage = THROWABLE_DAMAGE) {
         if (this.isDead) return;
-
         this.health -= damage;
         this.lastHitTime = Date.now();
-
         if (this.health <= 0) {
             this.health = 0;
             this.isDead = true;
@@ -255,26 +244,13 @@ class Endboss extends MovableObject {
      */
     playDeathAnimation() {
         const lastFrame = IMAGES_ENDBOSS_DEAD.length - 1;
-
         if (this.currentImageIndex <= lastFrame) {
-            let path = IMAGES_ENDBOSS_DEAD[this.currentImageIndex];
-            this.img = this.IMAGES_CACHE[path];
+            const path = IMAGES_ENDBOSS_DEAD[this.currentImageIndex];
+            this.img = Endboss.IMAGES_CACHE[path];
             this.currentImageIndex++;
         }
-
         if (this.currentImageIndex > lastFrame) {
             this.deathAnimationComplete = true;
         }
-    }
-
-    /**
-     * Play an animation by cycling through frames
-     * @param {Array} images - Array of image paths
-     */
-    playAnimation(images) {
-        let i = this.currentImageIndex % images.length;
-        let path = images[i];
-        this.img = this.IMAGES_CACHE[path];
-        this.currentImageIndex++;
     }
 }

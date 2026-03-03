@@ -84,7 +84,17 @@ function preloadImages() {
             img.onerror = resolve;
         });
     });
-    return Promise.all(promises);
+
+    return Promise.all(promises).then(() => {
+        Character.loadAllImages();
+        Chicken.loadAllImages();
+        SmallChicken.loadAllImages();
+        Endboss.loadAllImages();
+        Coin.loadAllImages();
+        Bottle.loadAllImages();
+        ThrowableObject.loadAllImages();
+        StatusBar.loadAllImages();
+    });
 }
 
 /**

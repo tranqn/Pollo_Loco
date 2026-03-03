@@ -1,5 +1,3 @@
-// DrawableObject - Base class for all drawable game objects
-
 /**
  * @class DrawableObject
  * @description Base class for all objects that can be drawn on the canvas.
@@ -10,19 +8,15 @@ class DrawableObject {
     yCoordinate;
     width;
     height;
-    IMAGES_CACHE = {};
     currentImageIndex = 0;
-    intervals = []; // To track setInterval IDs for cleanup
-    otherDirection = false; // When true, mirror the image horizontally
+    otherDirection = false;
 
-    // Collision box offsets (default to 0, each class can override)
     collisionOffsetX = 0;
     collisionOffsetY = 0;
     collisionOffsetWidth = 0;
     collisionOffsetHeight = 0;
 
     /**
-     * Create a drawable object
      * @param {number} xCoordinate - X position on the canvas
      * @param {number} yCoordinate - Y position on the canvas
      * @param {number} width - Width of the object
@@ -36,96 +30,79 @@ class DrawableObject {
     }
 
     /**
-     * Draws the object on the canvas
-     * Supports horizontal mirroring when otherDirection is true
+     * Draws the object on the canvas, mirroring horizontally if otherDirection is true
      * @param {CanvasRenderingContext2D} ctx - The canvas 2D rendering context
      */
-    draw(ctx)
-    {
-        // Only draw if we have an image loaded
-        if (!this.img) {
-            return;
-        }
+    draw(ctx) {
+        if (!this.img) return;
 
-        // If otherDirection, mirror the image horizontally
         if (this.otherDirection) {
-            ctx.save(); // Save current state
-            ctx.translate(this.width, 0); // Move origin to right edge
-            ctx.scale(-1, 1); // Flip horizontally
-            ctx.drawImage(
-                this.img,
-                -this.xCoordinate,  // Negative because of flip
-                this.yCoordinate,
-                this.width,
-                this.height
-            );
-            ctx.restore(); // Restore original state
+            ctx.save();
+            ctx.translate(this.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(this.img, -this.xCoordinate, this.yCoordinate, this.width, this.height);
+            ctx.restore();
         } else {
-            // Draw normally
-            ctx.drawImage(
-                this.img,           // The image to draw
-                this.xCoordinate,   // X position on canvas
-                this.yCoordinate,   // Y position on canvas
-                this.width,         // Width to draw
-                this.height         // Height to draw
-            );
+            ctx.drawImage(this.img, this.xCoordinate, this.yCoordinate, this.width, this.height);
         }
     }
 
     /**
-     * Draws a debug frame (hitbox) around the object
-     * Useful for visualizing collision boundaries
-     * Shows both the visual box (blue) and the actual collision box (red) with offsets
+     * Draws debug hitbox frames around the object
      * @param {CanvasRenderingContext2D} ctx - The canvas 2D rendering context
      */
-    drawFrame(ctx)
-    {
-        // Only draw frames for game objects (not UI elements)
-        if (this instanceof Character || this instanceof Chicken || this instanceof SmallChicken || this instanceof Endboss) {
-            // Draw visual bounding box (blue)
-            ctx.beginPath();
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = 'blue';
-            ctx.rect(this.xCoordinate, this.yCoordinate, this.width, this.height);
-            ctx.stroke();
+    drawFrame(ctx) {
+        if (!this.showDebugFrame) return;
 
-            // Draw actual collision box with offsets (red)
-            ctx.beginPath();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = 'red';
-            const collisionX = this.xCoordinate + this.collisionOffsetX;
-            const collisionY = this.yCoordinate + this.collisionOffsetY;
-            const collisionWidth = this.width - this.collisionOffsetX - this.collisionOffsetWidth;
-            const collisionHeight = this.height - this.collisionOffsetY - this.collisionOffsetHeight;
-            ctx.rect(collisionX, collisionY, collisionWidth, collisionHeight);
-            ctx.stroke();
-        }
+        this.drawVisualBox(ctx);
+        this.drawCollisionBox(ctx);
     }
 
     /**
-     * Load multiple images into cache and storage array
-     * @param {Array<HTMLImageElement>} STORAGE - Array to store loaded image elements
-     * @param {Array<string>} IMAGES_PATHS - Array of image file paths to load
+     * Draws the visual bounding box in blue
+     * @param {CanvasRenderingContext2D} ctx
      */
-    loadImages(STORAGE, IMAGES_PATHS)
-    {
-        IMAGES_PATHS.forEach((path) => {
-            let img = new Image();
-            img.src = path;
-            STORAGE.push(img);
-            this.IMAGES_CACHE[path] = img;
-        });
+    drawVisualBox(ctx) {
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'blue';
+        ctx.rect(this.xCoordinate, this.yCoordinate, this.width, this.height);
+        ctx.stroke();
     }
 
     /**
-     * Check if this object is colliding with another object
-     * Uses AABB (Axis-Aligned Bounding Box) collision detection with offset support
+     * Draws the collision hitbox in red
+     * @param {CanvasRenderingContext2D} ctx
+     */
+    drawCollisionBox(ctx) {
+        ctx.beginPath();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'red';
+        const collisionX = this.xCoordinate + this.collisionOffsetX;
+        const collisionY = this.yCoordinate + this.collisionOffsetY;
+        const collisionWidth = this.width - this.collisionOffsetX - this.collisionOffsetWidth;
+        const collisionHeight = this.height - this.collisionOffsetY - this.collisionOffsetHeight;
+        ctx.rect(collisionX, collisionY, collisionWidth, collisionHeight);
+        ctx.stroke();
+    }
+
+    /**
+     * Play an animation by cycling through frames using the class-level image cache
+     * @param {Array<string>} images - Array of image paths
+     */
+    playAnimation(images) {
+        const i = this.currentImageIndex % images.length;
+        const path = images[i];
+        this.img = this.constructor.IMAGES_CACHE[path];
+        this.currentImageIndex++;
+    }
+
+    /**
+     * Check if this object is colliding with another object using AABB detection
      * @param {DrawableObject} obj - The other object to check collision with
-     * @returns {boolean} - True if colliding, false otherwise
+     * @returns {boolean} True if colliding
      */
-    isColliding(obj)
-    {
-        // Apply collision offsets to create smaller, more accurate hitboxes
+    isColliding(obj) {
         const thisLeft = this.xCoordinate + this.collisionOffsetX;
         const thisRight = this.xCoordinate + this.width - this.collisionOffsetWidth;
         const thisTop = this.yCoordinate + this.collisionOffsetY;
@@ -141,5 +118,4 @@ class DrawableObject {
                thisLeft < objRight &&
                thisTop < objBottom;
     }
-
 }

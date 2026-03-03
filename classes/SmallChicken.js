@@ -1,50 +1,40 @@
-// SmallChicken - Smaller, faster enemy variant
-
 /**
  * @class SmallChicken
  * @extends MovableObject
  * @description Smaller and faster chicken enemy variant that patrols back and forth.
  */
 class SmallChicken extends MovableObject {
-    IMAGES_WALKING = [];
+    static IMAGES_CACHE = {};
 
-    // Animation accumulator (replaces setInterval)
+    /**
+     * Preloads all SmallChicken images into the class-level cache
+     */
+    static loadAllImages() {
+        [...IMAGES_SMALL_CHICKEN_WALKING, ...IMAGES_SMALL_CHICKEN_DEAD].forEach(p => {
+            SmallChicken.IMAGES_CACHE[p] = getCachedImage(p);
+        });
+    }
+
+    showDebugFrame = true;
+
     animationTimer = 0;
     animationSpeed = ANIMATION_SPEED_NORMAL;
 
-    // Patrol behavior
     patrolStartX;
     patrolEndX;
-    movingRight = Math.random() < 0.5; // Random initial direction
+    movingRight = Math.random() < 0.5;
 
     /**
      * Create a small chicken enemy
-     * Smaller and faster than regular chickens
      */
     constructor() {
-        // Initialize with small chicken dimensions and slower speed
         super(SMALL_CHICKEN_WIDTH, SMALL_CHICKEN_HEIGHT, SMALL_CHICKEN_SPEED * 0.5);
-
-        // Load walking animation
-        this.loadImages(this.IMAGES_WALKING, IMAGES_SMALL_CHICKEN_WALKING);
-
-        // Set initial image
-        this.img = this.IMAGES_CACHE[IMAGES_SMALL_CHICKEN_WALKING[0]];
-
-        // Random starting position between character and endboss
+        this.img = SmallChicken.IMAGES_CACHE[IMAGES_SMALL_CHICKEN_WALKING[0]];
         this.xCoordinate = CHICKEN_SPAWN_MIN_X + Math.random() * CHICKEN_SPAWN_RANGE;
-
-        // Set patrol range
         this.patrolStartX = this.xCoordinate;
         this.patrolEndX = this.xCoordinate + CHICKEN_PATROL_WIDTH;
-
-        // Y: On the ground (accounting for small chicken height)
         this.yCoordinate = GROUND_LEVEL + (CHARACTER_HEIGHT - SMALL_CHICKEN_HEIGHT);
-
-        // Set initial direction based on random
-        this.otherDirection = !this.movingRight; // Images face left, so mirror if going right
-
-        // Set collision box offsets for more accurate hitbox
+        this.otherDirection = !this.movingRight;
         this.collisionOffsetX = SMALL_CHICKEN_COLLISION_OFFSET_X;
         this.collisionOffsetY = SMALL_CHICKEN_COLLISION_OFFSET_Y;
         this.collisionOffsetWidth = SMALL_CHICKEN_COLLISION_OFFSET_WIDTH;
@@ -53,25 +43,29 @@ class SmallChicken extends MovableObject {
 
     /**
      * Update small chicken state (called every frame)
-     * Patrols back and forth in a 500px range
      */
     update() {
-        // Patrol back and forth
+        this.patrol();
+        this.updateAnimation();
+    }
+
+    /**
+     * Patrol back and forth within the set range
+     */
+    patrol() {
         if (this.movingRight) {
             this.moveRight();
-            this.otherDirection = true; // Face right (mirror image)
+            this.otherDirection = true;
             if (this.xCoordinate >= this.patrolEndX) {
                 this.movingRight = false;
             }
         } else {
             this.moveLeft();
-            this.otherDirection = false; // Face left (default)
+            this.otherDirection = false;
             if (this.xCoordinate <= this.patrolStartX) {
                 this.movingRight = true;
             }
         }
-
-        this.updateAnimation();
     }
 
     /**
@@ -83,16 +77,5 @@ class SmallChicken extends MovableObject {
             this.animationTimer -= this.animationSpeed;
             this.playAnimation(IMAGES_SMALL_CHICKEN_WALKING);
         }
-    }
-
-    /**
-     * Play an animation by cycling through frames
-     * @param {Array} images - Array of image paths
-     */
-    playAnimation(images) {
-        let i = this.currentImageIndex % images.length;
-        let path = images[i];
-        this.img = this.IMAGES_CACHE[path];
-        this.currentImageIndex++;
     }
 }
