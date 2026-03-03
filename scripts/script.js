@@ -154,6 +154,7 @@ function toggleMute() {
     const audioManager = AudioManager.getInstance();
     isMuted = audioManager.toggleMute();
     if (DOM.muteBtn) DOM.muteBtn.textContent = isMuted ? '🔇' : '🔊';
+    document.activeElement.blur();
 }
 
 /**
@@ -165,6 +166,7 @@ function toggleFullscreen() {
     } else {
         document.exitFullscreen();
     }
+    document.activeElement.blur();
 }
 
 /**
@@ -172,6 +174,7 @@ function toggleFullscreen() {
  */
 function togglePause() {
     if (!world || world.isGameOver) return;
+    document.activeElement.blur();
     if (isPaused) {
         resumeGame();
     } else {
