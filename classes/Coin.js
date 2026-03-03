@@ -37,7 +37,7 @@ class Coin extends DrawableObject {
      */
     constructor(x, y = GROUND_LEVEL) {
         super(x, y, Coin.WIDTH, Coin.HEIGHT);
-        this.img = Coin.IMAGES_CACHE[Coin.IMAGES_COIN[0]];
+        this.img = getCachedImage(Coin.IMAGES_COIN[0]);
         this.collisionOffsetX = Coin.COLLISION_OFFSET_X;
         this.collisionOffsetY = Coin.COLLISION_OFFSET_Y;
         this.collisionOffsetWidth = Coin.COLLISION_OFFSET_WIDTH;

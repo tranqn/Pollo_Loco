@@ -34,7 +34,7 @@ class Bottle extends DrawableObject {
     constructor(x) {
         const bottleY = GROUND_LEVEL + (Character.HEIGHT - Bottle.HEIGHT);
         super(x, bottleY, Bottle.WIDTH, Bottle.HEIGHT);
-        this.img = Bottle.IMAGES_CACHE[Bottle.IMAGES_GROUND[0]];
+        this.img = getCachedImage(Bottle.IMAGES_GROUND[0]);
         this.collisionOffsetX = Bottle.COLLISION_OFFSET_X;
         this.collisionOffsetY = Bottle.COLLISION_OFFSET_Y;
         this.collisionOffsetWidth = Bottle.COLLISION_OFFSET_WIDTH;
