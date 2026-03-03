@@ -58,21 +58,21 @@ function isTouchDevice() {
  */
 function preloadImages() {
     const allPaths = [
-        ...IMAGES_CHARACTER_IDLE, ...IMAGES_CHARACTER_LONG_IDLE,
-        ...IMAGES_CHARACTER_WALKING, ...IMAGES_CHARACTER_JUMPING,
-        ...IMAGES_CHARACTER_HURT, ...IMAGES_CHARACTER_DEAD,
-        ...IMAGES_CHICKEN_WALKING, ...IMAGES_CHICKEN_DEAD,
-        ...IMAGES_SMALL_CHICKEN_WALKING, ...IMAGES_SMALL_CHICKEN_DEAD,
-        ...IMAGES_ENDBOSS_WALKING, ...IMAGES_ENDBOSS_ALERT,
-        ...IMAGES_ENDBOSS_ATTACK, ...IMAGES_ENDBOSS_HURT, ...IMAGES_ENDBOSS_DEAD,
-        ...IMAGES_COIN, ...IMAGES_BOTTLE_GROUND,
-        ...IMAGES_BOTTLE_ROTATION, ...IMAGES_BOTTLE_SPLASH,
-        ...IMAGES_STATUSBAR_HEALTH, ...IMAGES_STATUSBAR_COIN,
-        ...IMAGES_STATUSBAR_BOTTLE, ...IMAGES_STATUSBAR_ENDBOSS,
-        ...IMAGES_GAME_OVER, ...IMAGES_WIN_SCREEN,
-        ...IMAGES_BACKGROUND_LAYER_1, ...IMAGES_BACKGROUND_LAYER_2,
-        ...IMAGES_BACKGROUND_LAYER_3, ...IMAGES_BACKGROUND_CLOUDS,
-        IMAGE_BACKGROUND_AIR, IMAGE_CLOUD
+        ...Character.IMAGES_IDLE, ...Character.IMAGES_LONG_IDLE,
+        ...Character.IMAGES_WALKING, ...Character.IMAGES_JUMPING,
+        ...Character.IMAGES_HURT, ...Character.IMAGES_DEAD,
+        ...Chicken.IMAGES_WALKING, ...Chicken.IMAGES_DEAD,
+        ...SmallChicken.IMAGES_WALKING, ...SmallChicken.IMAGES_DEAD,
+        ...Endboss.IMAGES_WALKING, ...Endboss.IMAGES_ALERT,
+        ...Endboss.IMAGES_ATTACK, ...Endboss.IMAGES_HURT, ...Endboss.IMAGES_DEAD,
+        ...Coin.IMAGES_COIN, ...Bottle.IMAGES_GROUND,
+        ...ThrowableObject.IMAGES_ROTATION, ...ThrowableObject.IMAGES_SPLASH,
+        ...StatusBar.IMAGES_HEALTH, ...StatusBar.IMAGES_COIN,
+        ...StatusBar.IMAGES_BOTTLE, ...StatusBar.IMAGES_ENDBOSS,
+        ...World.IMAGES_GAME_OVER, ...World.IMAGES_WIN_SCREEN,
+        ...BackgroundObject.IMAGES_LAYER_1, ...BackgroundObject.IMAGES_LAYER_2,
+        ...BackgroundObject.IMAGES_LAYER_3, ...BackgroundObject.IMAGES_CLOUDS,
+        BackgroundObject.IMAGE_AIR, Cloud.IMAGE
     ];
 
     const uniquePaths = [...new Set(allPaths)];

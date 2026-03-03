@@ -4,13 +4,37 @@
  * @description Regular chicken enemy that patrols back and forth within a set range.
  */
 class Chicken extends MovableObject {
+    static WIDTH = 60;
+    static HEIGHT = 70;
+    static SPEED = 3;
+    static SPAWN_MIN_X = 300;
+    static SPAWN_RANGE = 1200;
+    static PATROL_WIDTH = 500;
+
+    static COLLISION_OFFSET_X = 5;
+    static COLLISION_OFFSET_Y = 5;
+    static COLLISION_OFFSET_WIDTH = 5;
+    static COLLISION_OFFSET_HEIGHT = 5;
+
+    static IMAGES_WALKING = [
+        'img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
+        'img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
+        'img/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
+    ];
+
+    static IMAGES_DEAD = [
+        'img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
+    ];
+
+    static AUDIO_CHICKEN = 'audio/sfx/chicken-cluck.mp3';
+
     static IMAGES_CACHE = {};
 
     /**
      * Preloads all Chicken images into the class-level cache
      */
     static loadAllImages() {
-        [...IMAGES_CHICKEN_WALKING, ...IMAGES_CHICKEN_DEAD].forEach(p => {
+        [...Chicken.IMAGES_WALKING, ...Chicken.IMAGES_DEAD].forEach(p => {
             Chicken.IMAGES_CACHE[p] = getCachedImage(p);
         });
     }
@@ -29,17 +53,17 @@ class Chicken extends MovableObject {
      * Create a chicken enemy
      */
     constructor() {
-        super(CHICKEN_WIDTH, CHICKEN_HEIGHT, CHICKEN_SPEED * 0.5);
-        this.img = Chicken.IMAGES_CACHE[IMAGES_CHICKEN_WALKING[0]];
-        this.xCoordinate = CHICKEN_SPAWN_MIN_X + Math.random() * CHICKEN_SPAWN_RANGE;
+        super(Chicken.WIDTH, Chicken.HEIGHT, Chicken.SPEED * 0.5);
+        this.img = Chicken.IMAGES_CACHE[Chicken.IMAGES_WALKING[0]];
+        this.xCoordinate = Chicken.SPAWN_MIN_X + Math.random() * Chicken.SPAWN_RANGE;
         this.patrolStartX = this.xCoordinate;
-        this.patrolEndX = this.xCoordinate + CHICKEN_PATROL_WIDTH;
-        this.yCoordinate = GROUND_LEVEL + (CHARACTER_HEIGHT - CHICKEN_HEIGHT);
+        this.patrolEndX = this.xCoordinate + Chicken.PATROL_WIDTH;
+        this.yCoordinate = GROUND_LEVEL + (Character.HEIGHT - Chicken.HEIGHT);
         this.otherDirection = !this.movingRight;
-        this.collisionOffsetX = CHICKEN_COLLISION_OFFSET_X;
-        this.collisionOffsetY = CHICKEN_COLLISION_OFFSET_Y;
-        this.collisionOffsetWidth = CHICKEN_COLLISION_OFFSET_WIDTH;
-        this.collisionOffsetHeight = CHICKEN_COLLISION_OFFSET_HEIGHT;
+        this.collisionOffsetX = Chicken.COLLISION_OFFSET_X;
+        this.collisionOffsetY = Chicken.COLLISION_OFFSET_Y;
+        this.collisionOffsetWidth = Chicken.COLLISION_OFFSET_WIDTH;
+        this.collisionOffsetHeight = Chicken.COLLISION_OFFSET_HEIGHT;
     }
 
     /**
@@ -79,7 +103,7 @@ class Chicken extends MovableObject {
         if (this.animationTimer >= this.animationSpeed) {
             this.animationTimer -= this.animationSpeed;
             if (this.currentState === 'walking') {
-                this.playAnimation(IMAGES_CHICKEN_WALKING);
+                this.playAnimation(Chicken.IMAGES_WALKING);
             }
         }
     }

@@ -4,13 +4,42 @@
  * @description A bottle that can be thrown at enemies, following a parabolic arc with rotation and splash animations.
  */
 class ThrowableObject extends MovableObject {
+    static SPEED = 15;
+    static THROW_GRAVITY = 2;
+    static DAMAGE = 20;
+
+    static COLLISION_OFFSET_X = 5;
+    static COLLISION_OFFSET_Y = 5;
+    static COLLISION_OFFSET_WIDTH = 5;
+    static COLLISION_OFFSET_HEIGHT = 5;
+
+    static IMAGES_ROTATION = [
+        'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
+        'img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png',
+        'img/6_salsa_bottle/bottle_rotation/3_bottle_rotation.png',
+        'img/6_salsa_bottle/bottle_rotation/4_bottle_rotation.png'
+    ];
+
+    static IMAGES_SPLASH = [
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/2_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/3_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
+    ];
+
+    static AUDIO_SWOOSH = 'audio/sfx/swoosh.mp3';
+    static AUDIO_BREAK = 'audio/sfx/bottle-break.mp3';
+    static AUDIO_THROW = 'audio/sfx/bottle-throw.mp3';
+
     static IMAGES_CACHE = {};
 
     /**
      * Preloads all ThrowableObject images into the class-level cache
      */
     static loadAllImages() {
-        [...IMAGES_BOTTLE_ROTATION, ...IMAGES_BOTTLE_SPLASH].forEach(p => {
+        [...ThrowableObject.IMAGES_ROTATION, ...ThrowableObject.IMAGES_SPLASH].forEach(p => {
             ThrowableObject.IMAGES_CACHE[p] = getCachedImage(p);
         });
     }
@@ -29,15 +58,15 @@ class ThrowableObject extends MovableObject {
      * @param {number} direction - Throw direction (1 = right, -1 = left)
      */
     constructor(x, y, direction) {
-        super(BOTTLE_WIDTH, BOTTLE_HEIGHT, THROWABLE_SPEED);
+        super(Bottle.WIDTH, Bottle.HEIGHT, ThrowableObject.SPEED);
         this.xCoordinate = x;
         this.yCoordinate = y;
         this.throwDirection = direction;
-        this.img = ThrowableObject.IMAGES_CACHE[IMAGES_BOTTLE_ROTATION[0]];
-        this.collisionOffsetX = THROWABLE_COLLISION_OFFSET_X;
-        this.collisionOffsetY = THROWABLE_COLLISION_OFFSET_Y;
-        this.collisionOffsetWidth = THROWABLE_COLLISION_OFFSET_WIDTH;
-        this.collisionOffsetHeight = THROWABLE_COLLISION_OFFSET_HEIGHT;
+        this.img = ThrowableObject.IMAGES_CACHE[ThrowableObject.IMAGES_ROTATION[0]];
+        this.collisionOffsetX = ThrowableObject.COLLISION_OFFSET_X;
+        this.collisionOffsetY = ThrowableObject.COLLISION_OFFSET_Y;
+        this.collisionOffsetWidth = ThrowableObject.COLLISION_OFFSET_WIDTH;
+        this.collisionOffsetHeight = ThrowableObject.COLLISION_OFFSET_HEIGHT;
         this.throw();
     }
 
@@ -45,7 +74,7 @@ class ThrowableObject extends MovableObject {
      * Sets initial velocity for throwing arc
      */
     throw() {
-        this.yVelocity = THROW_INITIAL_VELOCITY;
+        this.yVelocity = World.THROW_INITIAL_VELOCITY;
     }
 
     /**
@@ -61,10 +90,10 @@ class ThrowableObject extends MovableObject {
         }
 
         this.xCoordinate += this.OBJECT_SPEED * this.throwDirection;
-        this.yVelocity += THROWABLE_GRAVITY;
+        this.yVelocity += ThrowableObject.THROW_GRAVITY;
         this.yCoordinate += this.yVelocity;
 
-        const bottleGroundLevel = GROUND_LEVEL + (CHARACTER_HEIGHT - BOTTLE_HEIGHT);
+        const bottleGroundLevel = GROUND_LEVEL + (Character.HEIGHT - Bottle.HEIGHT);
         if (this.yCoordinate >= bottleGroundLevel) {
             this.yCoordinate = bottleGroundLevel;
             this.splash();
@@ -81,7 +110,7 @@ class ThrowableObject extends MovableObject {
             this.isSplashing = true;
             this.hasHit = true;
             this.splashStartTime = Date.now();
-            AudioManager.getInstance().playSFX(AUDIO_SFX_BOTTLE_BREAK);
+            AudioManager.getInstance().playSFX(ThrowableObject.AUDIO_BREAK);
             this.animationTimer = 0;
             this.currentImageIndex = 0;
         }
@@ -95,9 +124,9 @@ class ThrowableObject extends MovableObject {
         if (this.animationTimer >= this.animationSpeed) {
             this.animationTimer -= this.animationSpeed;
             if (this.isSplashing) {
-                this.playAnimation(IMAGES_BOTTLE_SPLASH);
+                this.playAnimation(ThrowableObject.IMAGES_SPLASH);
             } else {
-                this.playAnimation(IMAGES_BOTTLE_ROTATION);
+                this.playAnimation(ThrowableObject.IMAGES_ROTATION);
             }
         }
     }

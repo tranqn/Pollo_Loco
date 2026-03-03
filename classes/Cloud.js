@@ -1,35 +1,32 @@
-// Cloud - Moving clouds in the sky
-
 /**
  * @class Cloud
  * @extends MovableObject
  * @description Decorative cloud that drifts slowly to the left across the sky.
  */
 class Cloud extends MovableObject {
+    static WIDTH = 500;
+    static HEIGHT = 250;
+    static SPEED = 0.5;
+    static SPREAD_RANGE = 2000;
+    static Y_MIN = 20;
+    static Y_RANGE = 130;
+
+    static IMAGE = 'img/5_background/layers/4_clouds/1.png';
+
     /**
      * Create a cloud that floats slowly across the sky
      */
     constructor() {
-        // Initialize with cloud dimensions and speed
-        super(CLOUD_WIDTH, CLOUD_HEIGHT, CLOUD_SPEED);
-
-        // Load cloud image (shared cache)
-        this.img = getCachedImage(IMAGE_CLOUD);
-
-        // Random starting position
-        // X: Start somewhere in the level (random position)
-        this.xCoordinate = Math.random() * CLOUD_SPREAD_RANGE;
-
-        // Y: Random height in upper part of sky
-        this.yCoordinate = CLOUD_Y_MIN + Math.random() * CLOUD_Y_RANGE;
+        super(Cloud.WIDTH, Cloud.HEIGHT, Cloud.SPEED);
+        this.img = getCachedImage(Cloud.IMAGE);
+        this.xCoordinate = Math.random() * Cloud.SPREAD_RANGE;
+        this.yCoordinate = Cloud.Y_MIN + Math.random() * Cloud.Y_RANGE;
     }
 
     /**
      * Update cloud position (called every frame)
-     * Clouds drift slowly to the left
      */
     update() {
-        // Move cloud left at constant speed
         this.moveLeft();
     }
 }

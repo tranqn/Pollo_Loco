@@ -4,21 +4,81 @@
  * @description Final boss enemy with health, patrol, alert, attack, hurt, and dead states.
  */
 class Endboss extends MovableObject {
+    // #region Static Properties
+    static WIDTH = 250;
+    static HEIGHT = 400;
+    static SPEED = 6;
+    static MAX_HEALTH = 100;
+    static ALERT_DISTANCE = 500;
+    static MIN_X = 500;
+    static CHASE_DURATION = 1500;
+    static WANDER_DURATION = 1500;
+
+    static COLLISION_OFFSET_X = 40;
+    static COLLISION_OFFSET_Y = 70;
+    static COLLISION_OFFSET_WIDTH = 40;
+    static COLLISION_OFFSET_HEIGHT = 100;
+
+    static IMAGES_WALKING = [
+        'img/4_enemie_boss_chicken/1_walk/G1.png',
+        'img/4_enemie_boss_chicken/1_walk/G2.png',
+        'img/4_enemie_boss_chicken/1_walk/G3.png',
+        'img/4_enemie_boss_chicken/1_walk/G4.png'
+    ];
+
+    static IMAGES_ALERT = [
+        'img/4_enemie_boss_chicken/2_alert/G5.png',
+        'img/4_enemie_boss_chicken/2_alert/G6.png',
+        'img/4_enemie_boss_chicken/2_alert/G7.png',
+        'img/4_enemie_boss_chicken/2_alert/G8.png',
+        'img/4_enemie_boss_chicken/2_alert/G9.png',
+        'img/4_enemie_boss_chicken/2_alert/G10.png',
+        'img/4_enemie_boss_chicken/2_alert/G11.png',
+        'img/4_enemie_boss_chicken/2_alert/G12.png'
+    ];
+
+    static IMAGES_ATTACK = [
+        'img/4_enemie_boss_chicken/3_attack/G13.png',
+        'img/4_enemie_boss_chicken/3_attack/G14.png',
+        'img/4_enemie_boss_chicken/3_attack/G15.png',
+        'img/4_enemie_boss_chicken/3_attack/G16.png',
+        'img/4_enemie_boss_chicken/3_attack/G17.png',
+        'img/4_enemie_boss_chicken/3_attack/G18.png',
+        'img/4_enemie_boss_chicken/3_attack/G19.png',
+        'img/4_enemie_boss_chicken/3_attack/G20.png'
+    ];
+
+    static IMAGES_HURT = [
+        'img/4_enemie_boss_chicken/4_hurt/G21.png',
+        'img/4_enemie_boss_chicken/4_hurt/G22.png',
+        'img/4_enemie_boss_chicken/4_hurt/G23.png'
+    ];
+
+    static IMAGES_DEAD = [
+        'img/4_enemie_boss_chicken/5_dead/G24.png',
+        'img/4_enemie_boss_chicken/5_dead/G25.png',
+        'img/4_enemie_boss_chicken/5_dead/G26.png'
+    ];
+
+    static AUDIO_BOSS = 'audio/sfx/endboss-hit.mp3';
+
     static IMAGES_CACHE = {};
+    // #endregion
 
     /**
      * Preloads all Endboss images into the class-level cache
      */
     static loadAllImages() {
         const allPaths = [
-            ...IMAGES_ENDBOSS_WALKING, ...IMAGES_ENDBOSS_ALERT,
-            ...IMAGES_ENDBOSS_ATTACK, ...IMAGES_ENDBOSS_HURT,
-            ...IMAGES_ENDBOSS_DEAD
+            ...Endboss.IMAGES_WALKING, ...Endboss.IMAGES_ALERT,
+            ...Endboss.IMAGES_ATTACK, ...Endboss.IMAGES_HURT,
+            ...Endboss.IMAGES_DEAD
         ];
         allPaths.forEach(p => { Endboss.IMAGES_CACHE[p] = getCachedImage(p); });
     }
 
-    health = ENDBOSS_MAX_HEALTH;
+    // #region Instance Fields
+    health = Endboss.MAX_HEALTH;
     lastHitTime = 0;
     isDead = false;
     deathAnimationComplete = false;
@@ -38,22 +98,24 @@ class Endboss extends MovableObject {
     wanderDirection = -1;
 
     characterX = 0;
+    // #endregion
 
     /**
      * Create the endboss enemy
      */
     constructor() {
-        super(ENDBOSS_WIDTH, ENDBOSS_HEIGHT, ENDBOSS_SPEED);
-        this.img = Endboss.IMAGES_CACHE[IMAGES_ENDBOSS_WALKING[0]];
+        super(Endboss.WIDTH, Endboss.HEIGHT, Endboss.SPEED);
+        this.img = Endboss.IMAGES_CACHE[Endboss.IMAGES_WALKING[0]];
         this.otherDirection = true;
         this.xCoordinate = this.patrolStartX;
-        this.yCoordinate = GROUND_LEVEL + (CHARACTER_HEIGHT - ENDBOSS_HEIGHT);
-        this.collisionOffsetX = ENDBOSS_COLLISION_OFFSET_X;
-        this.collisionOffsetY = ENDBOSS_COLLISION_OFFSET_Y;
-        this.collisionOffsetWidth = ENDBOSS_COLLISION_OFFSET_WIDTH;
-        this.collisionOffsetHeight = ENDBOSS_COLLISION_OFFSET_HEIGHT;
+        this.yCoordinate = GROUND_LEVEL + (Character.HEIGHT - Endboss.HEIGHT);
+        this.collisionOffsetX = Endboss.COLLISION_OFFSET_X;
+        this.collisionOffsetY = Endboss.COLLISION_OFFSET_Y;
+        this.collisionOffsetWidth = Endboss.COLLISION_OFFSET_WIDTH;
+        this.collisionOffsetHeight = Endboss.COLLISION_OFFSET_HEIGHT;
     }
 
+    // #region Update
     /**
      * Update endboss state (called every frame)
      */
@@ -72,18 +134,20 @@ class Endboss extends MovableObject {
      * Prevent the endboss from walking too far left
      */
     clampPosition() {
-        if (this.xCoordinate < ENDBOSS_MIN_X) {
-            this.xCoordinate = ENDBOSS_MIN_X;
+        if (this.xCoordinate < Endboss.MIN_X) {
+            this.xCoordinate = Endboss.MIN_X;
         }
     }
+    // #endregion
 
+    // #region Movement
     /**
      * Alternate between chasing the player and wandering randomly
      */
     updateChaseCycle() {
         const now = Date.now();
         const elapsed = now - this.cycleStartTime;
-        const duration = this.isChasing ? ENDBOSS_CHASE_DURATION : ENDBOSS_WANDER_DURATION;
+        const duration = this.isChasing ? Endboss.CHASE_DURATION : Endboss.WANDER_DURATION;
 
         if (elapsed >= duration) {
             this.isChasing = !this.isChasing;
@@ -151,7 +215,9 @@ class Endboss extends MovableObject {
             }
         }
     }
+    // #endregion
 
+    // #region State Management
     /**
      * Update endboss state based on health and character proximity
      */
@@ -160,9 +226,9 @@ class Endboss extends MovableObject {
             this.currentState = 'dead';
         } else if (this.isHurt()) {
             this.currentState = 'hurt';
-        } else if (this.getDistanceToCharacter() < ENDBOSS_ALERT_DISTANCE / 2) {
+        } else if (this.getDistanceToCharacter() < Endboss.ALERT_DISTANCE / 2) {
             this.currentState = 'attack';
-        } else if (this.getDistanceToCharacter() < ENDBOSS_ALERT_DISTANCE) {
+        } else if (this.getDistanceToCharacter() < Endboss.ALERT_DISTANCE) {
             this.currentState = 'alert';
         } else {
             this.currentState = 'walking';
@@ -196,12 +262,14 @@ class Endboss extends MovableObject {
         const timeSinceHit = Date.now() - this.lastHitTime;
         return timeSinceHit < HURT_DURATION;
     }
+    // #endregion
 
+    // #region Combat
     /**
      * Endboss takes damage from bottle
      * @param {number} damage - Amount of damage to take
      */
-    hit(damage = THROWABLE_DAMAGE) {
+    hit(damage = ThrowableObject.DAMAGE) {
         if (this.isDead) return;
         this.health -= damage;
         this.lastHitTime = Date.now();
@@ -210,7 +278,9 @@ class Endboss extends MovableObject {
             this.isDead = true;
         }
     }
+    // #endregion
 
+    // #region Animation
     /**
      * Advance animation frame using delta-time accumulator
      */
@@ -229,13 +299,13 @@ class Endboss extends MovableObject {
         if (this.currentState === 'dead') {
             this.playDeathAnimation();
         } else if (this.currentState === 'hurt') {
-            this.playAnimation(IMAGES_ENDBOSS_HURT);
+            this.playAnimation(Endboss.IMAGES_HURT);
         } else if (this.currentState === 'attack') {
-            this.playAnimation(IMAGES_ENDBOSS_ATTACK);
+            this.playAnimation(Endboss.IMAGES_ATTACK);
         } else if (this.currentState === 'alert') {
-            this.playAnimation(IMAGES_ENDBOSS_ALERT);
+            this.playAnimation(Endboss.IMAGES_ALERT);
         } else {
-            this.playAnimation(IMAGES_ENDBOSS_WALKING);
+            this.playAnimation(Endboss.IMAGES_WALKING);
         }
     }
 
@@ -243,9 +313,9 @@ class Endboss extends MovableObject {
      * Play death animation once, then freeze on last frame
      */
     playDeathAnimation() {
-        const lastFrame = IMAGES_ENDBOSS_DEAD.length - 1;
+        const lastFrame = Endboss.IMAGES_DEAD.length - 1;
         if (this.currentImageIndex <= lastFrame) {
-            const path = IMAGES_ENDBOSS_DEAD[this.currentImageIndex];
+            const path = Endboss.IMAGES_DEAD[this.currentImageIndex];
             this.img = Endboss.IMAGES_CACHE[path];
             this.currentImageIndex++;
         }
@@ -253,4 +323,5 @@ class Endboss extends MovableObject {
             this.deathAnimationComplete = true;
         }
     }
+    // #endregion
 }

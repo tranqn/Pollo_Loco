@@ -4,15 +4,57 @@
  * @description Visual status bar that displays a percentage value using one of six images (0-100%).
  */
 class StatusBar extends DrawableObject {
+    // #region Static Properties
+    static WIDTH = 150;
+    static HEIGHT = 45;
+    static PADDING = 15;
+
+    static IMAGES_HEALTH = [
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/20.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/40.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/60.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/80.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png'
+    ];
+
+    static IMAGES_COIN = [
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/0.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/20.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/40.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/60.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/80.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/green/100.png'
+    ];
+
+    static IMAGES_BOTTLE = [
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/green/0.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/green/20.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/green/40.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/green/60.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/green/80.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/green/100.png'
+    ];
+
+    static IMAGES_ENDBOSS = [
+        'img/7_statusbars/2_statusbar_endboss/orange/orange0.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange20.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange40.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange60.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange80.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange100.png'
+    ];
+
     static IMAGES_CACHE = {};
+    // #endregion
 
     /**
      * Preloads all StatusBar images into the class-level cache
      */
     static loadAllImages() {
         const allPaths = [
-            ...IMAGES_STATUSBAR_HEALTH, ...IMAGES_STATUSBAR_COIN,
-            ...IMAGES_STATUSBAR_BOTTLE, ...IMAGES_STATUSBAR_ENDBOSS
+            ...StatusBar.IMAGES_HEALTH, ...StatusBar.IMAGES_COIN,
+            ...StatusBar.IMAGES_BOTTLE, ...StatusBar.IMAGES_ENDBOSS
         ];
         allPaths.forEach(p => { StatusBar.IMAGES_CACHE[p] = getCachedImage(p); });
     }
@@ -26,7 +68,7 @@ class StatusBar extends DrawableObject {
      * @param {Array<string>} imagePaths - Array of 6 image paths (0%, 20%, 40%, 60%, 80%, 100%)
      */
     constructor(x, y, imagePaths) {
-        super(x, y, STATUSBAR_WIDTH, STATUSBAR_HEIGHT);
+        super(x, y, StatusBar.WIDTH, StatusBar.HEIGHT);
         this.imagePaths = imagePaths;
         this.setPercentage(100);
     }
