@@ -115,6 +115,8 @@ function preloadImages() {
  * Start the game from landing page
  */
 function startGame() {
+    stopBackgroundAnimation();
+    removeBgEventListeners();
     if (DOM.canvas) DOM.canvas.classList.remove('hidden');
     if (DOM.landingPage) DOM.landingPage.classList.add('hidden');
     if (DOM.muteBtn) DOM.muteBtn.classList.remove('hidden');
@@ -243,6 +245,8 @@ function backToMenu() {
     resetKeyboard();
     world = null;
     level1 = createLevel1();
+    restartBackgroundAnimation();
+    addBgEventListeners();
 }
 
 /**

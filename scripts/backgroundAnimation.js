@@ -176,8 +176,10 @@ function drawBgParticleLines() {
 function drawLineBetweenParticles(a, b) {
     const dx = a.x - b.x;
     const dy = a.y - b.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist >= BG_LINE_DISTANCE) return;
+    const distSq = dx * dx + dy * dy;
+    const maxDistSq = BG_LINE_DISTANCE * BG_LINE_DISTANCE;
+    if (distSq >= maxDistSq) return;
+    const dist = Math.sqrt(distSq);
     const alpha = (1 - dist / BG_LINE_DISTANCE) * BG_LINE_OPACITY;
     bgCtx.beginPath();
     bgCtx.moveTo(a.x, a.y);
@@ -202,8 +204,10 @@ function drawBgMouseLines() {
 function drawLineToMouse(p) {
     const dx = p.x - bgMousePos.x;
     const dy = p.y - bgMousePos.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist >= BG_MOUSE_LINE_DISTANCE) return;
+    const distSq = dx * dx + dy * dy;
+    const maxDistSq = BG_MOUSE_LINE_DISTANCE * BG_MOUSE_LINE_DISTANCE;
+    if (distSq >= maxDistSq) return;
+    const dist = Math.sqrt(distSq);
     const alpha = (1 - dist / BG_MOUSE_LINE_DISTANCE) * BG_MOUSE_LINE_OPACITY;
     bgCtx.beginPath();
     bgCtx.moveTo(bgMousePos.x, bgMousePos.y);
@@ -220,8 +224,10 @@ function drawLineToMouse(p) {
 function applyBgMouseInfluence(p) {
     const dx = p.x - bgMousePos.x;
     const dy = p.y - bgMousePos.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist >= BG_MOUSE_INFLUENCE_RADIUS || dist === 0) return;
+    const distSq = dx * dx + dy * dy;
+    const maxDistSq = BG_MOUSE_INFLUENCE_RADIUS * BG_MOUSE_INFLUENCE_RADIUS;
+    if (distSq >= maxDistSq || distSq === 0) return;
+    const dist = Math.sqrt(distSq);
     const force = (1 - dist / BG_MOUSE_INFLUENCE_RADIUS) * BG_MOUSE_INFLUENCE_STRENGTH;
     p.vx += (dx / dist) * force * BG_MOUSE_FORCE_SCALE;
     p.vy += (dy / dist) * force * BG_MOUSE_FORCE_SCALE;
@@ -253,13 +259,29 @@ function drawBgParticle(p) {
 }
 
 /**
- * Stops the background animation
+ * Stops the background animation loop
  */
 function stopBackgroundAnimation() {
     if (bgAnimationId) {
         cancelAnimationFrame(bgAnimationId);
         bgAnimationId = null;
     }
+}
+
+/**
+ * Remove background event listeners to avoid work during gameplay
+ */
+function removeBgEventListeners() {
+    document.removeEventListener('mousemove', handleBgMouseMove);
+    window.removeEventListener('resize', handleBgResize);
+}
+
+/**
+ * Re-add background event listeners when returning to menu
+ */
+function addBgEventListeners() {
+    document.addEventListener('mousemove', handleBgMouseMove, { passive: true });
+    window.addEventListener('resize', handleBgResize, { passive: true });
 }
 
 /**
