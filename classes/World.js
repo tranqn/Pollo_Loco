@@ -30,6 +30,9 @@ class World {
     // Game state
     isGameOver = false;
 
+    // Cached references
+    endboss = null;
+
     // Delegates
     renderer;
     collisionHandler;
@@ -52,6 +55,7 @@ class World {
     initializeGame() {
         this.level = level1;
         this.character = new Character(this.keyboard);
+        this.endboss = this.level.enemies.find(e => e instanceof Endboss) || null;
         this.createStatusBars();
         this.renderer = new WorldRenderer(this);
         this.collisionHandler = new CollisionHandler(this);
@@ -94,11 +98,12 @@ class World {
         this.handleThrow();
         this.level.clouds.forEach(cloud => cloud.update());
         this.level.enemies.forEach(enemy => {
-            if (enemy instanceof Endboss) {
+            if (enemy === this.endboss) {
                 enemy.characterX = this.character.xCoordinate;
             }
             enemy.update();
         });
+        this.level.coins.forEach(coin => coin.update());
         this.updateThrownBottles();
         this.collisionHandler.checkCollisions();
         this.updateCamera();
@@ -116,7 +121,7 @@ class World {
      * @returns {Endboss|null}
      */
     getEndboss() {
-        return this.level.enemies.find(enemy => enemy instanceof Endboss);
+        return this.endboss;
     }
 
     /**
@@ -146,10 +151,9 @@ class World {
 
         this.endScreenTimeout = setTimeout(() => {
             if (!this.isGameOver) return;
-            this.setRandomScreenImage('gameover-bg', IMAGES_GAME_OVER);
-            const gameOverScreen = document.getElementById('gameover-screen');
-            if (gameOverScreen) {
-                gameOverScreen.classList.remove('hidden');
+            this.setRandomScreenImage(DOM.gameoverBg, IMAGES_GAME_OVER);
+            if (DOM.gameoverScreen) {
+                DOM.gameoverScreen.classList.remove('hidden');
             }
         }, GAMEOVER_DELAY);
     }
@@ -169,23 +173,21 @@ class World {
 
         this.endScreenTimeout = setTimeout(() => {
             if (!this.isGameOver) return;
-            this.setRandomScreenImage('win-bg', IMAGES_WIN_SCREEN);
-            const winScreen = document.getElementById('win-screen');
-            if (winScreen) {
-                winScreen.classList.remove('hidden');
+            this.setRandomScreenImage(DOM.winBg, IMAGES_WIN_SCREEN);
+            if (DOM.winScreen) {
+                DOM.winScreen.classList.remove('hidden');
             }
         }, VICTORY_DELAY);
     }
 
     /**
      * Set a random image from an array on an img element
-     * @param {string} elementId - The img element ID
+     * @param {HTMLImageElement} imgElement - The img element
      * @param {Array} images - Array of image paths to pick from
      */
-    setRandomScreenImage(elementId, images) {
-        const img = document.getElementById(elementId);
-        if (img && images.length > 0) {
-            img.src = images[Math.floor(Math.random() * images.length)];
+    setRandomScreenImage(imgElement, images) {
+        if (imgElement && images.length > 0) {
+            imgElement.src = images[Math.floor(Math.random() * images.length)];
         }
     }
 

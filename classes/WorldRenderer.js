@@ -53,15 +53,26 @@ class WorldRenderer {
     }
 
     /**
+     * Check if an object is within the visible viewport
+     * @param {DrawableObject} obj - The object to check
+     * @returns {boolean} True if the object is visible on screen
+     */
+    isInViewport(obj) {
+        const camX = this.world.cameraX;
+        return obj.xCoordinate + obj.width > camX - VIEWPORT_CULLING_BUFFER &&
+               obj.xCoordinate < camX + CANVAS_WIDTH + VIEWPORT_CULLING_BUFFER;
+    }
+
+    /**
      * Draw background layers and clouds
      */
     drawBackground() {
         this.world.level.backgroundObjects.forEach(bg => {
-            bg.draw(this.world.ctx);
+            if (this.isInViewport(bg)) bg.draw(this.world.ctx);
         });
 
         this.world.level.clouds.forEach(cloud => {
-            cloud.draw(this.world.ctx);
+            if (this.isInViewport(cloud)) cloud.draw(this.world.ctx);
         });
     }
 
@@ -69,20 +80,20 @@ class WorldRenderer {
      * Draw all game objects (enemies, collectibles, character)
      */
     drawGameObjects() {
-        this.world.level.enemies.forEach(enemy => {
-            enemy.draw(this.world.ctx);
-        });
-
         this.world.level.coins.forEach(coin => {
-            coin.draw(this.world.ctx);
+            if (this.isInViewport(coin)) coin.draw(this.world.ctx);
         });
 
         this.world.level.bottles.forEach(bottle => {
-            bottle.draw(this.world.ctx);
+            if (this.isInViewport(bottle)) bottle.draw(this.world.ctx);
+        });
+
+        this.world.level.enemies.forEach(enemy => {
+            if (this.isInViewport(enemy)) enemy.draw(this.world.ctx);
         });
 
         this.world.thrownBottles.forEach(bottle => {
-            bottle.draw(this.world.ctx);
+            if (this.isInViewport(bottle)) bottle.draw(this.world.ctx);
         });
 
         this.world.character.draw(this.world.ctx);

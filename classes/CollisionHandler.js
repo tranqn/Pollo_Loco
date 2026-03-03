@@ -27,6 +27,15 @@ class CollisionHandler {
     }
 
     /**
+     * Check if an object is near the character (within collision range)
+     * @param {DrawableObject} obj - Object to check
+     * @returns {boolean} True if close enough to potentially collide
+     */
+    isNearCharacter(obj) {
+        return Math.abs(obj.xCoordinate - this.world.character.xCoordinate) < COLLISION_CULLING_RANGE;
+    }
+
+    /**
      * Check and handle enemy collisions
      * Player can defeat enemies by jumping on them from above
      * Or take damage when hitting them from the side
@@ -34,6 +43,7 @@ class CollisionHandler {
     checkEnemyCollisions() {
         for (let i = this.world.level.enemies.length - 1; i >= 0; i--) {
             const enemy = this.world.level.enemies[i];
+            if (!this.isNearCharacter(enemy)) continue;
 
             if (this.world.character.isColliding(enemy)) {
                 this.handleEnemyHit(enemy, i);
@@ -91,6 +101,7 @@ class CollisionHandler {
 
             for (let i = this.world.level.enemies.length - 1; i >= 0; i--) {
                 const enemy = this.world.level.enemies[i];
+                if (Math.abs(bottle.xCoordinate - enemy.xCoordinate) > COLLISION_CULLING_RANGE) continue;
 
                 if (bottle.isColliding(enemy)) {
                     bottle.splash();
@@ -113,6 +124,7 @@ class CollisionHandler {
     checkCoinCollisions() {
         for (let i = this.world.level.coins.length - 1; i >= 0; i--) {
             const coin = this.world.level.coins[i];
+            if (!this.isNearCharacter(coin)) continue;
 
             if (this.world.character.isColliding(coin)) {
                 this.world.level.coins.splice(i, 1);
@@ -130,6 +142,7 @@ class CollisionHandler {
     checkBottleCollisions() {
         for (let i = this.world.level.bottles.length - 1; i >= 0; i--) {
             const bottle = this.world.level.bottles[i];
+            if (!this.isNearCharacter(bottle)) continue;
 
             if (this.world.character.isColliding(bottle)) {
                 this.world.level.bottles.splice(i, 1);

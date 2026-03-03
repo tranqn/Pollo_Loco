@@ -7,7 +7,10 @@
  */
 class SmallChicken extends MovableObject {
     IMAGES_WALKING = [];
-    animationInterval;
+
+    // Animation accumulator (replaces setInterval)
+    animationTimer = 0;
+    animationSpeed = ANIMATION_SPEED_NORMAL;
 
     // Patrol behavior
     patrolStartX;
@@ -46,9 +49,6 @@ class SmallChicken extends MovableObject {
         this.collisionOffsetY = SMALL_CHICKEN_COLLISION_OFFSET_Y;
         this.collisionOffsetWidth = SMALL_CHICKEN_COLLISION_OFFSET_WIDTH;
         this.collisionOffsetHeight = SMALL_CHICKEN_COLLISION_OFFSET_HEIGHT;
-
-        // Start animation
-        this.startAnimation();
     }
 
     /**
@@ -70,15 +70,19 @@ class SmallChicken extends MovableObject {
                 this.movingRight = true;
             }
         }
+
+        this.updateAnimation();
     }
 
     /**
-     * Start walking animation
+     * Advance animation frame using delta-time accumulator
      */
-    startAnimation() {
-        this.animationInterval = setInterval(() => {
+    updateAnimation() {
+        this.animationTimer += FRAME_INTERVAL;
+        if (this.animationTimer >= this.animationSpeed) {
+            this.animationTimer -= this.animationSpeed;
             this.playAnimation(IMAGES_SMALL_CHICKEN_WALKING);
-        }, ANIMATION_SPEED_NORMAL);
+        }
     }
 
     /**

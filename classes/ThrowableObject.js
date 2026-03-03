@@ -13,7 +13,10 @@ class ThrowableObject extends MovableObject {
     isSplashing = false; // Is the bottle currently splashing?
     hasHit = false; // Has the bottle hit something?
     splashStartTime = 0; // When did the splash animation start?
-    animationInterval;
+
+    // Animation accumulator (replaces setInterval)
+    animationTimer = 0;
+    animationSpeed = ANIMATION_SPEED_FAST;
 
     /**
      * Create a throwable bottle
@@ -28,9 +31,13 @@ class ThrowableObject extends MovableObject {
         this.yCoordinate = y;
         this.throwDirection = direction;
 
-        // Load animation images
-        this.loadImages(this.IMAGES_ROTATION, IMAGES_BOTTLE_ROTATION);
-        this.loadImages(this.IMAGES_SPLASH, IMAGES_BOTTLE_SPLASH);
+        // Populate cache from global preloaded images
+        IMAGES_BOTTLE_ROTATION.forEach(path => {
+            this.IMAGES_CACHE[path] = getCachedImage(path);
+        });
+        IMAGES_BOTTLE_SPLASH.forEach(path => {
+            this.IMAGES_CACHE[path] = getCachedImage(path);
+        });
 
         // Set initial image
         this.img = this.IMAGES_CACHE[IMAGES_BOTTLE_ROTATION[0]];
@@ -43,9 +50,6 @@ class ThrowableObject extends MovableObject {
 
         // Start the throw
         this.throw();
-
-        // Start rotation animation
-        this.startRotationAnimation();
     }
 
     /**
@@ -55,13 +59,10 @@ class ThrowableObject extends MovableObject {
     throw() {
         // Initial upward velocity (creates arc)
         this.yVelocity = THROW_INITIAL_VELOCITY;
-
-        // Set horizontal movement based on direction
-        // (handled in update method)
     }
 
     /**
-     * Update bottle position and physics
+     * Update bottle position, physics, and animation
      */
     update() {
         if (this.isSplashing) {
@@ -69,6 +70,7 @@ class ThrowableObject extends MovableObject {
             if (Date.now() - this.splashStartTime > SPLASH_DURATION) {
                 this.markForRemoval = true; // Flag for removal from world
             }
+            this.updateAnimation();
             return; // Don't move while splashing
         }
 
@@ -86,6 +88,8 @@ class ThrowableObject extends MovableObject {
             this.yCoordinate = bottleGroundLevel;
             this.splash();
         }
+
+        this.updateAnimation();
     }
 
     /**
@@ -99,31 +103,25 @@ class ThrowableObject extends MovableObject {
             this.splashStartTime = Date.now();
             AudioManager.getInstance().playSFX(AUDIO_SFX_BOTTLE_BREAK);
 
-            // Stop rotation animation and start splash animation
-            clearInterval(this.animationInterval);
-            this.startSplashAnimation();
+            // Reset animation for splash
+            this.animationTimer = 0;
+            this.currentImageIndex = 0;
         }
     }
 
     /**
-     * Start rotation animation (while bottle is flying)
+     * Advance animation frame using delta-time accumulator
      */
-    startRotationAnimation() {
-        this.animationInterval = setInterval(() => {
-            if (!this.isSplashing) {
+    updateAnimation() {
+        this.animationTimer += FRAME_INTERVAL;
+        if (this.animationTimer >= this.animationSpeed) {
+            this.animationTimer -= this.animationSpeed;
+            if (this.isSplashing) {
+                this.playAnimation(IMAGES_BOTTLE_SPLASH);
+            } else {
                 this.playAnimation(IMAGES_BOTTLE_ROTATION);
             }
-        }, ANIMATION_SPEED_FAST);
-    }
-
-    /**
-     * Start splash animation (when bottle hits something)
-     */
-    startSplashAnimation() {
-        this.currentImageIndex = 0; // Reset to start of splash animation
-        this.animationInterval = setInterval(() => {
-            this.playAnimation(IMAGES_BOTTLE_SPLASH);
-        }, ANIMATION_SPEED_FAST);
+        }
     }
 
     /**
@@ -137,17 +135,4 @@ class ThrowableObject extends MovableObject {
         this.currentImageIndex++;
     }
 
-    /**
-     * Load multiple images into cache
-     * @param {Array} targetArray - Array to store loaded images
-     * @param {Array} imagePaths - Array of image file paths
-     */
-    loadImages(targetArray, imagePaths) {
-        imagePaths.forEach(path => {
-            let img = new Image();
-            img.src = path;
-            this.IMAGES_CACHE[path] = img;
-            targetArray.push(img);
-        });
-    }
 }

@@ -9,7 +9,10 @@ class Chicken extends MovableObject {
     IMAGES_WALKING = [];
     IMAGES_DEAD = [];
     currentState = 'walking'; // walking, dead
-    animationInterval;
+
+    // Animation accumulator (replaces setInterval)
+    animationTimer = 0;
+    animationSpeed = ANIMATION_SPEED_NORMAL;
 
     // Patrol behavior
     patrolStartX;
@@ -48,9 +51,6 @@ class Chicken extends MovableObject {
         this.collisionOffsetY = CHICKEN_COLLISION_OFFSET_Y;
         this.collisionOffsetWidth = CHICKEN_COLLISION_OFFSET_WIDTH;
         this.collisionOffsetHeight = CHICKEN_COLLISION_OFFSET_HEIGHT;
-
-        // Start animation
-        this.startAnimation();
     }
 
     /**
@@ -74,17 +74,21 @@ class Chicken extends MovableObject {
                 }
             }
         }
+
+        this.updateAnimation();
     }
 
     /**
-     * Start walking animation
+     * Advance animation frame using delta-time accumulator
      */
-    startAnimation() {
-        this.animationInterval = setInterval(() => {
+    updateAnimation() {
+        this.animationTimer += FRAME_INTERVAL;
+        if (this.animationTimer >= this.animationSpeed) {
+            this.animationTimer -= this.animationSpeed;
             if (this.currentState === 'walking') {
                 this.playAnimation(IMAGES_CHICKEN_WALKING);
             }
-        }, ANIMATION_SPEED_NORMAL); // Same speed as character animation
+        }
     }
 
     /**

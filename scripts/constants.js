@@ -4,6 +4,25 @@
  */
 
 // ============================================
+// GLOBAL IMAGE CACHE (avoids duplicate Image objects)
+// ============================================
+const GLOBAL_IMAGE_CACHE = {};
+
+/**
+ * Get a cached Image object for a given path, creating it if needed
+ * @param {string} path - Image file path
+ * @returns {HTMLImageElement} Cached image element
+ */
+function getCachedImage(path) {
+    if (!GLOBAL_IMAGE_CACHE[path]) {
+        const img = new Image();
+        img.src = path;
+        GLOBAL_IMAGE_CACHE[path] = img;
+    }
+    return GLOBAL_IMAGE_CACHE[path];
+}
+
+// ============================================
 // DOM ELEMENTS
 // ============================================
 let START_SCREEN = document.getElementById('start-screen');
@@ -518,11 +537,36 @@ const SPLASH_DURATION = 500;
 const ITEMS_PER_FULL_BAR = 10;
 const CAMERA_OFFSET_X = 100;
 const ENDBOSS_VISIBILITY_BUFFER = 100;
+const VIEWPORT_CULLING_BUFFER = 200;
+const COLLISION_CULLING_RANGE = 500;
 const GAMEOVER_DELAY = 1000;
 const VICTORY_DELAY = 1500;
 const CHICKEN_SPAWN_MIN_X = 300;
 const CHICKEN_SPAWN_RANGE = 1200;
 const CHICKEN_PATROL_WIDTH = 500;
+
+// ============================================
+// BACKGROUND ANIMATION CONSTANTS
+// ============================================
+const BG_PARTICLE_COUNT = 120;
+const BG_PARTICLE_MAX_RADIUS = 2.5;
+const BG_PARTICLE_MIN_RADIUS = 0.5;
+const BG_PARTICLE_SPEED = 0.3;
+const BG_PARTICLE_MIN_OPACITY = 0.15;
+const BG_PARTICLE_OPACITY_RANGE = 0.4;
+const BG_PARTICLE_WRAP_MARGIN = 10;
+const BG_MOUSE_INFLUENCE_RADIUS = 250;
+const BG_MOUSE_INFLUENCE_STRENGTH = 2;
+const BG_MOUSE_FORCE_SCALE = 0.08;
+const BG_VELOCITY_DAMPING = 0.97;
+const BG_PARALLAX_STRENGTH = 20;
+const BG_PARALLAX_DEPTH_STEP = 0.3;
+const BG_LINE_DISTANCE = 120;
+const BG_LINE_OPACITY = 0.15;
+const BG_MOUSE_LINE_DISTANCE = 180;
+const BG_MOUSE_LINE_OPACITY = 0.25;
+const BG_MOUSE_GLOW_RADIUS = 200;
+const BG_MOUSE_GLOW_OPACITY = 0.04;
 
 // ============================================
 // AUDIO PATHS

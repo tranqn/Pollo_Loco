@@ -19,7 +19,10 @@ class Endboss extends MovableObject {
     deathAnimationComplete = false;
     currentState = 'walking';
     previousState = 'walking';
-    animationInterval;
+
+    // Animation accumulator (replaces setInterval)
+    animationTimer = 0;
+    animationSpeed = ANIMATION_SPEED_NORMAL;
 
     // Patrol behavior
     patrolStartX = 1600;
@@ -55,8 +58,6 @@ class Endboss extends MovableObject {
         this.collisionOffsetY = ENDBOSS_COLLISION_OFFSET_Y;
         this.collisionOffsetWidth = ENDBOSS_COLLISION_OFFSET_WIDTH;
         this.collisionOffsetHeight = ENDBOSS_COLLISION_OFFSET_HEIGHT;
-
-        this.startAnimation();
     }
 
     /**
@@ -72,6 +73,7 @@ class Endboss extends MovableObject {
         }
 
         this.clampPosition();
+        this.updateAnimation();
     }
 
     /**
@@ -221,22 +223,31 @@ class Endboss extends MovableObject {
     }
 
     /**
-     * Start animation loop
+     * Advance animation frame using delta-time accumulator
      */
-    startAnimation() {
-        this.animationInterval = setInterval(() => {
-            if (this.currentState === 'dead') {
-                this.playDeathAnimation();
-            } else if (this.currentState === 'hurt') {
-                this.playAnimation(IMAGES_ENDBOSS_HURT);
-            } else if (this.currentState === 'attack') {
-                this.playAnimation(IMAGES_ENDBOSS_ATTACK);
-            } else if (this.currentState === 'alert') {
-                this.playAnimation(IMAGES_ENDBOSS_ALERT);
-            } else {
-                this.playAnimation(IMAGES_ENDBOSS_WALKING);
-            }
-        }, ANIMATION_SPEED_NORMAL);
+    updateAnimation() {
+        this.animationTimer += FRAME_INTERVAL;
+        if (this.animationTimer >= this.animationSpeed) {
+            this.animationTimer -= this.animationSpeed;
+            this.advanceFrame();
+        }
+    }
+
+    /**
+     * Advance to the next animation frame based on current state
+     */
+    advanceFrame() {
+        if (this.currentState === 'dead') {
+            this.playDeathAnimation();
+        } else if (this.currentState === 'hurt') {
+            this.playAnimation(IMAGES_ENDBOSS_HURT);
+        } else if (this.currentState === 'attack') {
+            this.playAnimation(IMAGES_ENDBOSS_ATTACK);
+        } else if (this.currentState === 'alert') {
+            this.playAnimation(IMAGES_ENDBOSS_ALERT);
+        } else {
+            this.playAnimation(IMAGES_ENDBOSS_WALKING);
+        }
     }
 
     /**

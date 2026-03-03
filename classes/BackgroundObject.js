@@ -15,8 +15,7 @@ class BackgroundObject extends DrawableObject {
         // Background images are always 720x480 (full canvas size)
         super(x, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-        // Load the image
-        this.img = new Image();
-        this.img.src = imagePath;
+        // Load the image (shared cache avoids duplicate Image objects)
+        this.img = getCachedImage(imagePath);
     }
 }

@@ -8,17 +8,40 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <!-- Animated Gradient Wave Background (body-level) -->
+    <div class="bg-animation">
+      <div class="bg-gradient-sphere sphere-1"></div>
+      <div class="bg-gradient-sphere sphere-2"></div>
+      <div class="bg-gradient-sphere sphere-3"></div>
+      <div class="bg-gradient-sphere sphere-4"></div>
+      <div class="bg-grid-overlay"></div>
+      <svg class="bg-noise-overlay" xmlns="http://www.w3.org/2000/svg">
+        <filter id="bg-noise">
+          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#bg-noise)" />
+      </svg>
+      <canvas id="bg-particles"></canvas>
+    </div>
+
     <!-- Main Game Container -->
     <div id="game-container">
       <!-- The Canvas where our game will be drawn -->
-      <canvas id="canvas" width="720" height="480"></canvas>
+      <canvas id="canvas" class="hidden" width="720" height="480"></canvas>
 
       <!-- Landing Page -->
       <div id="landing-page" class="landing-page">
+        <!-- Start Screen Hero Image -->
+        <img
+          class="landing-hero"
+          src="img/9_intro_outro_screens/start/startscreen_1.png"
+          alt="El Pollo Loco"
+        />
+
         <div class="landing-footer">
           <span class="footer-left">&copy; 2026 El Pollo Loco</span>
           <div class="footer-buttons">
-            <button class="btn btn-primary" onclick="startGame()">
+            <button id="start-btn" class="btn btn-primary" onclick="startGame()">
               Start Game
             </button>
             <button class="btn btn-secondary" onclick="showInstructions()">
@@ -165,6 +188,7 @@
     <!-- Game Scripts - Order matters! -->
     <!-- Constants FIRST, then base classes, then specific classes, then game logic -->
     <script src="scripts/constants.js"></script>
+    <script src="scripts/backgroundAnimation.js"></script>
     <script src="classes/DrawableObject.js"></script>
     <script src="classes/MovableObject.js"></script>
     <script src="classes/Character.js"></script>

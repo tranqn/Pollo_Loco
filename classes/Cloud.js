@@ -13,9 +13,8 @@ class Cloud extends MovableObject {
         // Initialize with cloud dimensions and speed
         super(CLOUD_WIDTH, CLOUD_HEIGHT, CLOUD_SPEED);
 
-        // Load cloud image
-        this.img = new Image();
-        this.img.src = IMAGE_CLOUD;
+        // Load cloud image (shared cache)
+        this.img = getCachedImage(IMAGE_CLOUD);
 
         // Random starting position
         // X: Start somewhere in the level (random position)

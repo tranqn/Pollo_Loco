@@ -7,7 +7,10 @@
  */
 class Coin extends DrawableObject {
     IMAGES_COIN = [];
-    animationInterval;
+
+    // Animation accumulator (replaces setInterval)
+    animationTimer = 0;
+    animationSpeed = ANIMATION_SPEED_NORMAL * 2; // Slower animation (200ms per frame)
 
     /**
      * Create a coin collectible
@@ -29,18 +32,24 @@ class Coin extends DrawableObject {
         this.collisionOffsetY = COIN_COLLISION_OFFSET_Y;
         this.collisionOffsetWidth = COIN_COLLISION_OFFSET_WIDTH;
         this.collisionOffsetHeight = COIN_COLLISION_OFFSET_HEIGHT;
-
-        // Start spinning animation
-        this.startAnimation();
     }
 
     /**
-     * Start coin spinning animation
+     * Update coin state (called every frame from World)
      */
-    startAnimation() {
-        this.animationInterval = setInterval(() => {
+    update() {
+        this.updateAnimation();
+    }
+
+    /**
+     * Advance animation frame using delta-time accumulator
+     */
+    updateAnimation() {
+        this.animationTimer += FRAME_INTERVAL;
+        if (this.animationTimer >= this.animationSpeed) {
+            this.animationTimer -= this.animationSpeed;
             this.playAnimation(IMAGES_COIN);
-        }, ANIMATION_SPEED_NORMAL * 2); // Slower animation (200ms per frame)
+        }
     }
 
     /**

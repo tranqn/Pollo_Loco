@@ -16,8 +16,12 @@ class Character extends MovableObject {
     keyboard;
     currentState = 'idle'; // idle, walking, jumping, hurt, dead
     lastActionTime = Date.now();
-    animationInterval;
     spaceWasPressed = false; // Track if space was pressed (for jump release detection)
+
+    // Animation accumulator (replaces setInterval)
+    animationTimer = 0;
+    animationSpeed = ANIMATION_SPEED_NORMAL;
+    lastAnimationState = '';
 
     // Health system
     health = CHARACTER_MAX_HEALTH; // 100 HP
@@ -54,24 +58,17 @@ class Character extends MovableObject {
         this.collisionOffsetY = CHARACTER_COLLISION_OFFSET_Y;
         this.collisionOffsetWidth = CHARACTER_COLLISION_OFFSET_WIDTH;
         this.collisionOffsetHeight = CHARACTER_COLLISION_OFFSET_HEIGHT;
-
-        // Start animation loop
-        this.startAnimation();
     }
 
     /**
      * Update character state (called every frame)
-     * Handles movement, physics, and state changes
+     * Handles movement, physics, state changes, and animation
      */
     update() {
-        // Handle keyboard input for movement
         this.handleMovement();
-
-        // Apply gravity (makes character fall and stay on ground)
         this.applyGravity();
-
-        // Update state based on actions
         this.updateState();
+        this.updateAnimation();
     }
 
     /**
@@ -111,21 +108,15 @@ class Character extends MovableObject {
      * Update character state based on actions and health
      */
     updateState() {
-        // Dead state has highest priority
         if (this.isDead) {
             this.currentState = 'dead';
-        }
-        // Hurt state (recently damaged)
-        else if (this.isHurt()) {
+        } else if (this.isHurt()) {
             this.currentState = 'hurt';
-        }
-        // Movement states
-        else if (this.isJumping) {
+        } else if (this.isJumping) {
             this.currentState = 'jumping';
         } else if (this.keyboard.LEFT || this.keyboard.RIGHT) {
             this.currentState = 'walking';
         } else {
-            // Check if idle for long time
             if (Date.now() - this.lastActionTime > CHARACTER_IDLE_TIMEOUT) {
                 this.currentState = 'longIdle';
                 this.startSnoring();
@@ -136,6 +127,48 @@ class Character extends MovableObject {
 
         if (this.currentState !== 'longIdle' && this.isSnoring) {
             this.stopSnoring();
+        }
+    }
+
+    /**
+     * Advance animation frame using delta-time accumulator
+     * Handles jump animation with separate speed and one-shot playback
+     */
+    updateAnimation() {
+        if (this.lastAnimationState !== this.currentState && this.currentState === 'jumping') {
+            this.currentImageIndex = 0;
+            this.animationSpeed = ANIMATION_SPEED_JUMP;
+            this.animationTimer = 0;
+        } else if (this.lastAnimationState === 'jumping' && this.currentState !== 'jumping') {
+            this.currentImageIndex = 0;
+            this.animationSpeed = ANIMATION_SPEED_NORMAL;
+            this.animationTimer = 0;
+        }
+        this.lastAnimationState = this.currentState;
+
+        this.animationTimer += FRAME_INTERVAL;
+        if (this.animationTimer >= this.animationSpeed) {
+            this.animationTimer -= this.animationSpeed;
+            this.advanceFrame();
+        }
+    }
+
+    /**
+     * Advance to the next animation frame based on current state
+     */
+    advanceFrame() {
+        if (this.currentState === 'jumping') {
+            this.playJumpFrame(IMAGES_CHARACTER_JUMPING.length);
+        } else if (this.currentState === 'dead') {
+            this.playAnimation(IMAGES_CHARACTER_DEAD);
+        } else if (this.currentState === 'hurt') {
+            this.playAnimation(IMAGES_CHARACTER_HURT);
+        } else if (this.currentState === 'walking') {
+            this.playAnimation(IMAGES_CHARACTER_WALKING);
+        } else if (this.currentState === 'longIdle') {
+            this.playAnimation(IMAGES_CHARACTER_LONG_IDLE);
+        } else {
+            this.playAnimation(IMAGES_CHARACTER_IDLE);
         }
     }
 
@@ -189,54 +222,6 @@ class Character extends MovableObject {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Start animation loop (separate from game loop)
-     * Switches animation frames at set interval
-     * Uses different speeds for different animations
-     */
-    startAnimation() {
-        let lastState = '';
-
-        this.animationInterval = setInterval(() => {
-            if (lastState !== this.currentState && this.currentState === 'jumping') {
-                this.currentImageIndex = 0;
-                clearInterval(this.animationInterval);
-                this.startJumpAnimation();
-                return;
-            }
-            lastState = this.currentState;
-
-            if (this.currentState === 'dead') {
-                this.playAnimation(IMAGES_CHARACTER_DEAD);
-            } else if (this.currentState === 'hurt') {
-                this.playAnimation(IMAGES_CHARACTER_HURT);
-            } else if (this.currentState === 'walking') {
-                this.playAnimation(IMAGES_CHARACTER_WALKING);
-            } else if (this.currentState === 'longIdle') {
-                this.playAnimation(IMAGES_CHARACTER_LONG_IDLE);
-            } else {
-                this.playAnimation(IMAGES_CHARACTER_IDLE);
-            }
-        }, ANIMATION_SPEED_NORMAL);
-    }
-
-    /**
-     * Jump animation — plays all 9 frames once, freezes on last frame, resets on landing
-     */
-    startJumpAnimation() {
-        const totalFrames = IMAGES_CHARACTER_JUMPING.length;
-
-        this.animationInterval = setInterval(() => {
-            if (this.currentState === 'jumping') {
-                this.playJumpFrame(totalFrames);
-            } else {
-                this.currentImageIndex = 0;
-                clearInterval(this.animationInterval);
-                this.startAnimation();
-            }
-        }, ANIMATION_SPEED_JUMP);
     }
 
     /**
