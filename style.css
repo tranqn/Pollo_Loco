@@ -40,6 +40,17 @@ body {
     container-type: size;
 }
 
+#game-container:fullscreen {
+    background: #000;
+    width: min(100vw, 100vh * 3 / 2);
+    height: min(100vh, 100vw * 2 / 3);
+    margin: auto;
+}
+
+#game-container::backdrop {
+    background: #000;
+}
+
 /* ============================================
    CANVAS - Fixed 720x480 internal, scales to fill container
    ============================================ */

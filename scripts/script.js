@@ -26,6 +26,7 @@ const DOM = {};
  * Cache all frequently-accessed DOM elements once at startup
  */
 function cacheDOMElements() {
+    DOM.gameContainer = document.getElementById('game-container');
     DOM.canvas = document.getElementById('canvas');
     DOM.landingPage = document.getElementById('landing-page');
     DOM.muteBtn = document.getElementById('mute-btn');
@@ -156,11 +157,11 @@ function toggleMute() {
 }
 
 /**
- * Toggle fullscreen mode on the document
+ * Toggle fullscreen mode on the game container
  */
 function toggleFullscreen() {
     if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
+        DOM.gameContainer.requestFullscreen();
     } else {
         document.exitFullscreen();
     }
