@@ -59,16 +59,16 @@ function createLevel1() {
 
     // Coins - between character (x=100) and before Endboss (x=1500)
     coins: [
-        new Coin(350, 200),  // Floating in air
-        new Coin(500, 150),  // Higher in air
-        new Coin(650, 180),  // Mid-height
-        new Coin(800, 200),  // Floating
-        new Coin(950, GROUND_LEVEL), // On ground
-        new Coin(1050, 150), // Higher
-        new Coin(1150, 180), // Mid-height
-        new Coin(1250, 150), // Higher
-        new Coin(1350, GROUND_LEVEL), // On ground
-        new Coin(1450, 200)  // Floating
+        new Coin(350, 260),
+        new Coin(500, 220),
+        new Coin(650, 250),
+        new Coin(800, 270),
+        new Coin(950, GROUND_LEVEL),
+        new Coin(1050, 220),
+        new Coin(1150, 250),
+        new Coin(1250, 220),
+        new Coin(1350, GROUND_LEVEL),
+        new Coin(1450, 280)
     ],
 
     // Bottles - between character and before Endboss

@@ -57,7 +57,7 @@ const ENEMY_BOUNCE_FORCE = 6; // Bounce when jumping on enemy (half of jump forc
 const CHARACTER_WIDTH = 120;
 const CHARACTER_HEIGHT = 280;
 const CHARACTER_SPEED = 5;
-const CHARACTER_JUMP_FORCE = 11;
+const CHARACTER_JUMP_FORCE = 9;
 const CHARACTER_MAX_HEALTH = 100;
 const CHARACTER_DEFAULT_DAMAGE = 20; // Default damage value for hit() function
 const CHARACTER_IDLE_TIMEOUT = 5000; // Time before long idle animation (5 seconds)
@@ -168,9 +168,9 @@ const ANIMATION_SPEED_JUMP = 136;
 // ============================================
 // STATUS BAR CONSTANTS
 // ============================================
-const STATUSBAR_WIDTH = 200;
-const STATUSBAR_HEIGHT = 60;
-const STATUSBAR_PADDING = 20;
+const STATUSBAR_WIDTH = 150;
+const STATUSBAR_HEIGHT = 45;
+const STATUSBAR_PADDING = 15;
 
 // ============================================
 // IMAGE PATHS - CHARACTER (PEPE)

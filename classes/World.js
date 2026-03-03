@@ -67,12 +67,12 @@ class World {
      * Create and configure all status bars
      */
     createStatusBars() {
-        this.healthBar = new StatusBar(STATUSBAR_PADDING, STATUSBAR_PADDING, IMAGES_STATUSBAR_HEALTH);
-        this.coinBar = new StatusBar(STATUSBAR_PADDING, STATUSBAR_PADDING + STATUSBAR_HEIGHT + 10, IMAGES_STATUSBAR_COIN);
-        this.bottleBar = new StatusBar(STATUSBAR_PADDING, STATUSBAR_PADDING + (STATUSBAR_HEIGHT + 10) * 2, IMAGES_STATUSBAR_BOTTLE);
+        this.healthBar = new StatusBar(STATUSBAR_PADDING, 10, IMAGES_STATUSBAR_HEALTH);
+        this.coinBar = new StatusBar(STATUSBAR_PADDING + STATUSBAR_WIDTH + 10, 10, IMAGES_STATUSBAR_COIN);
+        this.bottleBar = new StatusBar(STATUSBAR_PADDING, 10 + STATUSBAR_HEIGHT + 5, IMAGES_STATUSBAR_BOTTLE);
 
         const endbossBarX = CANVAS_WIDTH - STATUSBAR_WIDTH - STATUSBAR_PADDING;
-        this.endbossBar = new StatusBar(endbossBarX, STATUSBAR_PADDING, IMAGES_STATUSBAR_ENDBOSS);
+        this.endbossBar = new StatusBar(endbossBarX, 10, IMAGES_STATUSBAR_ENDBOSS);
         this.endbossBar.setPercentage(100);
 
         this.coinBar.setPercentage(0);
