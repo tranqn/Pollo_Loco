@@ -124,6 +124,7 @@ class CollisionHandler {
     checkCoinCollisions() {
         for (let i = this.world.level.coins.length - 1; i >= 0; i--) {
             const coin = this.world.level.coins[i];
+            if (this.world.coinsCollected >= ITEMS_PER_FULL_BAR) continue;
             if (!this.isNearCharacter(coin)) continue;
 
             if (this.world.character.isColliding(coin)) {
@@ -142,6 +143,7 @@ class CollisionHandler {
     checkBottleCollisions() {
         for (let i = this.world.level.bottles.length - 1; i >= 0; i--) {
             const bottle = this.world.level.bottles[i];
+            if (this.world.bottlesCollected >= ITEMS_PER_FULL_BAR) continue;
             if (!this.isNearCharacter(bottle)) continue;
 
             if (this.world.character.isColliding(bottle)) {
