@@ -129,6 +129,17 @@ class World {
     }
 
     /**
+     * Check if an entity is near the camera viewport
+     * @param {DrawableObject} obj - Entity to check
+     * @returns {boolean}
+     */
+    isNearViewport(obj) {
+        const margin = 400;
+        return obj.xCoordinate > this.cameraX - margin &&
+               obj.xCoordinate < this.cameraX + CANVAS_WIDTH + margin;
+    }
+
+    /**
      * Update all level entities (enemies, clouds, coins, thrown bottles)
      */
     updateEntities() {
@@ -137,9 +148,11 @@ class World {
             if (enemy === this.endboss) {
                 enemy.characterX = this.character.xCoordinate;
             }
-            enemy.update();
+            if (this.isNearViewport(enemy)) enemy.update();
         });
-        this.level.coins.forEach(coin => coin.update());
+        this.level.coins.forEach(coin => {
+            if (this.isNearViewport(coin)) coin.update();
+        });
         this.updateThrownBottles();
     }
 
@@ -279,8 +292,12 @@ class World {
      * Update all thrown bottles (physics and animations)
      */
     updateThrownBottles() {
-        this.thrownBottles.forEach(bottle => bottle.update());
-        this.thrownBottles = this.thrownBottles.filter(bottle => !bottle.markForRemoval);
+        for (let i = this.thrownBottles.length - 1; i >= 0; i--) {
+            this.thrownBottles[i].update();
+            if (this.thrownBottles[i].markForRemoval) {
+                this.thrownBottles.splice(i, 1);
+            }
+        }
     }
     // #endregion
 

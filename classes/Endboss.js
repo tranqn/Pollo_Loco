@@ -226,12 +226,15 @@ class Endboss extends MovableObject {
             this.currentState = 'dead';
         } else if (this.isHurt()) {
             this.currentState = 'hurt';
-        } else if (this.getDistanceToCharacter() < Endboss.ALERT_DISTANCE / 2) {
-            this.currentState = 'attack';
-        } else if (this.getDistanceToCharacter() < Endboss.ALERT_DISTANCE) {
-            this.currentState = 'alert';
         } else {
-            this.currentState = 'walking';
+            const dist = this.getDistanceToCharacter();
+            if (dist < Endboss.ALERT_DISTANCE / 2) {
+                this.currentState = 'attack';
+            } else if (dist < Endboss.ALERT_DISTANCE) {
+                this.currentState = 'alert';
+            } else {
+                this.currentState = 'walking';
+            }
         }
         this.resetAnimationOnStateChange();
     }

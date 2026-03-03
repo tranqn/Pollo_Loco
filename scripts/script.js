@@ -365,7 +365,7 @@ function gameLoop(currentTime) {
     let delta = currentTime - lastFrameTime;
     lastFrameTime = currentTime;
 
-    if (delta > FRAME_INTERVAL * 5) delta = FRAME_INTERVAL * 5;
+    if (delta > FRAME_INTERVAL * 2) delta = FRAME_INTERVAL * 2;
     accumulator += delta;
 
     while (accumulator >= FRAME_INTERVAL) {
