@@ -304,31 +304,40 @@ function restartGame() {
     init();
 }
 
-// Initialize restart buttons, mobile controls, and preload images when page loads
-window.addEventListener('DOMContentLoaded', () => {
-    cacheDOMElements();
-
+/**
+ * Restore mute state from localStorage on page load
+ */
+function restoreMuteState() {
     const savedMuteState = localStorage.getItem('gameMuted');
     if (savedMuteState === 'true') {
         isMuted = true;
         if (DOM.muteBtn) DOM.muteBtn.textContent = '🔇';
     }
+}
 
-    if (DOM.restartBtn) DOM.restartBtn.addEventListener('click', restartGame);
-    if (DOM.winRestartBtn) DOM.winRestartBtn.addEventListener('click', restartGame);
-
+/**
+ * Disable start button during preload, re-enable when done
+ */
+function initPreloading() {
     if (DOM.startBtn) {
         DOM.startBtn.disabled = true;
         DOM.startBtn.textContent = 'Loading...';
     }
-
     preloadImages().then(() => {
         if (DOM.startBtn) {
             DOM.startBtn.disabled = false;
             DOM.startBtn.textContent = 'Start Game';
         }
     });
+}
 
+/** Initialize restart buttons, mobile controls, and preload images when page loads */
+window.addEventListener('DOMContentLoaded', () => {
+    cacheDOMElements();
+    restoreMuteState();
+    if (DOM.restartBtn) DOM.restartBtn.addEventListener('click', restartGame);
+    if (DOM.winRestartBtn) DOM.winRestartBtn.addEventListener('click', restartGame);
+    initPreloading();
     initMobileControls();
     checkOrientation();
     initBackgroundAnimation();
