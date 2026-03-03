@@ -124,7 +124,7 @@ class Character extends MovableObject {
     constructor(keyboard) {
         super(Character.WIDTH, Character.HEIGHT, Character.SPEED);
         this.keyboard = keyboard;
-        this.img = Character.IMAGES_CACHE[Character.IMAGES_IDLE[0]];
+        this.img = getCachedImage(Character.IMAGES_IDLE[0]);
         this.xCoordinate = Character.START_X;
         this.yCoordinate = GROUND_LEVEL;
         this.collisionOffsetX = Character.COLLISION_OFFSET_X;

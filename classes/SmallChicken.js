@@ -50,7 +50,7 @@ class SmallChicken extends MovableObject {
      */
     constructor() {
         super(SmallChicken.WIDTH, SmallChicken.HEIGHT, SmallChicken.SPEED * 0.5);
-        this.img = SmallChicken.IMAGES_CACHE[SmallChicken.IMAGES_WALKING[0]];
+        this.img = getCachedImage(SmallChicken.IMAGES_WALKING[0]);
         this.xCoordinate = Chicken.SPAWN_MIN_X + Math.random() * Chicken.SPAWN_RANGE;
         this.patrolStartX = this.xCoordinate;
         this.patrolEndX = this.xCoordinate + Chicken.PATROL_WIDTH;

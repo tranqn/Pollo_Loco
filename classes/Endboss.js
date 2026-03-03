@@ -105,7 +105,7 @@ class Endboss extends MovableObject {
      */
     constructor() {
         super(Endboss.WIDTH, Endboss.HEIGHT, Endboss.SPEED);
-        this.img = Endboss.IMAGES_CACHE[Endboss.IMAGES_WALKING[0]];
+        this.img = getCachedImage(Endboss.IMAGES_WALKING[0]);
         this.otherDirection = true;
         this.xCoordinate = this.patrolStartX;
         this.yCoordinate = GROUND_LEVEL + (Character.HEIGHT - Endboss.HEIGHT);

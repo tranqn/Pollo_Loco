@@ -62,7 +62,7 @@ class ThrowableObject extends MovableObject {
         this.xCoordinate = x;
         this.yCoordinate = y;
         this.throwDirection = direction;
-        this.img = ThrowableObject.IMAGES_CACHE[ThrowableObject.IMAGES_ROTATION[0]];
+        this.img = getCachedImage(ThrowableObject.IMAGES_ROTATION[0]);
         this.collisionOffsetX = ThrowableObject.COLLISION_OFFSET_X;
         this.collisionOffsetY = ThrowableObject.COLLISION_OFFSET_Y;
         this.collisionOffsetWidth = ThrowableObject.COLLISION_OFFSET_WIDTH;
