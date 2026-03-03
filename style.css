@@ -569,16 +569,17 @@ body {
     font-size: clamp(16px, 4cqh, 20px);
 }
 
-.mute-btn {
-    right: clamp(5px, 1.5cqw, 20px);
+/* Centered top — avoids overlapping endboss health bar */
+.pause-btn {
+    left: calc(50% - clamp(30px, 8cqh, 50px) * 1.5 - clamp(5px, 1cqw, 10px));
 }
 
 .fullscreen-btn {
-    right: calc(clamp(5px, 1.5cqw, 20px) + clamp(30px, 8cqh, 50px) + clamp(5px, 1cqw, 10px));
+    left: calc(50% - clamp(30px, 8cqh, 50px) / 2);
 }
 
-.pause-btn {
-    right: calc(clamp(5px, 1.5cqw, 20px) + (clamp(30px, 8cqh, 50px) + clamp(5px, 1cqw, 10px)) * 2);
+.mute-btn {
+    left: calc(50% + clamp(30px, 8cqh, 50px) / 2 + clamp(5px, 1cqw, 10px));
 }
 
 .mute-btn.hidden,
@@ -619,9 +620,9 @@ body {
     background: rgba(255, 255, 255, 0.3);
     border: 2px solid white;
     border-radius: 50%;
-    width: clamp(40px, 18cqh, 90px);
-    height: clamp(40px, 18cqh, 90px);
-    font-size: clamp(16px, 4cqh, 22px);
+    width: clamp(40px, 14cqh, 75px);
+    height: clamp(40px, 14cqh, 75px);
+    font-size: clamp(10px, 3cqh, 18px);
     font-weight: bold;
     color: white;
     cursor: pointer;
@@ -637,7 +638,7 @@ body {
     transform: scale(0.95);
 }
 
-/* Position touch buttons — spacing scales with button size */
+/* Position touch buttons — movement left, actions stacked right */
 .left-btn {
     position: absolute;
     left: clamp(5px, 2cqw, 20px);
@@ -646,14 +647,14 @@ body {
 
 .right-btn {
     position: absolute;
-    left: calc(clamp(5px, 2cqw, 20px) + clamp(40px, 18cqh, 90px) + clamp(5px, 1cqw, 10px));
+    left: calc(clamp(5px, 2cqw, 20px) + clamp(40px, 14cqh, 75px) + clamp(5px, 1cqw, 10px));
     bottom: clamp(5px, 2cqh, 20px);
 }
 
 .jump-btn {
     position: absolute;
-    right: calc(clamp(5px, 2cqw, 20px) + clamp(40px, 18cqh, 90px) + clamp(5px, 1cqw, 10px));
-    bottom: clamp(5px, 2cqh, 20px);
+    right: clamp(5px, 2cqw, 20px);
+    bottom: calc(clamp(5px, 2cqh, 20px) + clamp(40px, 14cqh, 75px) + clamp(3px, 1cqh, 8px));
 }
 
 .throw-btn {
